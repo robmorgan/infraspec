@@ -1,0 +1,102 @@
+package steps
+
+import (
+	"fmt"
+	"os"
+	"regexp"
+	"strings"
+
+	"github.com/robmorgan/infraspec/internal/context"
+)
+
+// SetValueStep handles setting variables in the test context
+type SetValueStep struct {
+	ctx *context.TestContext
+}
+
+// NewSetValueStep creates a new SetValueStep
+func NewSetValueStep(ctx *context.TestContext) *SetValueStep {
+	return &SetValueStep{
+		ctx: ctx,
+	}
+}
+
+// Pattern returns the Gherkin pattern for this step
+func (s *SetValueStep) Pattern() string {
+	return `^I set variable "([^"]*)" to "([^"]*)"$`
+}
+
+// Execute runs the step implementation
+func (s *SetValueStep) Execute(args ...string) error {
+	if len(args) != 2 {
+		return fmt.Errorf("expected 2 arguments, got %d", len(args))
+	}
+
+	name := args[0]
+	value := args[1]
+
+	// Interpolate any variables in the value
+	interpolatedValue, err := s.interpolateValue(value)
+	if err != nil {
+		return fmt.Errorf("failed to interpolate value: %w", err)
+	}
+
+	// Store in Terraform options
+	if s.ctx.GetTerraformOptions() != nil {
+		s.ctx.GetTerraformOptions().Vars[name] = interpolatedValue
+	}
+
+	// Also store in context values for future reference
+	s.ctx.StoreValue(name, interpolatedValue)
+
+	return nil
+}
+
+// interpolateValue replaces variables and environment variables in the value
+func (s *SetValueStep) interpolateValue(value string) (string, error) {
+	// First, handle stored variables ${variable}
+	varRegex := regexp.MustCompile(`\${([^}]+)}`)
+	result := varRegex.ReplaceAllStringFunc(value, func(match string) string {
+		varName := match[2 : len(match)-1] // Remove ${ and }
+		if storedValue, exists := s.ctx.GetStoredValues()[varName]; exists {
+			return storedValue
+		}
+		// If not found, leave as is
+		return match
+	})
+
+	// Then, handle environment variables %{ENV_VAR}
+	envRegex := regexp.MustCompile(`%{([^}]+)}`)
+	result = envRegex.ReplaceAllStringFunc(result, func(match string) string {
+		envName := match[2 : len(match)-1] // Remove %{ and }
+		if envValue, exists := os.LookupEnv(envName); exists {
+			return envValue
+		}
+		// If not found, leave as is
+		return match
+	})
+
+	// Check if there are any unresolved variables
+	if strings.Contains(result, "${") || strings.Contains(result, "%{") {
+		// Find all unresolved variables
+		var unresolvedVars []string
+
+		varMatches := varRegex.FindAllString(result, -1)
+		for _, match := range varMatches {
+			varName := match[2 : len(match)-1]
+			unresolvedVars = append(unresolvedVars, fmt.Sprintf("${%s}", varName))
+		}
+
+		envMatches := envRegex.FindAllString(result, -1)
+		for _, match := range envMatches {
+			envName := match[2 : len(match)-1]
+			unresolvedVars = append(unresolvedVars, fmt.Sprintf("%%{%s}", envName))
+		}
+
+		if len(unresolvedVars) > 0 {
+			return "", fmt.Errorf("unresolved variables: %s", strings.Join(unresolvedVars, ", "))
+		}
+	}
+
+	return result, nil
+}
