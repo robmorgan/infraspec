@@ -20,8 +20,12 @@ type Runner struct {
 }
 
 func New(cfg *config.Config) (*Runner, error) {
+	// create a new test context
+	c := context.New(cfg)
+
 	return &Runner{
-		cfg: cfg,
+		context: c,
+		cfg:     cfg,
 	}, nil
 }
 

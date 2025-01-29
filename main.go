@@ -6,8 +6,6 @@ import (
 	"os"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/cucumber/godog"
-	"github.com/cucumber/godog/colors"
 	"github.com/spf13/cobra"
 
 	"github.com/robmorgan/infraspec/internal/config"
@@ -19,14 +17,6 @@ var (
 
 	primaryStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color("#0099cc"))
 	secondaryStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#ff69b4"))
-
-	cucumberOpts = &godog.Options{
-		//Output: os.Stdout,
-		Output:      colors.Colored(os.Stdout),
-		Format:      "pretty",
-		Concurrency: 1,
-		Randomize:   0,
-	}
 
 	rootCmd = &cobra.Command{
 		Use:   "infraspec [feature file]",
@@ -48,18 +38,6 @@ var (
 				fmt.Printf("Failed to create runner: %v\n", err)
 				return
 			}
-
-			// parse args as features path
-			// opts.Paths = []string{args[0]}
-
-			// status := tspec.TestSuite{
-			// 	Name:                 "tspec",
-			// 	TestSuiteInitializer: tspec.InitializeTestSuite,
-			// 	ScenarioInitializer:  tspec.InitializeScenario,
-			// 	Options:              &opts,
-			// }.Run()
-
-			//logger.Infof("Exit code is: %d", status)
 
 			if err := runner.Run(args[0]); err != nil {
 				log.Fatalf("Test execution failed: %v", err)
