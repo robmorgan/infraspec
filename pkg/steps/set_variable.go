@@ -9,25 +9,25 @@ import (
 	"github.com/robmorgan/infraspec/internal/context"
 )
 
-// SetValueStep handles setting variables in the test context
-type SetValueStep struct {
+// SetVariableStep handles setting variables in the test context
+type SetVariableStep struct {
 	ctx *context.TestContext
 }
 
-// NewSetValueStep creates a new SetValueStep
-func NewSetValueStep(ctx *context.TestContext) *SetValueStep {
-	return &SetValueStep{
+// NewSetVariableStep creates a new SetVariableStep
+func NewSetVariableStep(ctx *context.TestContext) *SetVariableStep {
+	return &SetVariableStep{
 		ctx: ctx,
 	}
 }
 
 // Pattern returns the Gherkin pattern for this step
-func (s *SetValueStep) Pattern() string {
+func (s *SetVariableStep) Pattern() string {
 	return `^I set variable "([^"]*)" to "([^"]*)"$`
 }
 
 // Execute runs the step implementation
-func (s *SetValueStep) Execute(args ...string) error {
+func (s *SetVariableStep) Execute(args ...string) error {
 	if len(args) != 2 {
 		return fmt.Errorf("expected 2 arguments, got %d", len(args))
 	}
@@ -53,7 +53,7 @@ func (s *SetValueStep) Execute(args ...string) error {
 }
 
 // interpolateValue replaces variables and environment variables in the value
-func (s *SetValueStep) interpolateValue(value string) (string, error) {
+func (s *SetVariableStep) interpolateValue(value string) (string, error) {
 	// First, handle stored variables ${variable}
 	varRegex := regexp.MustCompile(`\${([^}]+)}`)
 	result := varRegex.ReplaceAllStringFunc(value, func(match string) string {

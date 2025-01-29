@@ -13,6 +13,7 @@ import (
 // registerAWSSteps registers all AWS-specific step definitions
 func registerAWSSteps(ctx *context.TestContext, sc *godog.ScenarioContext) {
 	// DynamoDB steps
+	sc.Step(`^the DynamoDB table "([^"]*)" should have tags$`, newDynamoDBTagsStep(ctx))
 	sc.Step(`^the DynamoDB table "([^"]*)" should have billing mode "([^"]*)"$`, newDynamoDBBillingModeStep(ctx))
 	sc.Step(`^the DynamoDB table "([^"]*)" should have read capacity (\d+)$`, newDynamoDBReadCapacityStep(ctx))
 	sc.Step(`^the DynamoDB table "([^"]*)" should have write capacity (\d+)$`, newDynamoDBWriteCapacityStep(ctx))
@@ -25,11 +26,19 @@ func registerAWSSteps(ctx *context.TestContext, sc *godog.ScenarioContext) {
 	// sc.Step(`^the S3 bucket "([^"]*)" should have encryption "([^"]*)"$`, newS3BucketEncryptionStep(ctx))
 
 	// Generic AWS steps
+	sc.Step(`^the AWS resource "([^"]*)" should exist$`, newAWSResourceExistsStep(ctx))
 	sc.Step(`^the resource "([^"]*)" should have tags$`, newAWSTagsStep(ctx))
 	// sc.Step(`^I wait for resource "([^"]*)" to be "([^"]*)"$`, newAWSWaitForStateStep(ctx))
 }
 
 // DynamoDB Step Definitions
+func newDynamoDBTagsStep(ctx *context.TestContext) func(string, *godog.Table) error {
+	return func(tableName string, tags *godog.Table) error {
+		// TODO - implement
+		return nil
+	}
+}
+
 func newDynamoDBBillingModeStep(ctx *context.TestContext) func(string, string) error {
 	return func(tableName, expectedMode string) error {
 		// Replace any variables in the table name
@@ -143,6 +152,13 @@ func newS3BucketVersioningStep(ctx *context.TestContext) func(string) error {
 }
 
 // Generic AWS Steps
+func newAWSResourceExistsStep(ctx *context.TestContext) func(string) error {
+	return func(resourceID string) error {
+		// TODO - implement
+		return nil
+	}
+}
+
 func newAWSTagsStep(ctx *context.TestContext) func(string, *godog.Table) error {
 	return func(resourceID string, table *godog.Table) error {
 		resourceID = replaceVariables(ctx, resourceID)

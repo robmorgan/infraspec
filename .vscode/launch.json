@@ -11,7 +11,7 @@
       "mode": "debug",
       "program": "${workspaceFolder}",
       "env": {},
-      "args": ["test/features/helloworld.feature"],
+      "args": ["test/features/dynamodb.feature"],
       "console": "integratedTerminal"
     }
   ]
