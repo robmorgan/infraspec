@@ -15,7 +15,6 @@ func registerTerraformSteps(ctx *context.TestContext, sc *godog.ScenarioContext)
 	sc.Step(`^I generate a random resource name with prefix "([^"]*)"$`, (&RandomNameStep{}).Execute)
 	sc.Step(`^I set variable "([^"]*)" to "([^"]*)"$`, (&SetVariableStep{}).Execute)
 	sc.Step(`^the output "([^"]*)" should contain "([^"]*)"$`, (&TerraformOutput{}).Execute)
-	//sc.Step(`^I expect the
 }
 
 func newTerraformConfigStep(ctx *context.TestContext) func(string) error {
