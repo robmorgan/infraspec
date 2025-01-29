@@ -1,8 +1,8 @@
 # InfraSpec
 
-BDD tool for testing infrastructure as code.
-
 Write infrastructure tests in plain English, without writing a single line of code.
+
+:warning: This project is still under heavy development and probably won't work!
 
 Under the hood, InfraSpec uses [Gherkin](https://cucumber.io/docs/gherkin/) to parse
 Go Dog and testing modules from Terratest.
