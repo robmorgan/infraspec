@@ -1,4 +1,4 @@
-package steps
+package terraform
 
 import (
 	"fmt"

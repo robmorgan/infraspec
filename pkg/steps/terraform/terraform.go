@@ -1,4 +1,4 @@
-package steps
+package terraform
 
 import (
 	"fmt"
@@ -7,19 +7,20 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 
 	"github.com/robmorgan/infraspec/internal/context"
+	t "github.com/robmorgan/infraspec/internal/testing"
 )
 
-func registerTerraformSteps(ctx *context.TestContext, sc *godog.ScenarioContext) {
+// RegisterSteps registers all Terraform-specific step definitions
+func RegisterSteps(ctx *context.TestContext, sc *godog.ScenarioContext) {
 	sc.Step(`^I run Terraform apply$`, newTerraformApplyStep(ctx))
 	sc.Step(`^I have a Terraform configuration in "([^"]*)"$`, newTerraformConfigStep(ctx))
-	sc.Step(`^I generate a random resource name with prefix "([^"]*)"$`, (&RandomNameStep{}).Execute)
 	sc.Step(`^I set variable "([^"]*)" to "([^"]*)"$`, (&SetVariableStep{}).Execute)
 	sc.Step(`^the output "([^"]*)" should contain "([^"]*)"$`, (&TerraformOutput{}).Execute)
 }
 
 func newTerraformConfigStep(ctx *context.TestContext) func(string) error {
 	return func(path string) error {
-		opts := terraform.WithDefaultRetryableErrors(GetT(), &terraform.Options{
+		opts := terraform.WithDefaultRetryableErrors(t.GetT(), &terraform.Options{
 			TerraformDir: path,
 			Vars:         make(map[string]interface{}),
 		})
@@ -30,7 +31,7 @@ func newTerraformConfigStep(ctx *context.TestContext) func(string) error {
 
 func newTerraformApplyStep(ctx *context.TestContext) func() error {
 	return func() error {
-		out, err := terraform.InitAndApplyE(GetT(), ctx.GetTerraformOptions())
+		out, err := terraform.InitAndApplyE(t.GetT(), ctx.GetTerraformOptions())
 		if err != nil {
 			return fmt.Errorf("there was an error running terraform apply: %s", out)
 		}

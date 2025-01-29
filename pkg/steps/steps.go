@@ -5,6 +5,8 @@ import (
 
 	"github.com/robmorgan/infraspec/internal/context"
 	"github.com/robmorgan/infraspec/internal/generators"
+	"github.com/robmorgan/infraspec/pkg/steps/aws"
+	"github.com/robmorgan/infraspec/pkg/steps/terraform"
 )
 
 // StepDefinition represents a single step implementation
@@ -22,30 +24,25 @@ func RegisterSteps(ctx *context.TestContext, sc *godog.ScenarioContext) {
 	registerCommonSteps(ctx, sc)
 
 	// Register Terraform steps
-	registerTerraformSteps(ctx, sc)
+	terraform.RegisterSteps(ctx, sc)
 
 	// Register provider-specific steps
 	switch ctx.Config().Provider {
 	case "aws":
-		registerAWSSteps(ctx, sc)
+		aws.RegisterSteps(ctx, sc)
 	}
 }
 
 // registerCommonSteps registers common steps that are shared across providers
 func registerCommonSteps(ctx *context.TestContext, sc *godog.ScenarioContext) {
-	sc.Step(`^I generate a random resource name with prefix "([^"]*)"$`, (&RandomNameStep{}).Execute)
+	sc.Step(`^I generate a random resource name with prefix "([^"]*)"$`, newRandomNameStep(ctx))
 }
 
 // Common step implementations
-type RandomNameStep struct{}
-
-func (s *RandomNameStep) Pattern() string {
-	return `^I generate a random resource name with prefix "([^"]*)"$`
-}
-
-func (s *RandomNameStep) Execute(ctx *context.TestContext, args ...string) error {
-	prefix := args[0]
-	name := generators.RandomResourceName(prefix, ctx.Config().Functions.RandomString)
-	ctx.StoreValue("resource_name", name)
-	return nil
+func newRandomNameStep(ctx *context.TestContext) func(string) error {
+	return func(prefix string) error {
+		name := generators.RandomResourceName(prefix, ctx.Config().Functions.RandomString)
+		ctx.StoreValue("resource_name", name)
+		return nil
+	}
 }
