@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/gruntwork-io/terratest/modules/terraform"
+
 	"github.com/robmorgan/infraspec/pkg/assertions"
 )
 
@@ -25,6 +27,24 @@ func GetAsserter(ctx context.Context) (assertions.Asserter, error) {
 		return nil, fmt.Errorf("no asserter found in context")
 	}
 	return asserter, nil
+}
+
+// GetTerraformOptions returns the Terraform options from the context.
+func GetTerraformOptions(ctx context.Context) *terraform.Options {
+	opts, exists := ctx.Value(TFOptionsCtxKey{}).(*terraform.Options)
+	if !exists {
+		return nil
+	}
+	return opts
+}
+
+// GetUri returns the URI from the context.
+func GetUri(ctx context.Context) string {
+	uri, exists := ctx.Value(UriCtxKey{}).(string)
+	if !exists {
+		return ""
+	}
+	return uri
 }
 
 // func (t *TestContext) GetAsserter(provider string) (assertions.Asserter, error) {
