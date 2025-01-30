@@ -24,16 +24,20 @@ func newTerraformConfigStep(ctx context.Context, path string) (context.Context, 
 	// construct an absolute path to the terraform configuration.
 	// if the path is relative, we need to prepend the base uri of the scenario otherwise, we can just use the path
 	// as is.
+	var (
+		absPath string
+		err     error
+	)
 	if !filepath.IsAbs(path) {
-		uri := contexthelpers.GetUri(ctx)
-		path, err := filepath.Abs(filepath.Join(uri, path))
+		base := filepath.Dir(contexthelpers.GetUri(ctx))
+		absPath, err = filepath.Abs(filepath.Join(base, path))
 		if err != nil {
-			return fmt.Errorf("failed to get absolute path for %s: %w", path, err)
+			return nil, fmt.Errorf("failed to get absolute path for %s: %w", path, err)
 		}
 	}
 
 	options := terraform.WithDefaultRetryableErrors(t.GetT(), &terraform.Options{
-		TerraformDir: path,
+		TerraformDir: absPath,
 		Vars:         make(map[string]interface{}),
 	})
 	return context.WithValue(ctx, contexthelpers.TFOptionsCtxKey{}, options), nil
