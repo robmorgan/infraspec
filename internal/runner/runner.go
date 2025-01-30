@@ -78,8 +78,10 @@ func (r *Runner) Run(featurePath string) error {
 // initializeScenario sets up the godog scenario context
 func (r *Runner) initializeScenario(sc *godog.ScenarioContext) {
 	// Initialize test context for each scenario
-	sc.BeforeScenario(func(*godog.Scenario) {
+	sc.BeforeScenario(func(sc *godog.Scenario) {
+		//sc.Uri
 		r.context = context.New(r.cfg)
+		r.context.SetScenarioUri(sc.Uri)
 	})
 
 	// Register step definitions

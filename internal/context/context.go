@@ -13,6 +13,7 @@ type TestContext struct {
 	storedValues map[string]string
 	assertions   map[string]assertions.Asserter
 	cleanup      []func() error
+	scenarioUri  string
 }
 
 func New(cfg *config.Config) *TestContext {
@@ -34,6 +35,14 @@ func (t *TestContext) GetTerraformOptions() *terraform.Options {
 
 func (t *TestContext) SetTerraformOptions(opts *terraform.Options) {
 	t.tfOptions = opts
+}
+
+func (t *TestContext) SetScenarioUri(uri string) {
+	t.scenarioUri = uri
+}
+
+func (t *TestContext) GetScenarioUri() string {
+	return t.scenarioUri
 }
 
 func (t *TestContext) StoreValue(key, value string) {
