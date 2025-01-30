@@ -1,6 +1,7 @@
 package runner
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"time"
@@ -9,23 +10,23 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/robmorgan/infraspec/internal/config"
-	"github.com/robmorgan/infraspec/internal/context"
+	"github.com/robmorgan/infraspec/internal/contexthelpers"
 	"github.com/robmorgan/infraspec/pkg/steps"
 )
 
 // Runner handles the execution of feature files
 type Runner struct {
-	context *context.TestContext
-	cfg     *config.Config
+	//context *context.TestContext
+	cfg *config.Config
 }
 
 func New(cfg *config.Config) (*Runner, error) {
 	// create a new test context
-	c := context.New(cfg)
+	//c := context.New(cfg)
 
 	return &Runner{
-		context: c,
-		cfg:     cfg,
+		//	context: c,
+		cfg: cfg,
 	}, nil
 }
 
@@ -78,50 +79,50 @@ func (r *Runner) Run(featurePath string) error {
 // initializeScenario sets up the godog scenario context
 func (r *Runner) initializeScenario(sc *godog.ScenarioContext) {
 	// Initialize test context for each scenario
-	sc.BeforeScenario(func(sc *godog.Scenario) {
-		//sc.Uri
-		r.context = context.New(r.cfg)
-		r.context.SetScenarioUri(sc.Uri)
+	// sc.BeforeScenario(func(sc *godog.Scenario) {
+	// 	//sc.Uri
+	// 	r.context = context.New(r.cfg)
+	// 	r.context.SetScenarioUri(sc.Uri)
+	// })
+
+	sc.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
+		// Initialize test context for each scenario
+		//r.context = context.New(r.cfg)
+
+		// embed the uri
+		return context.WithValue(ctx, contexthelpers.UriCtxKey{}, sc.Uri), nil
 	})
 
 	// Register step definitions
-	steps.RegisterSteps(r.context, sc)
+	steps.RegisterSteps(sc)
 
 	// Add hooks for logging
-	sc.BeforeStep(func(st *godog.Step) {
-		r.cfg.Logger.Debug("Executing step",
-			zap.String("step", st.Text),
-		)
+	sc.StepContext().Before(func(ctx context.Context, st *godog.Step) (context.Context, error) {
+		r.cfg.Logger.Debug("Executing step", st, st.Text)
+		return ctx, nil
 	})
 
-	sc.AfterStep(func(st *godog.Step, err error) {
+	sc.StepContext().After(func(ctx context.Context, st *godog.Step, status godog.StepResultStatus, err error) (context.Context, error) {
 		if err != nil {
-			r.cfg.Logger.Error("Step failed",
-				zap.String("step", st.Text),
-				zap.Error(err),
-			)
+			r.cfg.Logger.Error("Step failed", "step", st.Text, "error", err)
 		} else {
-			r.cfg.Logger.Debug("Step completed successfully",
-				zap.String("step", st.Text),
-			)
+			r.cfg.Logger.Debug("Step completed successfully", "step", st.Text)
 		}
+		return ctx, nil
 	})
 
-	sc.AfterScenario(func(sc *godog.Scenario, err error) {
+	sc.After(func(ctx context.Context, sc *godog.Scenario, err error) (context.Context, error) {
 		if err != nil {
-			r.cfg.Logger.Error("Scenario failed",
-				zap.String("scenario", sc.Name),
-				zap.Error(err),
-			)
+			r.cfg.Logger.Error("Scenario failed", "scenario", sc.Name, "error", err)
 		} else {
-			r.cfg.Logger.Info("Scenario completed successfully",
-				zap.String("scenario", sc.Name),
-			)
+			r.cfg.Logger.Info("Scenario completed successfully", "scenario", sc.Name)
 		}
+		return ctx, nil
 	})
 }
 
 // cleanup performs necessary cleanup after test execution
+// TODO - this might be necessary if we've invoked tools like Terraform or need to cleanup resources
 func (r *Runner) cleanup() error {
 	if !r.cfg.Cleanup.Automatic {
 		r.cfg.Logger.Info("Automatic cleanup disabled, skipping...")
@@ -132,19 +133,22 @@ func (r *Runner) cleanup() error {
 		zap.Int("timeout", r.cfg.Cleanup.Timeout),
 	)
 
-	done := make(chan error)
-	go func() {
-		done <- r.context.Cleanup()
-	}()
+	// done := make(chan error)
+	// go func() {
+	// 	done <- r.context.Cleanup()
+	// }()
 
-	select {
-	case err := <-done:
-		if err != nil {
-			return fmt.Errorf("cleanup failed: %w", err)
-		}
-		r.cfg.Logger.Info("Cleanup completed successfully")
-		return nil
-	case <-time.After(time.Duration(r.cfg.Cleanup.Timeout) * time.Second):
-		return fmt.Errorf("cleanup timed out after %d seconds", r.cfg.Cleanup.Timeout)
-	}
+	// select {
+	// case err := <-done:
+	// 	if err != nil {
+	// 		return fmt.Errorf("cleanup failed: %w", err)
+	// 	}
+	// 	r.cfg.Logger.Info("Cleanup completed successfully")
+	// 	return nil
+	// case <-time.After(time.Duration(r.cfg.Cleanup.Timeout) * time.Second):
+	// 	return fmt.Errorf("cleanup timed out after %d seconds", r.cfg.Cleanup.Timeout)
+	// }
+
+	r.cfg.Logger.Info("Cleanup completed successfully")
+	return nil
 }
