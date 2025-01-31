@@ -44,8 +44,5 @@ module "dynamodb" {
     max_capacity       = 10
   }
 
-  tags = {
-    Terraform   = "true"
-    Environment = "dev"
-  }
+  tags = var.tags
 }

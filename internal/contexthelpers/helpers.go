@@ -6,6 +6,7 @@ import (
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
 
+	"github.com/robmorgan/infraspec/internal/config"
 	"github.com/robmorgan/infraspec/pkg/assertions"
 )
 
@@ -21,12 +22,45 @@ type AssertionsCtxKey struct{}
 // UriCtxKey is the key used to store the scenario URI in the context.Context.
 type UriCtxKey struct{}
 
-func GetAsserter(ctx context.Context) (assertions.Asserter, error) {
-	asserter, exists := ctx.Value(AssertionsCtxKey{}).(assertions.Asserter)
+// GetAsserter returns the asserter for the given provider.
+func GetAsserter(ctx context.Context, provider string) (assertions.Asserter, error) {
+	var a map[string]assertions.Asserter
+
+	// get the assertions from the context
+	a, exists := ctx.Value(AssertionsCtxKey{}).(map[string]assertions.Asserter)
+
+	// if the asserter is not available, create a new map
 	if !exists {
-		return nil, fmt.Errorf("no asserter found in context")
+		a = make(map[string]assertions.Asserter)
 	}
+
+	// check if the asserter for the given provider already exists
+	asserter, exists := a[provider]
+	if exists {
+		return asserter, nil
+	}
+
+	// Create new asserter based on provider
+	cfg := GetConfig(ctx)
+	if cfg == nil {
+		return nil, fmt.Errorf("no assertions available for provider: %s", provider)
+	}
+
+	asserter, err := assertions.New(provider, cfg.DefaultRegion)
+	if err != nil {
+		return nil, err
+	}
+
 	return asserter, nil
+}
+
+// GetConfig returns the configuration from the context.
+func GetConfig(ctx context.Context) *config.Config {
+	cfg, exists := ctx.Value(ConfigCtxKey{}).(*config.Config)
+	if !exists {
+		return nil
+	}
+	return cfg
 }
 
 // GetTerraformOptions returns the Terraform options from the context.
@@ -46,18 +80,3 @@ func GetUri(ctx context.Context) string {
 	}
 	return uri
 }
-
-// func (t *TestContext) GetAsserter(provider string) (assertions.Asserter, error) {
-// 	if asserter, exists := t.assertions[provider]; exists {
-// 		return asserter, nil
-// 	}
-
-// 	// Create new asserter based on provider
-// 	asserter, err := assertions.New(provider, t.config.DefaultRegion)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	t.assertions[provider] = asserter
-// 	return asserter, nil
-// }

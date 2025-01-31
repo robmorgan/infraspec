@@ -8,6 +8,7 @@ import (
 
 	"github.com/robmorgan/infraspec/internal/contexthelpers"
 	"github.com/robmorgan/infraspec/pkg/assertions"
+	"github.com/robmorgan/infraspec/pkg/assertions/aws"
 )
 
 // DynamoDB Step Definitions
@@ -17,12 +18,12 @@ func newDynamoDBTagsStep(ctx context.Context, tableName string, tags *godog.Tabl
 }
 
 func newDynamoDBBillingModeStep(ctx context.Context, tableName, expectedMode string) error {
-	asserter, err := contexthelpers.GetAsserter(ctx)
+	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
 	if err != nil {
 		return err
 	}
 
-	dynamoAssert, ok := asserter.(assertions.DynamoDBAsserter)
+	dynamoAssert, ok := asserter.(aws.DynamoDBAsserter)
 	if !ok {
 		return fmt.Errorf("asserter does not implement DynamoDBAsserter")
 	}
@@ -31,12 +32,12 @@ func newDynamoDBBillingModeStep(ctx context.Context, tableName, expectedMode str
 }
 
 func newDynamoDBReadCapacityStep(ctx context.Context, tableName string, capacity int64) error {
-	asserter, err := contexthelpers.GetAsserter(ctx)
+	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
 	if err != nil {
 		return err
 	}
 
-	dynamoAssert, ok := asserter.(assertions.DynamoDBAsserter)
+	dynamoAssert, ok := asserter.(aws.DynamoDBAsserter)
 	if !ok {
 		return fmt.Errorf("asserter does not implement DynamoDBAsserter")
 	}
@@ -46,12 +47,12 @@ func newDynamoDBReadCapacityStep(ctx context.Context, tableName string, capacity
 }
 
 func newDynamoDBWriteCapacityStep(ctx context.Context, tableName string, capacity int64) error {
-	asserter, err := contexthelpers.GetAsserter(ctx)
+	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
 	if err != nil {
 		return err
 	}
 
-	dynamoAssert, ok := asserter.(assertions.DynamoDBAsserter)
+	dynamoAssert, ok := asserter.(aws.DynamoDBAsserter)
 	if !ok {
 		return fmt.Errorf("asserter does not implement DynamoDBAsserter")
 	}
@@ -61,12 +62,12 @@ func newDynamoDBWriteCapacityStep(ctx context.Context, tableName string, capacit
 }
 
 func newDynamoDBGSIStep(ctx context.Context, tableName, indexName, keyAttribute string) error {
-	asserter, err := contexthelpers.GetAsserter(ctx)
+	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
 	if err != nil {
 		return err
 	}
 
-	dynamoAssert, ok := asserter.(assertions.DynamoDBAsserter)
+	dynamoAssert, ok := asserter.(aws.DynamoDBAsserter)
 	if !ok {
 		return fmt.Errorf("asserter does not implement DynamoDBAsserter")
 	}

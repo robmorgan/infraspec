@@ -6,6 +6,7 @@ import (
 	"github.com/cucumber/godog"
 
 	"github.com/robmorgan/infraspec/internal/contexthelpers"
+	"github.com/robmorgan/infraspec/pkg/assertions"
 )
 
 // RegisterSteps registers all AWS-specific step definitions
@@ -41,7 +42,7 @@ func newAWSTagsStep(ctx context.Context, table *godog.Table) error {
 		tags[row.Cells[0].Value] = row.Cells[1].Value
 	}
 
-	asserter, err := contexthelpers.GetAsserter(ctx)
+	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
 	if err != nil {
 		return err
 	}

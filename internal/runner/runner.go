@@ -79,15 +79,9 @@ func (r *Runner) Run(featurePath string) error {
 // initializeScenario sets up the godog scenario context
 func (r *Runner) initializeScenario(sc *godog.ScenarioContext) {
 	// Initialize test context for each scenario
-	// sc.BeforeScenario(func(sc *godog.Scenario) {
-	// 	//sc.Uri
-	// 	r.context = context.New(r.cfg)
-	// 	r.context.SetScenarioUri(sc.Uri)
-	// })
-
 	sc.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
-		// Initialize test context for each scenario
-		//r.context = context.New(r.cfg)
+		// embed the config
+		ctx = context.WithValue(ctx, contexthelpers.ConfigCtxKey{}, r.cfg)
 
 		// embed the uri
 		return context.WithValue(ctx, contexthelpers.UriCtxKey{}, sc.Uri), nil

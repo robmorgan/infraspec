@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"path/filepath"
+	"strings"
 
 	"github.com/cucumber/godog"
 	"github.com/gruntwork-io/terratest/modules/terraform"
@@ -17,6 +18,7 @@ func RegisterSteps(sc *godog.ScenarioContext) {
 	sc.Step(`^I run Terraform apply$`, newTerraformApplyStep)
 	sc.Step(`^I have a Terraform configuration in "([^"]*)"$`, newTerraformConfigStep)
 	sc.Step(`^I set variable "([^"]*)" to "([^"]*)"$`, newTerraformSetVariableStep)
+	sc.Step(`^the output "([^"]*)" should equal "([^"]*)"$`, newTerraformOutputEqualsStep)
 	sc.Step(`^the output "([^"]*)" should contain "([^"]*)"$`, newTerraformOutputContainsStep)
 }
 
@@ -60,7 +62,7 @@ func newTerraformSetVariableStep(ctx context.Context, name, value string) (conte
 	return context.WithValue(ctx, contexthelpers.TFOptionsCtxKey{}, options), nil
 }
 
-func newTerraformOutputContainsStep(ctx context.Context, outputName, expectedValue string) error {
+func newTerraformOutputEqualsStep(ctx context.Context, outputName, expectedValue string) error {
 	options := contexthelpers.GetTerraformOptions(ctx)
 	actualValue, err := terraform.OutputE(t.GetT(), options, outputName)
 	if err != nil {
@@ -69,6 +71,20 @@ func newTerraformOutputContainsStep(ctx context.Context, outputName, expectedVal
 
 	if actualValue != expectedValue {
 		return fmt.Errorf("expected output %s to be %s, got %s", outputName, expectedValue, actualValue)
+	}
+	return nil
+}
+
+func newTerraformOutputContainsStep(ctx context.Context, outputName, expectedValue string) error {
+	options := contexthelpers.GetTerraformOptions(ctx)
+	actualValue, err := terraform.OutputE(t.GetT(), options, outputName)
+	if err != nil {
+		return fmt.Errorf("failed to get output %s: %w", outputName, err)
+	}
+
+	// check if the expected value is a substring of the actual value
+	if !strings.Contains(actualValue, expectedValue) {
+		return fmt.Errorf("expected output %s to contain %s, got %s", outputName, expectedValue, actualValue)
 	}
 	return nil
 }
