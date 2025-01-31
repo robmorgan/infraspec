@@ -1,10 +1,12 @@
 package config
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"time"
 
+	"github.com/aws/aws-sdk-go-v2/config"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/yaml.v3"
@@ -68,10 +70,19 @@ func DefaultConfig() (*Config, error) {
 		return nil, err
 	}
 
+	// try to detect the default AWS region using the AWS SDK
+	region, err := defaultAwsRegion()
+	if err != nil {
+		region = "us-east-1"
+		logger.Warn("Failed to detect default region, using default value", "error", err)
+	} else {
+		logger.Info("Using AWS region", "region", region)
+	}
+
 	return &Config{
 		Version:       "1.0",
 		Provider:      "aws",
-		DefaultRegion: "us-east-1",
+		DefaultRegion: region,
 		Functions: Functions{
 			RandomString: RandomStringConfig{
 				Length:  6,
@@ -144,4 +155,13 @@ func initLogger() (*zap.SugaredLogger, error) {
 		return nil, err
 	}
 	return logger.Sugar(), nil
+}
+
+// defaultAwsRegion returns the default AWS region using the AWS SDK
+func defaultAwsRegion() (string, error) {
+	cfg, err := config.LoadDefaultConfig(context.TODO())
+	if err != nil {
+		return "", err
+	}
+	return cfg.Region, nil
 }
