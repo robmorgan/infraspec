@@ -15,9 +15,11 @@ import (
 
 // RegisterSteps registers all Terraform-specific step definitions
 func RegisterSteps(sc *godog.ScenarioContext) {
-	sc.Step(`^I run Terraform apply$`, newTerraformApplyStep)
+	sc.Step(`^I run [Tt]erraform apply$`, newTerraformApplyStep)
+	sc.Step(`^the Terraform module at "([^"]*)"$`, newTerraformConfigStep)
 	sc.Step(`^I have a Terraform configuration in "([^"]*)"$`, newTerraformConfigStep)
 	sc.Step(`^I set variable "([^"]*)" to "([^"]*)"$`, newTerraformSetVariableStep)
+	sc.Step(`^the "([^"]*)" output is "([^"]*)"$`, newTerraformOutputEqualsStep)
 	sc.Step(`^the output "([^"]*)" should equal "([^"]*)"$`, newTerraformOutputEqualsStep)
 	sc.Step(`^the output "([^"]*)" should contain "([^"]*)"$`, newTerraformOutputContainsStep)
 }
