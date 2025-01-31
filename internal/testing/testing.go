@@ -16,3 +16,7 @@ type specTestingT struct {
 func (t *specTestingT) Name() string {
 	return "[InfraSpec]"
 }
+
+func (t *specTestingT) Errorf(format string, args ...interface{}) {
+	panic("not implemented")
+}
