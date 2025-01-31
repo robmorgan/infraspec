@@ -6,6 +6,9 @@
     // Logger
     "Infof",
 
+    // InfraSpec
+    "contexthelpers",
+
     // Brightfame
     "InfraSpec",
 

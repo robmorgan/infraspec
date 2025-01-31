@@ -10,7 +10,9 @@
       "request": "launch",
       "mode": "debug",
       "program": "${workspaceFolder}",
-      "env": {},
+      "env": {
+        "AWS_PROFILE": "dev"
+      },
       "args": ["test/features/dynamodb.feature"],
       "console": "integratedTerminal"
     }
