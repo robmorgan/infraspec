@@ -10,10 +10,6 @@ terraform {
 }
 
 module "dynamodb" {
-  # When using these modules in your own templates, you will need to use a Git URL with a ref attribute that pins you
-  # to a specific version of the modules, such as the following example:
-  # source = "s3::https://s3-us-east-1.amazonaws.com/sws-terraform-modules/dynamodb-v1.tar.gz"
-  # source = "../../modules/dynamodb"
   source  = "terraform-aws-modules/dynamodb-table/aws"
   version = "4.2.0"
 
