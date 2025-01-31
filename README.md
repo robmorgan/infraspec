@@ -22,10 +22,6 @@ Feature: S3 Bucket Creation
     And the S3 bucket "my-bucket" should have a public access block
     And the S3 bucket "my-bucket" should have a server access logging configuration
     And the S3 bucket "my-bucket" should have a encryption configuration
-    And the S3 bucket "my-bucket" should have a tags
-            | Key         | Value     |
-            | Environment | test      |
-            | Project     | infratest |
 ```
 
 Under the hood, InfraSpec uses [Gherkin](https://cucumber.io/docs/gherkin/) to parse
