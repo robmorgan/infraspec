@@ -19,7 +19,7 @@ var (
 	secondaryStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#ff69b4"))
 
 	rootCmd = &cobra.Command{
-		Use:   "infraspec [feature file]",
+		Use:   "infraspec [features...]",
 		Short: "InfraSpec tests infrastructure code using Gherkin syntax.",
 		Long:  `InfraSpec is a tool for running infrastructure tests written in pure Gherkin syntax.`,
 		Args:  cobra.ExactArgs(1),

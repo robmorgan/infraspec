@@ -13,8 +13,17 @@ import (
 
 // DynamoDB Step Definitions
 func newDynamoDBTagsStep(ctx context.Context, tableName string, tags *godog.Table) error {
-	// TODO - implement
-	return nil
+	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+	if err != nil {
+		return err
+	}
+
+	dynamoAssert, ok := asserter.(aws.DynamoDBAsserter)
+	if !ok {
+		return fmt.Errorf("asserter does not implement DynamoDBAsserter")
+	}
+
+	return dynamoAssert.AssertTableTags(tableName, tags)
 }
 
 func newDynamoDBBillingModeStep(ctx context.Context, tableName, expectedMode string) error {
