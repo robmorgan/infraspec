@@ -23,9 +23,8 @@ func RegisterSteps(sc *godog.ScenarioContext) {
 }
 
 func newTerraformConfigStep(ctx context.Context, path string) (context.Context, error) {
-	// construct an absolute path to the terraform configuration.
-	// if the path is relative, we need to prepend the base uri of the scenario otherwise, we can just use the path
-	// as is.
+	// construct an absolute path to the terraform configuration. If the path is relative, we need to prepend the base
+	// uri of the scenario otherwise, we can just use the path as is.
 	var (
 		absPath string
 		err     error
@@ -45,15 +44,22 @@ func newTerraformConfigStep(ctx context.Context, path string) (context.Context, 
 	return context.WithValue(ctx, contexthelpers.TFOptionsCtxKey{}, options), nil
 }
 
-func newTerraformApplyStep(ctx context.Context) error {
+func newTerraformApplyStep(ctx context.Context) (context.Context, error) {
 	options := contexthelpers.GetTerraformOptions(ctx)
 	out, err := terraform.InitAndApplyE(t.GetT(), options)
 	if err != nil {
-		return fmt.Errorf("there was an error running terraform apply: %s", out)
+		return ctx, fmt.Errorf("there was an error running terraform apply: %s", out)
 	}
-	//s.hasApplied = true
-	// ctx.Terraform.Applied = true
-	return nil
+	return contexthelpers.SetTerraformHasApplied(ctx, true), nil
+}
+
+func NewTerraformDestroyStep(ctx context.Context) (context.Context, error) {
+	options := contexthelpers.GetTerraformOptions(ctx)
+	out, err := terraform.DestroyE(t.GetT(), options)
+	if err != nil {
+		return ctx, fmt.Errorf("there was an error running terraform destroy: %s", out)
+	}
+	return contexthelpers.SetTerraformHasApplied(ctx, false), nil
 }
 
 func newTerraformSetVariableStep(ctx context.Context, name, value string) (context.Context, error) {

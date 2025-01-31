@@ -16,6 +16,9 @@ type ConfigCtxKey struct{}
 // TFOptionsCtxKey is the key used to store the Terraform options in the context.Context.
 type TFOptionsCtxKey struct{}
 
+// TerraformHasAppliedCtxKey is the key used to store the Terraform has applied flag in the context.Context.
+type TerraformHasAppliedCtxKey struct{}
+
 // AssertionsCtxKey is the key used to store the available assertions in the context.Context.
 type AssertionsCtxKey struct{}
 
@@ -70,6 +73,20 @@ func GetTerraformOptions(ctx context.Context) *terraform.Options {
 		return nil
 	}
 	return opts
+}
+
+// GetTerraformHasApplied returns the Terraform has applied flag from the context.
+func GetTerraformHasApplied(ctx context.Context) bool {
+	hasApplied, exists := ctx.Value(TerraformHasAppliedCtxKey{}).(bool)
+	if !exists {
+		return false
+	}
+	return hasApplied
+}
+
+// SetTerraformHasApplied sets the Terraform has applied flag in the context.
+func SetTerraformHasApplied(ctx context.Context, hasApplied bool) context.Context {
+	return context.WithValue(ctx, TerraformHasAppliedCtxKey{}, hasApplied)
 }
 
 // GetUri returns the URI from the context.

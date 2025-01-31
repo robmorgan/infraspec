@@ -12,6 +12,7 @@ import (
 	"github.com/robmorgan/infraspec/internal/config"
 	"github.com/robmorgan/infraspec/internal/contexthelpers"
 	"github.com/robmorgan/infraspec/pkg/steps"
+	"github.com/robmorgan/infraspec/pkg/steps/terraform"
 )
 
 // Runner handles the execution of feature files
@@ -105,6 +106,12 @@ func (r *Runner) initializeScenario(sc *godog.ScenarioContext) {
 			r.cfg.Logger.Error("Scenario failed", "scenario", sc.Name, "error", err)
 		} else {
 			r.cfg.Logger.Info("Scenario completed successfully", "scenario", sc.Name)
+		}
+
+		// If a Terraform configuration was applied, destroy it
+		if contexthelpers.GetTerraformHasApplied(ctx) {
+			r.cfg.Logger.Info("Terraform has been applied, destroying resources")
+			terraform.NewTerraformDestroyStep(ctx)
 		}
 		return ctx, nil
 	})
