@@ -7,6 +7,27 @@
 
 :warning: This project is still under heavy development and probably won't work!
 
+```gherkin
+Feature: S3 Bucket Creation
+  As a DevOps Engineer
+  I want to create an S3 bucket with guardrails
+  So that I can store my data securely
+
+  Scenario: Create an S3 bucket with a name
+    Given I have a Terraform configuration in "./s3-bucket"
+    And I set variable "bucket_name" to "my-bucket"
+    When I run Terraform apply
+    Then the S3 bucket "my-bucket" should exist
+    And the S3 bucket "my-bucket" should have a versioning configuration
+    And the S3 bucket "my-bucket" should have a public access block
+    And the S3 bucket "my-bucket" should have a server access logging configuration
+    And the S3 bucket "my-bucket" should have a encryption configuration
+    And the S3 bucket "my-bucket" should have a tags
+            | Key         | Value     |
+            | Environment | test      |
+            | Project     | infratest |
+```
+
 Under the hood, InfraSpec uses [Gherkin](https://cucumber.io/docs/gherkin/) to parse
 Go Dog and testing modules from Terratest.
 
