@@ -33,13 +33,7 @@ var (
 				return
 			}
 
-			runner, err := runner.New(cfg)
-			if err != nil {
-				fmt.Printf("Failed to create runner: %v\n", err)
-				return
-			}
-
-			if err := runner.Run(args[0]); err != nil {
+			if err := runner.New(cfg).Run(args[0]); err != nil {
 				log.Fatalf("Test execution failed: %v", err)
 			}
 		},

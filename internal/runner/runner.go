@@ -16,18 +16,13 @@ import (
 
 // Runner handles the execution of feature files
 type Runner struct {
-	//context *context.TestContext
 	cfg *config.Config
 }
 
-func New(cfg *config.Config) (*Runner, error) {
-	// create a new test context
-	//c := context.New(cfg)
-
+func New(cfg *config.Config) *Runner {
 	return &Runner{
-		//	context: c,
 		cfg: cfg,
-	}, nil
+	}
 }
 
 // Run executes the specified feature file
