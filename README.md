@@ -29,15 +29,14 @@ Feature: S3 Bucket Creation
 
 :warning: This project is still under heavy development!
 
-Under the hood, InfraSpec uses [Gherkin](https://cucumber.io/docs/gherkin/) to parse
-Go Dog and testing modules from Terratest.
+Under the hood, InfraSpec executes scenarios using [GoDog](https://github.com/cucumber/godog) and leverages testing
+modules from [Terratest](https://terratest.gruntwork.io/).
 
 ## Features
 
 - Write tests in plain English using Gherkin syntax
 - Supports AWS infrastructure testing
 - Integrates with Terraform configurations
-- Leverages LLMs for test scenario generation
 - Zero code required for writing tests
 
 ## Status
@@ -48,18 +47,13 @@ tooling.
 | **Product** | **Description** |  **Status**  |
 | ------------- | ------------- | ------------- |
 | S3 | Not Implemented  | ⏳ |
-| DynamoDB | Partially Support  | ⏳ |
-
-## Why?
-
-Additionally, LLMs are great at generating scenarios using the Gherkin syntax, so you can write tests in plain English
-and InfraSpec will translate them into code.
+| DynamoDB | Partially Supported  | ⏳ |
 
 ## Why InfraSpec?
 
 - **Natural Language Testing.** Write tests in plain English that both technical and non-technical team members can understand.
 - **LLM Integration.** Leverage AI to generate test scenarios.
-- **Supply Chain Security.** as Code Validation: Ensure your infrastructure meets security and compliance requirements.
+- **Supply Chain Security.** Ensure your infrastructure meets security and compliance requirements.
 - **No Code Required:** Focus on what to test rather than how to test.
 
 ## Installation
