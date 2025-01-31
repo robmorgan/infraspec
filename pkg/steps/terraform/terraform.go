@@ -19,6 +19,7 @@ func RegisterSteps(sc *godog.ScenarioContext) {
 	sc.Step(`^the Terraform module at "([^"]*)"$`, newTerraformConfigStep)
 	sc.Step(`^I have a Terraform configuration in "([^"]*)"$`, newTerraformConfigStep)
 	sc.Step(`^I set variable "([^"]*)" to "([^"]*)"$`, newTerraformSetVariableStep)
+	sc.Step(`^I set variable "([^"]*)" to$`, newTerraformSetMapVariableStep)
 	sc.Step(`^the "([^"]*)" output is "([^"]*)"$`, newTerraformOutputEqualsStep)
 	sc.Step(`^the output "([^"]*)" should equal "([^"]*)"$`, newTerraformOutputEqualsStep)
 	sc.Step(`^the output "([^"]*)" should contain "([^"]*)"$`, newTerraformOutputContainsStep)
@@ -67,6 +68,20 @@ func NewTerraformDestroyStep(ctx context.Context) (context.Context, error) {
 func newTerraformSetVariableStep(ctx context.Context, name, value string) (context.Context, error) {
 	options := contexthelpers.GetTerraformOptions(ctx)
 	options.Vars[name] = value
+	return context.WithValue(ctx, contexthelpers.TFOptionsCtxKey{}, options), nil
+}
+
+func newTerraformSetMapVariableStep(ctx context.Context, name string, table *godog.Table) (context.Context, error) {
+	options := contexthelpers.GetTerraformOptions(ctx)
+
+	// convert the table to a map[string]string
+	varMap := make(map[string]string)
+	for _, row := range table.Rows[1:] { // Skip header row
+		varMap[row.Cells[0].Value] = row.Cells[1].Value
+	}
+
+	options.Vars[name] = varMap
+
 	return context.WithValue(ctx, contexthelpers.TFOptionsCtxKey{}, options), nil
 }
 
