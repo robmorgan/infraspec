@@ -3,6 +3,7 @@ package assertions
 import (
 	"fmt"
 
+	"github.com/gruntwork-io/terratest/modules/testing"
 	"github.com/robmorgan/infraspec/pkg/assertions/aws"
 )
 
@@ -15,8 +16,8 @@ const (
 // Provider-specific assertions must be implemented by concrete types
 type Asserter interface {
 	// Common assertions
-	AssertExists(resourceType, resourceName string) error
-	AssertTags(resourceType, resourceName string, tags map[string]string) error
+	AssertExists(t testing.TestingT, resourceType, resourceName string) error
+	AssertTags(t testing.TestingT, resourceType, resourceName string, tags map[string]string) error
 }
 
 // Factory function to create new asserters

@@ -6,6 +6,7 @@ import (
 	"github.com/cucumber/godog"
 
 	"github.com/robmorgan/infraspec/internal/contexthelpers"
+	t "github.com/robmorgan/infraspec/internal/testing"
 	"github.com/robmorgan/infraspec/pkg/assertions"
 )
 
@@ -50,5 +51,5 @@ func newAWSTagsStep(ctx context.Context, table *godog.Table) error {
 	// TODO - you'll need to get the resource ID from the context
 	resourceID := ""
 
-	return asserter.AssertTags("", resourceID, tags)
+	return asserter.AssertTags(t.GetT(), "", resourceID, tags)
 }
