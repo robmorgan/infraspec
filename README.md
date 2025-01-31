@@ -1,8 +1,6 @@
-# InfraSpec
-
 <div align="center">
 <h1 align="center">
-<img src="_docs/infraspec_logo.png" width="600" />
+<img src="_docs/infraspec_logo.jpg" width="200" />
 </h1>
 <h3>Write infrastructure tests in plain English, without writing a single line of code.</h3>
 </div>
