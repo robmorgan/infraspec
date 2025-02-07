@@ -46,8 +46,12 @@ tooling.
 
 | **Product** | **Description** |  **Status**  |
 | ------------- | ------------- | ------------- |
-| S3 | Not Implemented  | ⏳ |
+| API Gateway | Not Implemented  | ⏳ |
 | DynamoDB | Partially Supported  | ⏳ |
+| ElastiCache | Not Implemented | ⏳ |
+| RDS Aurora | Not Implemented  | ⏳ |
+| S3 | Not Implemented  | ⏳ |
+
 
 ## Why InfraSpec?
 
