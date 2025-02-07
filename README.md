@@ -46,7 +46,7 @@ tooling.
 
 | **Product** | **Description** |  **Status**  |
 | ------------- | ------------- | ------------- |
-| API Gateway | Not Implemented  | ⏳ |
+| API Gateway | Not Implemented  | ✅ |
 | DynamoDB | Partially Supported  | ⏳ |
 | ElastiCache | Not Implemented | ⏳ |
 | RDS Aurora | Not Implemented  | ⏳ |
