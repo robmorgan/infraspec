@@ -17,8 +17,6 @@ func RegisterSteps(sc *godog.ScenarioContext) {
 	sc.Step(`^the DynamoDB table "([^"]*)" should have billing mode "([^"]*)"$`, newDynamoDBBillingModeStep)
 	sc.Step(`^the DynamoDB table "([^"]*)" should have read capacity (\d+)$`, newDynamoDBReadCapacityStep)
 	sc.Step(`^the DynamoDB table "([^"]*)" should have write capacity (\d+)$`, newDynamoDBWriteCapacityStep)
-	//sc.Step(`^the DynamoDB table "([^"]*)" should have GSI "([^"]*)" with key "([^"]*)"$`, newDynamoDBGSIStep(ctx))
-	//sc.Step(`^the DynamoDB table "([^"]*)" should have point in time recovery enabled$`, newDynamoDBPITRStep(ctx))
 
 	// S3 steps
 	// sc.Step(`^the S3 bucket "([^"]*)" should exist$`, newS3BucketExistsStep(ctx))

@@ -76,17 +76,3 @@ func newDynamoDBWriteCapacityStep(ctx context.Context, tableName string, capacit
 	// We only check write capacity here
 	return dynamoAssert.AssertCapacity(t.GetT(), tableName, -1, capacity)
 }
-
-func newDynamoDBGSIStep(ctx context.Context, tableName, indexName, keyAttribute string) error {
-	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
-	if err != nil {
-		return err
-	}
-
-	dynamoAssert, ok := asserter.(aws.DynamoDBAsserter)
-	if !ok {
-		return fmt.Errorf("asserter does not implement DynamoDBAsserter")
-	}
-
-	return dynamoAssert.AssertGSI(t.GetT(), tableName, indexName, keyAttribute)
-}
