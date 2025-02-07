@@ -7,15 +7,6 @@ import (
 	"github.com/robmorgan/infraspec/pkg/steps/terraform"
 )
 
-// StepDefinition represents a single step implementation
-// type StepDefinition interface {
-// 	// Pattern returns the Gherkin pattern this step matches
-// 	Pattern() string
-
-// 	// Execute runs the step implementation
-// 	Execute(ctx *context.TestContext, args ...string) error
-// }
-
 // RegisterSteps registers all step definitions with Godog
 func RegisterSteps(sc *godog.ScenarioContext) {
 	// Register common steps
