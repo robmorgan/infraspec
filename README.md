@@ -27,7 +27,8 @@ Feature: S3 Bucket Creation
     And the S3 bucket "my-bucket" should have a encryption configuration
 ```
 
-:warning: This project is still under heavy development!
+> [!WARNING]
+> This project is still in heavy development!
 
 Under the hood, InfraSpec executes scenarios using [GoDog](https://github.com/cucumber/godog) and leverages testing
 modules from [Terratest](https://terratest.gruntwork.io/).
