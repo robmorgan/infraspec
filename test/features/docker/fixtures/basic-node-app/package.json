@@ -1,0 +1,12 @@
+{
+    "name": "basic-node-app",
+    "type": "module",
+    "version": "1.0.0",
+    "description": "Basic app for InfraSpec testing",
+    "main": "index.js",
+    "dependencies": {
+      "@hono/node-server": "^1.13.8",
+      "hono": "^4.7.1"
+    }
+  }
+  
