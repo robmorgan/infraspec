@@ -1,6 +1,6 @@
 <h1>
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/ac51989f-d853-4e02-89fe-24b2185acdf7" alt="InfraSpec Logo" width="128">
+  <img src="https://github.com/user-attachments/assets/6e7acd03-1f4c-456b-8bca-bc5c03984d41" alt="InfraSpec Logo" width="128">
   <br>InfraSpec
 </h1>
   <p align="center">
