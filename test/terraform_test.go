@@ -11,8 +11,8 @@ import (
 
 func TestHelloWorldFeature(t *testing.T) {
 	cfg := GetTestConfig(t)
-	featureDir := filepath.Join("features", "terraform", "helloworld.feature")
+	featurePath := filepath.Join("features", "terraform", "helloworld.feature")
 
-	err := runner.New(cfg).Run(featureDir)
+	err := runner.New(cfg).Run(featurePath)
 	require.NoError(t, err)
 }
