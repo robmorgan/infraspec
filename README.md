@@ -1,11 +1,14 @@
-<div align="center">
-<h1 align="center">
-<img src="_docs/infraspec_logo.jpg" width="200" />
+<h1>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/ac51989f-d853-4e02-89fe-24b2185acdf7" alt="InfraSpec Logo" width="128">
+  <br>InfraSpec
 </h1>
-<h3>Write infrastructure tests in plain English, without writing a single line of code.</h3>
-</div>
+  <p align="center">
+    <strong>Write infrastructure tests in plain English, without writing a single line of code.</strong>
+  </p>
+</p>
 
-# InfraSpec
+## About
 
 Write infrastructure tests in plain English using [Gherkin](https://cucumber.io/docs/gherkin/) syntax, without writing
 code. InfraSpec translates your natural language specifications into executable infrastructure tests.
@@ -45,14 +48,13 @@ modules from [Terratest](https://terratest.gruntwork.io/).
 At the moment, only a subset of AWS infrastructure is supported, but over time we hope to support other clouds and
 tooling.
 
-| **Product** | **Description** |  **Status**  |
-| ------------- | ------------- | ------------- |
-| API Gateway | Not Implemented  | ⏳ |
-| DynamoDB | Partially Supported  | ✅ |
-| ElastiCache | Not Implemented | ⏳ |
-| RDS Aurora | Not Implemented  | ⏳ |
-| S3 | Not Implemented  | ⏳ |
-
+| **Product**   | **Description**     | **Status**   |
+| ------------- | ------------------- | ------------ |
+| API Gateway   | Not Implemented     |      ⏳     |
+| DynamoDB      | Partially Supported |      ✅     |
+| ElastiCache   | Not Implemented     |      ⏳     |
+| RDS Aurora    | Not Implemented     |      ⏳     |
+| S3            | Not Implemented     |      ⏳     |
 
 ## Why InfraSpec?
 
