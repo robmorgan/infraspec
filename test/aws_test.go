@@ -12,11 +12,8 @@ import (
 func TestDynamoDBFeature(t *testing.T) {
 	cfg := GetTestConfig(t)
 	featurePath := filepath.Join("features", "aws", "dynamodb.feature")
-	fixtureDir := filepath.Join(filepath.Dir(featurePath), "fixtures", "dynamodb-with-autoscaling")
+	configureEnvForTests()
 
-	err := writeLocalStackProviderConfig(fixtureDir)
-	require.NoError(t, err)
-
-	err = runner.New(cfg).Run(featurePath)
+	err := runner.New(cfg).Run(featurePath)
 	require.NoError(t, err)
 }
