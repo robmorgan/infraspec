@@ -33,6 +33,11 @@ var (
 				return
 			}
 
+			if verbose {
+				cfg.Verbose = true
+				cfg.Logger.Debug("Verbose mode enabled")
+			}
+
 			if err := runner.New(cfg).Run(args[0]); err != nil {
 				log.Fatalf("Test execution failed: %v", err)
 			}

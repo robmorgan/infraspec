@@ -35,11 +35,7 @@ func (r *Runner) Run(featurePath string) error {
 		return fmt.Errorf("feature file not found: %s", featurePath)
 	}
 
-	r.cfg.Logger.Info("Starting test execution",
-		zap.String("feature", featurePath),
-		zap.String("provider", r.cfg.Provider),
-		zap.String("region", r.cfg.DefaultRegion),
-	)
+	r.cfg.Logger.Infof("Starting test execution using: %s", featurePath)
 
 	suite := &godog.TestSuite{
 		ScenarioInitializer: r.initializeScenario,
@@ -55,10 +51,7 @@ func (r *Runner) Run(featurePath string) error {
 	duration := time.Since(start)
 
 	// Log test execution summary
-	r.cfg.Logger.Info("Test execution completed",
-		zap.Duration("duration", duration),
-		zap.Int("status", status),
-	)
+	r.cfg.Logger.Debugf("\nTest execution completed in %s with status: %d", duration, status)
 
 	if err := r.cleanup(); err != nil {
 		r.cfg.Logger.Error("Cleanup failed", zap.Error(err))
@@ -105,12 +98,12 @@ func (r *Runner) initializeScenario(sc *godog.ScenarioContext) {
 		if err != nil {
 			r.cfg.Logger.Error("Scenario failed", "scenario", sc.Name, "error", err)
 		} else {
-			r.cfg.Logger.Info("Scenario completed successfully", "scenario", sc.Name)
+			r.cfg.Logger.Debugf("Scenario completed successfully: %s", sc.Name)
 		}
 
 		// If a Terraform configuration was applied, destroy it
 		if contexthelpers.GetTerraformHasApplied(ctx) {
-			r.cfg.Logger.Info("Terraform has been applied, destroying resources")
+			r.cfg.Logger.Debug("Terraform has been applied, destroying resources")
 			terraform.NewTerraformDestroyStep(ctx)
 		}
 		return ctx, nil
@@ -121,7 +114,7 @@ func (r *Runner) initializeScenario(sc *godog.ScenarioContext) {
 // TODO - this might be necessary if we've invoked tools like Terraform or need to cleanup resources
 func (r *Runner) cleanup() error {
 	if !r.cfg.Cleanup.Automatic {
-		r.cfg.Logger.Info("Automatic cleanup disabled, skipping...")
+		r.cfg.Logger.Debug("Automatic cleanup disabled, skipping...")
 		return nil
 	}
 
@@ -145,6 +138,6 @@ func (r *Runner) cleanup() error {
 	// 	return fmt.Errorf("cleanup timed out after %d seconds", r.cfg.Cleanup.Timeout)
 	// }
 
-	r.cfg.Logger.Info("Cleanup completed successfully")
+	r.cfg.Logger.Debug("Cleanup completed successfully")
 	return nil
 }

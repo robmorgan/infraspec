@@ -11,6 +11,7 @@ import (
 
 	"github.com/robmorgan/infraspec/internal/contexthelpers"
 	t "github.com/robmorgan/infraspec/internal/testing"
+	"github.com/robmorgan/infraspec/pkg/terratest/logger"
 )
 
 // RegisterSteps registers all Terraform-specific step definitions
@@ -42,6 +43,7 @@ func newTerraformConfigStep(ctx context.Context, path string) (context.Context, 
 
 	options := terraform.WithDefaultRetryableErrors(t.GetT(), &terraform.Options{
 		TerraformDir: absPath,
+		Logger:       logger.New(),
 		Vars:         make(map[string]interface{}),
 	})
 	return context.WithValue(ctx, contexthelpers.TFOptionsCtxKey{}, options), nil
