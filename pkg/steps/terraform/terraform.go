@@ -89,7 +89,7 @@ func newTerraformOutputEqualsStep(ctx context.Context, outputName, expectedValue
 	options := contexthelpers.GetTerraformOptions(ctx)
 	actualValue, err := terraform.OutputE(t.GetT(), options, outputName)
 	if err != nil {
-		return fmt.Errorf("failed to get output %s: %w", outputName, err)
+		return fmt.Errorf("failed to get output %s, got %s: %w", outputName, actualValue, err)
 	}
 
 	if actualValue != expectedValue {
@@ -102,7 +102,7 @@ func newTerraformOutputContainsStep(ctx context.Context, outputName, expectedVal
 	options := contexthelpers.GetTerraformOptions(ctx)
 	actualValue, err := terraform.OutputE(t.GetT(), options, outputName)
 	if err != nil {
-		return fmt.Errorf("failed to get output %s: %w", outputName, err)
+		return fmt.Errorf("failed to get output %s, got %s: %w", outputName, actualValue, err)
 	}
 
 	// check if the expected value is a substring of the actual value

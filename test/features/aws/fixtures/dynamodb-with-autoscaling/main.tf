@@ -26,19 +26,20 @@ module "dynamodb" {
     }
   ]
 
-  autoscaling_enabled = true
-  autoscaling_read = {
-    scale_in_cooldown  = 50
-    scale_out_cooldown = 40
-    target_value       = 45
-    max_capacity       = 10
-  }
-  autoscaling_write = {
-    scale_in_cooldown  = 50
-    scale_out_cooldown = 40
-    target_value       = 45
-    max_capacity       = 10
-  }
+  # We disable autoscaling as we are not using the pro version of LocalStack.
+  autoscaling_enabled = false
+  # autoscaling_read = {
+  #   scale_in_cooldown  = 50
+  #   scale_out_cooldown = 40
+  #   target_value       = 45
+  #   max_capacity       = 10
+  # }
+  # autoscaling_write = {
+  #   scale_in_cooldown  = 50
+  #   scale_out_cooldown = 40
+  #   target_value       = 45
+  #   max_capacity       = 10
+  # }
 
   tags = var.tags
 }

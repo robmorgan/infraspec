@@ -4,7 +4,7 @@ Feature: DynamoDB Table Creation
     So that I can ensure it meets our application requirements
 
     Scenario: Create DynamoDB table with basic configuration
-        Given I have a Terraform configuration in "./fixtures/terraform/dynamodb-with-autoscaling"
+        Given I have a Terraform configuration in "./fixtures/dynamodb-with-autoscaling"
         And I set variable "name" to "test-xyzg23"
         And I set variable "hash_key" to "id"
         And I set variable "billing_mode" to "PROVISIONED"
