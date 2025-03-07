@@ -10,7 +10,12 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/yaml.v3"
+
+	"github.com/robmorgan/infraspec/pkg/terratest/logger"
 )
+
+// initialize our custom Terratest logger early on so that we can use it in our Terraform steps.
+var _ = logger.Default
 
 // Config represents the main configuration structure
 type Config struct {
@@ -23,7 +28,8 @@ type Config struct {
 	Retries         RetryConfig      `yaml:"retries"`
 	//AWS             AWSConfig         `yaml:"aws"`
 	//Logging         LoggingConfig     `yaml:"logging"`
-	Logger *zap.SugaredLogger
+	Logger  *zap.SugaredLogger
+	Verbose bool
 }
 
 // StepDefinition defines a mapping between Gherkin steps and actions
@@ -74,9 +80,9 @@ func DefaultConfig() (*Config, error) {
 	region, err := defaultAwsRegion()
 	if err != nil {
 		region = "us-east-1"
-		logger.Warn("Failed to detect default region, using default value", "error", err)
+		logger.Warnf("Failed to detect default region, using default value: %s", err)
 	} else {
-		logger.Info("Using AWS region", "region", region)
+		logger.Debugf("Using AWS region: %s", region)
 	}
 
 	return &Config{
@@ -127,30 +133,20 @@ func (c *Config) Validate() error {
 
 // initLogger creates a logger with custom encoding config
 func initLogger() (*zap.SugaredLogger, error) {
-	encoderConfig := zapcore.EncoderConfig{
-		TimeKey:        "ts",
-		LevelKey:       "level",
-		NameKey:        "logger",
-		CallerKey:      "caller",
-		MessageKey:     "msg",
-		StacktraceKey:  "stacktrace",
-		LineEnding:     zapcore.DefaultLineEnding,
-		EncodeLevel:    zapcore.CapitalColorLevelEncoder,
-		EncodeTime:     zapcore.ISO8601TimeEncoder,
-		EncodeDuration: zapcore.StringDurationEncoder,
-		EncodeCaller:   zapcore.ShortCallerEncoder,
+	cfg := zap.NewProductionConfig()
+	cfg.Encoding = "console"
+	cfg.EncoderConfig.EncodeLevel = nil
+	cfg.EncoderConfig.EncodeDuration = nil
+	cfg.EncoderConfig.TimeKey = ""
+
+	cfg.DisableStacktrace = true
+	cfg.EncoderConfig.EncodeCaller = nil
+	if os.Getenv("INFRASPEC_DEBUG") != "" {
+		cfg.DisableStacktrace = false
+		cfg.EncoderConfig.EncodeCaller = zapcore.ShortCallerEncoder
 	}
 
-	config := zap.Config{
-		Level:            zap.NewAtomicLevelAt(zap.InfoLevel),
-		Development:      true,
-		Encoding:         "console",
-		EncoderConfig:    encoderConfig,
-		OutputPaths:      []string{"stdout"},
-		ErrorOutputPaths: []string{"stderr"},
-	}
-
-	logger, err := config.Build()
+	logger, err := cfg.Build()
 	if err != nil {
 		return nil, err
 	}
