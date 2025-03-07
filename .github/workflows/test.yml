@@ -13,7 +13,7 @@ jobs:
       localstack:
         image: localstack/localstack:latest
         env:
-          SERVICES: dynamodb,s3
+          SERVICES: sts,s3,dynamodb,apigateway,elasticache,rds
           DEFAULT_REGION: us-east-1
           AWS_DEFAULT_REGION: us-east-1
           EDGE_PORT: 4566
