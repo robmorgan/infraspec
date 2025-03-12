@@ -31,7 +31,7 @@ Feature: S3 Bucket Creation
 ```
 
 > [!WARNING]
-> This project is still in heavy development!
+> This project is still in heavy development and is likely to change!
 
 Under the hood, InfraSpec executes scenarios using [GoDog](https://github.com/cucumber/godog) and leverages testing
 modules from [Terratest](https://terratest.gruntwork.io/).
