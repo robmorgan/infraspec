@@ -9,7 +9,8 @@ import (
 	"github.com/gruntwork-io/terratest/modules/testing"
 )
 
-var _ DynamoDBAsserter = &AWSAsserter{}
+// Ensure the `AWSAsserter` struct implements the `DynamoDBAsserter` interface.
+var _ DynamoDBAsserter = (*AWSAsserter)(nil)
 
 // DynamoDBAsserter defines DynamoDB-specific assertions
 type DynamoDBAsserter interface {

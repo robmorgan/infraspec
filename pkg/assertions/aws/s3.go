@@ -2,7 +2,8 @@ package aws
 
 import "github.com/gruntwork-io/terratest/modules/testing"
 
-var _ S3Asserter = &AWSAsserter{}
+// Ensure the `AWSAsserter` struct implements the `S3Asserter` interface.
+var _ S3Asserter = (*AWSAsserter)(nil)
 
 // S3Asserter defines S3-specific assertions
 type S3Asserter interface {
