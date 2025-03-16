@@ -74,6 +74,11 @@ go install github.com/robmorgan/infraspec@latest
 If your using VS Code, we recommend installing the [Cucumber (Gherkin) Full Support](https://marketplace.visualstudio.com/items?itemName=alexkrechik.cucumberautocomplete)
 extension for syntax highlighting.
 
+## Tests
+
+Note: Our tests use [LocalStack](https://github.com/localstack/localstack), which emulates the AWS APIs, in order to
+save both time and money.
+
 ## Contributions
 
 Contributions are welcome! Please open an issue or submit a pull request. Please note, that this project is still in
