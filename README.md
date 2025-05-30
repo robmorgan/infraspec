@@ -4,14 +4,15 @@
   <br>InfraSpec
 </h1>
   <p align="center">
-    <strong>Write infrastructure tests in plain English, without writing a single line of code.</strong>
+    <strong>✅ Test your cloud infrastructure in plain English, no code required.</strong>
   </p>
 </p>
 
 ## About
 
-Write infrastructure tests in plain English using [Gherkin](https://cucumber.io/docs/gherkin/) syntax, without writing
-code. InfraSpec translates your natural language specifications into executable infrastructure tests.
+Write infrastructure tests for Terraform, Docker, and Kubernetes in plain English, without writing a single line of code. InfraSpec combines a vast library of common infrastructure testing patterns with a domain-specific language for testing infrastructure.
+
+Tests are written using an easy to learn [Gherkin](https://cucumber.io/docs/gherkin/) syntax.
 
 ```gherkin
 Feature: S3 Bucket Creation
@@ -30,11 +31,11 @@ Feature: S3 Bucket Creation
     And the S3 bucket "my-bucket" should have a encryption configuration
 ```
 
+
+InfraSpec translates your natural language specifications into executable infrastructure tests.
+
 > [!WARNING]
 > This project is still in heavy development and is likely to change!
-
-Under the hood, InfraSpec executes scenarios using [GoDog](https://github.com/cucumber/godog) and leverages testing
-modules from [Terratest](https://terratest.gruntwork.io/).
 
 ## Features
 
@@ -69,17 +70,45 @@ tooling.
 go install github.com/robmorgan/infraspec@latest
 ```
 
-## Getting Started
+## Quick Start
 
-If your using VS Code, we recommend installing the [Cucumber (Gherkin) Full Support](https://marketplace.visualstudio.com/items?itemName=alexkrechik.cucumberautocomplete)
+1. Install InfraSpec using Homebrew:
+
+```sh
+brew tap robmorgan/infraspec
+brew install infraspec
+```
+
+2. Initialize a repo containing your infrastructure code:
+
+```sh
+infraspec init # creates a ./features directory if it doesn't already exist
+```
+
+3. Create your first infrastructure test:
+
+```sh
+infraspec new dynamodb.feature
+```
+
+4. Run the tests
+
+```sh
+infraspec test features/dynamodb.feature
+```
+
+> [!TIP]
+> If your using VS Code, we recommend installing the [Cucumber (Gherkin) Full Support](https://marketplace.visualstudio.com/items?itemName=alexkrechik.cucumberautocomplete)
 extension for syntax highlighting.
-
-## Tests
-
-Note: Our tests use [LocalStack](https://github.com/localstack/localstack), which emulates the AWS APIs, in order to
-save both time and money.
 
 ## Contributions
 
 Contributions are welcome! Please open an issue or submit a pull request. Please note, that this project is still in
 it's infancy and many internal APIs are likely to change.
+
+**Note:** Our tests use [LocalStack](https://github.com/localstack/localstack), which emulates the AWS APIs, in order to
+save both time and money.
+
+## License
+
+[Fair Core License, Version 1.0, ALv2 Future License](https://github.com/robmorgan/infraspec/blob/main/LICENSE.md)
