@@ -1,6 +1,6 @@
 module github.com/robmorgan/infraspec
 
-go 1.23.4
+go 1.24.3
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
@@ -47,6 +47,7 @@ require (
 	github.com/boombuler/barcode v1.0.1-0.20190219062509-6c824513bacc // indirect
 	github.com/charmbracelet/lipgloss v1.0.0 // indirect
 	github.com/charmbracelet/x/ansi v0.4.2 // indirect
+	github.com/cli/safeexec v1.0.1 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.5 // indirect
 	github.com/cucumber/gherkin/go/v26 v26.2.0 // indirect
 	github.com/cucumber/godog v0.15.0 // indirect
