@@ -1,12 +1,13 @@
 package aws
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/rds"
 	"github.com/aws/aws-sdk-go-v2/service/rds/types"
-	awsgo "github.com/aws/aws-sdk-go/aws"
 	"github.com/gruntwork-io/terratest/modules/testing"
 )
 
@@ -26,20 +27,17 @@ type RDSAsserter interface {
 
 // AssertDBInstanceExists checks if a DB instance exists
 func (a *AWSAsserter) AssertDBInstanceExists(t testing.TestingT, dbInstanceID string) error {
-	// Create a new AWS RDS client
-	config, err := awsgo.NewConfig(&aws.Config{Region: aws.String(a.region)})
+	client, err := a.createRDSClient()
 	if err != nil {
 		return err
 	}
 
-	client := rds.New(config)
-
 	// Describe the DB instance
 	input := &rds.DescribeDBInstancesInput{
-		DBInstanceIdentifier: awsgo.String(dbInstanceID),
+		DBInstanceIdentifier: aws.String(dbInstanceID),
 	}
 
-	result, err := client.DescribeDBInstances(input)
+	result, err := client.DescribeDBInstances(context.TODO(), input)
 	if err != nil {
 		return fmt.Errorf("error describing DB instance %s: %v", dbInstanceID, err)
 	}
@@ -124,13 +122,10 @@ func (a *AWSAsserter) AssertDBInstanceEncryption(t testing.TestingT, dbInstanceI
 
 // AssertDBInstanceTags checks if a DB instance has the expected tags
 func (a *AWSAsserter) AssertDBInstanceTags(t testing.TestingT, dbInstanceID string, expectedTags map[string]string) error {
-	// Create a new AWS RDS client
-	config, err := awsgo.NewConfig(&aws.Config{Region: aws.String(a.region)})
+	client, err := a.createRDSClient()
 	if err != nil {
 		return err
 	}
-
-	client := rds.New(config)
 
 	// First, get the DB instance ARN
 	instance, err := a.getDBInstance(dbInstanceID)
@@ -143,7 +138,7 @@ func (a *AWSAsserter) AssertDBInstanceTags(t testing.TestingT, dbInstanceID stri
 		ResourceName: instance.DBInstanceArn,
 	}
 
-	result, err := client.ListTagsForResource(input)
+	result, err := client.ListTagsForResource(context.TODO(), input)
 	if err != nil {
 		return fmt.Errorf("error listing tags for DB instance %s: %v", dbInstanceID, err)
 	}
@@ -170,20 +165,17 @@ func (a *AWSAsserter) AssertDBInstanceTags(t testing.TestingT, dbInstanceID stri
 
 // Helper method to get a DB instance
 func (a *AWSAsserter) getDBInstance(dbInstanceID string) (*types.DBInstance, error) {
-	// Create a new AWS RDS client
-	config, err := awsgo.NewConfig(&aws.Config{Region: aws.String(a.region)})
+	client, err := a.createRDSClient()
 	if err != nil {
 		return nil, err
 	}
 
-	client := rds.New(config)
-
 	// Describe the DB instance
 	input := &rds.DescribeDBInstancesInput{
-		DBInstanceIdentifier: awsgo.String(dbInstanceID),
+		DBInstanceIdentifier: aws.String(dbInstanceID),
 	}
 
-	result, err := client.DescribeDBInstances(input)
+	result, err := client.DescribeDBInstances(context.TODO(), input)
 	if err != nil {
 		return nil, fmt.Errorf("error describing DB instance %s: %v", dbInstanceID, err)
 	}
@@ -194,4 +186,14 @@ func (a *AWSAsserter) getDBInstance(dbInstanceID string) (*types.DBInstance, err
 	}
 
 	return &result.DBInstances[0], nil
+}
+
+// Helper method to create an RDS client
+func (a *AWSAsserter) createRDSClient() (*rds.Client, error) {
+	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(a.region))
+	if err != nil {
+		return nil, fmt.Errorf("failed to load AWS config: %v", err)
+	}
+
+	return rds.NewFromConfig(cfg), nil
 }

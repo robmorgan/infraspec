@@ -27,7 +27,7 @@ func RegisterSteps(sc *godog.ScenarioContext) {
 	sc.Step(`^the RDS instance "([^"]*)" should exist$`, newRDSInstanceExistsStep)
 	sc.Step(`^the RDS instance "([^"]*)" should have instance class "([^"]*)"$`, newRDSInstanceClassStep)
 	sc.Step(`^the RDS instance "([^"]*)" should have engine "([^"]*)"$`, newRDSInstanceEngineStep)
-	sc.Step(`^the RDS instance "([^"]*)" should have allocated storage (\d+)$`, newRDSInstanceStorageStep)
+	sc.Step(`^the RDS instance "([^"]*)" should have allocated storage (\d+)$`, newRDSInstanceStorageStepWrapper)
 	sc.Step(`^the RDS instance "([^"]*)" should have MultiAZ "(true|false)"$`, newRDSInstanceMultiAZStep)
 	sc.Step(`^the RDS instance "([^"]*)" should have encryption "(true|false)"$`, newRDSInstanceEncryptionStep)
 	sc.Step(`^the RDS instance "([^"]*)" should have tags$`, newRDSInstanceTagsStep)

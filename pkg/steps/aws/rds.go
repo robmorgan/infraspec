@@ -70,6 +70,15 @@ func newRDSInstanceStorageStep(ctx context.Context, dbInstanceID string, allocat
 	return rdsAssert.AssertDBInstanceStorage(t.GetT(), dbInstanceID, allocatedStorage)
 }
 
+func newRDSInstanceStorageStepWrapper(ctx context.Context, dbInstanceID string, allocatedStorageStr string) error {
+	allocatedStorage, err := strconv.ParseInt(allocatedStorageStr, 10, 32)
+	if err != nil {
+		return fmt.Errorf("invalid allocated storage value: %s", allocatedStorageStr)
+	}
+
+	return newRDSInstanceStorageStep(ctx, dbInstanceID, int32(allocatedStorage))
+}
+
 func newRDSInstanceMultiAZStep(ctx context.Context, dbInstanceID string, multiAZStr string) error {
 	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
 	if err != nil {
