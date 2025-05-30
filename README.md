@@ -94,7 +94,7 @@ infraspec new dynamodb.feature
 4. Run the tests
 
 ```sh
-infraspec test features/dynamodb.feature
+infraspec features/dynamodb.feature
 ```
 
 > [!TIP]
