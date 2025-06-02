@@ -8,7 +8,6 @@ import (
 	"github.com/cucumber/godog"
 
 	"github.com/robmorgan/infraspec/internal/contexthelpers"
-	t "github.com/robmorgan/infraspec/internal/testing"
 	"github.com/robmorgan/infraspec/pkg/assertions"
 	"github.com/robmorgan/infraspec/pkg/assertions/aws"
 )
@@ -25,7 +24,7 @@ func newRDSInstanceExistsStep(ctx context.Context, dbInstanceID string) error {
 		return fmt.Errorf("asserter does not implement RDSAsserter")
 	}
 
-	return rdsAssert.AssertDBInstanceExists(t.GetT(), dbInstanceID)
+	return rdsAssert.AssertDBInstanceExists(dbInstanceID)
 }
 
 func newRDSInstanceClassStep(ctx context.Context, dbInstanceID, instanceClass string) error {
@@ -39,7 +38,7 @@ func newRDSInstanceClassStep(ctx context.Context, dbInstanceID, instanceClass st
 		return fmt.Errorf("asserter does not implement RDSAsserter")
 	}
 
-	return rdsAssert.AssertDBInstanceClass(t.GetT(), dbInstanceID, instanceClass)
+	return rdsAssert.AssertDBInstanceClass(dbInstanceID, instanceClass)
 }
 
 func newRDSInstanceEngineStep(ctx context.Context, dbInstanceID, engine string) error {
@@ -53,7 +52,7 @@ func newRDSInstanceEngineStep(ctx context.Context, dbInstanceID, engine string) 
 		return fmt.Errorf("asserter does not implement RDSAsserter")
 	}
 
-	return rdsAssert.AssertDBInstanceEngine(t.GetT(), dbInstanceID, engine)
+	return rdsAssert.AssertDBInstanceEngine(dbInstanceID, engine)
 }
 
 func newRDSInstanceStorageStep(ctx context.Context, dbInstanceID string, allocatedStorage int32) error {
@@ -67,7 +66,7 @@ func newRDSInstanceStorageStep(ctx context.Context, dbInstanceID string, allocat
 		return fmt.Errorf("asserter does not implement RDSAsserter")
 	}
 
-	return rdsAssert.AssertDBInstanceStorage(t.GetT(), dbInstanceID, allocatedStorage)
+	return rdsAssert.AssertDBInstanceStorage(dbInstanceID, allocatedStorage)
 }
 
 func newRDSInstanceStorageStepWrapper(ctx context.Context, dbInstanceID string, allocatedStorageStr string) error {
@@ -95,7 +94,7 @@ func newRDSInstanceMultiAZStep(ctx context.Context, dbInstanceID string, multiAZ
 		return fmt.Errorf("invalid MultiAZ value: %s", multiAZStr)
 	}
 
-	return rdsAssert.AssertDBInstanceMultiAZ(t.GetT(), dbInstanceID, multiAZ)
+	return rdsAssert.AssertDBInstanceMultiAZ(dbInstanceID, multiAZ)
 }
 
 func newRDSInstanceEncryptionStep(ctx context.Context, dbInstanceID string, encryptedStr string) error {
@@ -114,7 +113,7 @@ func newRDSInstanceEncryptionStep(ctx context.Context, dbInstanceID string, encr
 		return fmt.Errorf("invalid encryption value: %s", encryptedStr)
 	}
 
-	return rdsAssert.AssertDBInstanceEncryption(t.GetT(), dbInstanceID, encrypted)
+	return rdsAssert.AssertDBInstanceEncryption(dbInstanceID, encrypted)
 }
 
 func newRDSInstanceTagsStep(ctx context.Context, dbInstanceID string, table *godog.Table) error {
@@ -134,5 +133,5 @@ func newRDSInstanceTagsStep(ctx context.Context, dbInstanceID string, table *god
 		tags[row.Cells[0].Value] = row.Cells[1].Value
 	}
 
-	return rdsAssert.AssertDBInstanceTags(t.GetT(), dbInstanceID, tags)
+	return rdsAssert.AssertDBInstanceTags(dbInstanceID, tags)
 }
