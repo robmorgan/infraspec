@@ -1,3 +1,14 @@
+terraform {
+  required_version = ">= 1.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.72.1"
+    }
+  }
+}
+
 provider "aws" {
   region = "us-west-2"
 }
@@ -26,7 +37,7 @@ variable "instance_class" {
 }
 
 variable "allocated_storage" {
-  description = "The amount of allocated storage in gibibytes"
+  description = "The amount of allocated storage in gigabytes"
   type        = number
   default     = 20
 }
@@ -50,18 +61,18 @@ variable "tags" {
 }
 
 resource "aws_db_instance" "default" {
-  identifier           = var.name
-  engine               = var.engine
-  engine_version       = var.engine_version
-  instance_class       = var.instance_class
-  allocated_storage    = var.allocated_storage
-  multi_az             = var.multi_az
-  storage_encrypted    = var.storage_encrypted
-  username             = "dbadmin"
-  password             = "Password123!"
-  skip_final_snapshot  = true
-  publicly_accessible  = false
-  
+  identifier          = var.name
+  engine              = var.engine
+  engine_version      = var.engine_version
+  instance_class      = var.instance_class
+  allocated_storage   = var.allocated_storage
+  multi_az            = var.multi_az
+  storage_encrypted   = var.storage_encrypted
+  username            = "dbadmin"
+  password            = "Password123!"
+  skip_final_snapshot = true
+  publicly_accessible = false
+
   tags = merge(
     var.tags,
     {
