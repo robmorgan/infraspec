@@ -9,21 +9,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    services:
-      localstack:
-        image: localstack/localstack:latest
-        env:
-          SERVICES: sts,s3,dynamodb,apigateway,elasticache,rds
-          DEFAULT_REGION: us-east-1
-          AWS_DEFAULT_REGION: us-east-1
-          EDGE_PORT: 4566
-        ports:
-          - 4566:4566
-        options: >-
-          --health-cmd "curl -f http://localhost:4566/_localstack/health || exit 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
 
     steps:
       - uses: actions/checkout@v4
@@ -38,11 +23,12 @@ jobs:
         with:
           terraform_version: "1.0.11"
 
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::385776609746:role/GHAAdminRole
+          aws-region: us-east-1
+
       - name: Run Tests
-        env:
-          AWS_ACCESS_KEY_ID: test
-          AWS_SECRET_ACCESS_KEY: test
-          AWS_DEFAULT_REGION: us-east-1
-          AWS_ENDPOINT_URL: http://localhost:4566
         run: |
           go test -v ./...
