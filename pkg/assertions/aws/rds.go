@@ -8,7 +8,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/rds"
 	"github.com/aws/aws-sdk-go-v2/service/rds/types"
-	"github.com/gruntwork-io/terratest/modules/testing"
 )
 
 // Ensure the `AWSAsserter` struct implements the `RDSAsserter` interface.
@@ -16,17 +15,17 @@ var _ RDSAsserter = (*AWSAsserter)(nil)
 
 // RDSAsserter defines RDS-specific assertions
 type RDSAsserter interface {
-	AssertDBInstanceExists(t testing.TestingT, dbInstanceID string) error
-	AssertDBInstanceClass(t testing.TestingT, dbInstanceID, instanceClass string) error
-	AssertDBInstanceEngine(t testing.TestingT, dbInstanceID, engine string) error
-	AssertDBInstanceStorage(t testing.TestingT, dbInstanceID string, allocatedStorage int32) error
-	AssertDBInstanceMultiAZ(t testing.TestingT, dbInstanceID string, multiAZ bool) error
-	AssertDBInstanceEncryption(t testing.TestingT, dbInstanceID string, encrypted bool) error
-	AssertDBInstanceTags(t testing.TestingT, dbInstanceID string, expectedTags map[string]string) error
+	AssertDBInstanceExists(dbInstanceID string) error
+	AssertDBInstanceClass(dbInstanceID, instanceClass string) error
+	AssertDBInstanceEngine(dbInstanceID, engine string) error
+	AssertDBInstanceStorage(dbInstanceID string, allocatedStorage int32) error
+	AssertDBInstanceMultiAZ(dbInstanceID string, multiAZ bool) error
+	AssertDBInstanceEncryption(dbInstanceID string, encrypted bool) error
+	AssertDBInstanceTags(dbInstanceID string, expectedTags map[string]string) error
 }
 
 // AssertDBInstanceExists checks if a DB instance exists
-func (a *AWSAsserter) AssertDBInstanceExists(t testing.TestingT, dbInstanceID string) error {
+func (a *AWSAsserter) AssertDBInstanceExists(dbInstanceID string) error {
 	client, err := a.createRDSClient()
 	if err != nil {
 		return err
@@ -51,7 +50,7 @@ func (a *AWSAsserter) AssertDBInstanceExists(t testing.TestingT, dbInstanceID st
 }
 
 // AssertDBInstanceClass checks if a DB instance has the expected instance class
-func (a *AWSAsserter) AssertDBInstanceClass(t testing.TestingT, dbInstanceID, instanceClass string) error {
+func (a *AWSAsserter) AssertDBInstanceClass(dbInstanceID, instanceClass string) error {
 	instance, err := a.getDBInstance(dbInstanceID)
 	if err != nil {
 		return err
@@ -65,63 +64,63 @@ func (a *AWSAsserter) AssertDBInstanceClass(t testing.TestingT, dbInstanceID, in
 }
 
 // AssertDBInstanceEngine checks if a DB instance has the expected engine
-func (a *AWSAsserter) AssertDBInstanceEngine(t testing.TestingT, dbInstanceID, engine string) error {
+func (a *AWSAsserter) AssertDBInstanceEngine(dbInstanceID, engine string) error {
 	instance, err := a.getDBInstance(dbInstanceID)
 	if err != nil {
 		return err
 	}
 
 	if aws.ToString(instance.Engine) != engine {
-		return fmt.Errorf("expected engine %s, but got %s", engine, *instance.Engine)
+		return fmt.Errorf("expected engine %s, but got %s", engine, aws.ToString(instance.Engine))
 	}
 
 	return nil
 }
 
 // AssertDBInstanceStorage checks if a DB instance has the expected allocated storage
-func (a *AWSAsserter) AssertDBInstanceStorage(t testing.TestingT, dbInstanceID string, allocatedStorage int32) error {
+func (a *AWSAsserter) AssertDBInstanceStorage(dbInstanceID string, allocatedStorage int32) error {
 	instance, err := a.getDBInstance(dbInstanceID)
 	if err != nil {
 		return err
 	}
 
-	if instance.AllocatedStorage != allocatedStorage {
-		return fmt.Errorf("expected allocated storage %d, but got %d", allocatedStorage, instance.AllocatedStorage)
+	if aws.ToInt32(instance.AllocatedStorage) != allocatedStorage {
+		return fmt.Errorf("expected allocated storage %d, but got %d", allocatedStorage, aws.ToInt32(instance.AllocatedStorage))
 	}
 
 	return nil
 }
 
 // AssertDBInstanceMultiAZ checks if a DB instance has the expected MultiAZ setting
-func (a *AWSAsserter) AssertDBInstanceMultiAZ(t testing.TestingT, dbInstanceID string, multiAZ bool) error {
+func (a *AWSAsserter) AssertDBInstanceMultiAZ(dbInstanceID string, multiAZ bool) error {
 	instance, err := a.getDBInstance(dbInstanceID)
 	if err != nil {
 		return err
 	}
 
-	if instance.MultiAZ != multiAZ {
-		return fmt.Errorf("expected MultiAZ %t, but got %t", multiAZ, instance.MultiAZ)
+	if aws.ToBool(instance.MultiAZ) != multiAZ {
+		return fmt.Errorf("expected MultiAZ %t, but got %t", multiAZ, aws.ToBool(instance.MultiAZ))
 	}
 
 	return nil
 }
 
 // AssertDBInstanceEncryption checks if a DB instance has the expected encryption setting
-func (a *AWSAsserter) AssertDBInstanceEncryption(t testing.TestingT, dbInstanceID string, encrypted bool) error {
+func (a *AWSAsserter) AssertDBInstanceEncryption(dbInstanceID string, encrypted bool) error {
 	instance, err := a.getDBInstance(dbInstanceID)
 	if err != nil {
 		return err
 	}
 
-	if instance.StorageEncrypted != encrypted {
-		return fmt.Errorf("expected encryption %t, but got %t", encrypted, instance.StorageEncrypted)
+	if aws.ToBool(instance.StorageEncrypted) != encrypted {
+		return fmt.Errorf("expected encryption %t, but got %t", encrypted, aws.ToBool(instance.StorageEncrypted))
 	}
 
 	return nil
 }
 
 // AssertDBInstanceTags checks if a DB instance has the expected tags
-func (a *AWSAsserter) AssertDBInstanceTags(t testing.TestingT, dbInstanceID string, expectedTags map[string]string) error {
+func (a *AWSAsserter) AssertDBInstanceTags(dbInstanceID string, expectedTags map[string]string) error {
 	client, err := a.createRDSClient()
 	if err != nil {
 		return err
