@@ -17,3 +17,12 @@ func TestDynamoDBFeature(t *testing.T) {
 	err := runner.New(cfg).Run(featurePath)
 	require.NoError(t, err)
 }
+
+func TestRdsFeature(t *testing.T) {
+	cfg := GetTestConfig(t)
+	featurePath := filepath.Join("features", "aws", "rds.feature")
+	configureEnvForTests()
+
+	err := runner.New(cfg).Run(featurePath)
+	require.NoError(t, err)
+}
