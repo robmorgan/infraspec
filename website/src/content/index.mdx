@@ -1,0 +1,51 @@
+import Image from "next/image";
+
+<Image
+  src="/infraspec_logo_512.png"
+  alt="InfraSpec Logo"
+  width={128}
+  height={128}
+/>
+
+# Welcome to InfraSpec
+
+🚀 Coming soon! In the mean time check out: https://github.com/robmorgan/infraspec or the quick start below.
+
+## Quick start
+
+You can test the early development versions of InfraSpec using [Homebrew](https://brew.sh/).
+
+> [!WARNING]
+>
+> InfraSpec is still under active development and is likely to change significantly in the near future. Some features
+> may not be implemented yet or work as expected. Thank you for your early participation and feedback!
+
+1. Install InfraSpec using Homebrew:
+
+```sh
+brew tap robmorgan/infraspec
+brew install infraspec
+```
+
+2. Initialize a repo containing your infrastructure code:
+
+```sh
+infraspec init # creates a ./features directory if it doesn't already exist
+```
+
+3. Create your first infrastructure test:
+
+```sh
+infraspec new dynamodb.feature
+```
+
+4. Run the tests
+
+```sh
+infraspec features/dynamodb.feature
+```
+
+> [!TIP]
+>
+> If your using VS Code, we recommend installing the [Cucumber (Gherkin) Full Support](https://marketplace.visualstudio.com/items?itemName=alexkrechik.cucumberautocomplete)
+> extension for syntax highlighting.
