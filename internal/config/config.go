@@ -28,8 +28,9 @@ type Config struct {
 	Retries         RetryConfig      `yaml:"retries"`
 	//AWS             AWSConfig         `yaml:"aws"`
 	//Logging         LoggingConfig     `yaml:"logging"`
-	Logger  *zap.SugaredLogger
-	Verbose bool
+	Verbose   bool
+	Logger    *zap.SugaredLogger
+	Telemetry TelemetryConfig
 }
 
 // StepDefinition defines a mapping between Gherkin steps and actions
@@ -95,7 +96,8 @@ func DefaultConfig() (*Config, error) {
 				Charset: "abcdefghijklmnopqrstuvwxyz0123456789",
 			},
 		},
-		Logger: logger,
+		Telemetry: LoadTelemetryConfig(),
+		Logger:    logger,
 	}, nil
 }
 
