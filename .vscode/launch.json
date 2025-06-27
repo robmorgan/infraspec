@@ -15,6 +15,18 @@
       },
       "args": ["test/features/dynamodb.feature"],
       "console": "integratedTerminal"
+    },
+    {
+      "name": "Hello World",
+      "type": "go",
+      "request": "launch",
+      "mode": "debug",
+      "program": "${workspaceFolder}/cmd",
+      "env": {
+        "AWS_PROFILE": "dev"
+      },
+      "args": ["test/features/terraform/hello_world.feature"],
+      "console": "integratedTerminal"
     }
   ]
 }

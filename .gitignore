@@ -14,3 +14,8 @@ terraform.tfstate.backup
 test/volume
 
 vendor/
+
+# next.js / nextra / bun
+node_modules/
+.next/
+_pagefind/

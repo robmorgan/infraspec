@@ -9,25 +9,27 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v4
+      - name: Start LocalStack
+        uses: LocalStack/setup-localstack@v0.2.3
         with:
-          go-version: "1.24"
+          image-tag: "4.5.0"
+          install-awslocal: "true"
+          use-pro: "true"
+        env:
+          LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.0.11"
 
-      - name: Configure AWS credentials via OIDC
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Set up Go
+        uses: actions/setup-go@v4
         with:
-          role-to-assume: arn:aws:iam::385776609746:role/GHAAdminRole
-          aws-region: us-east-1
+          go-version: "1.24"
+
+      - uses: actions/checkout@v4
 
       - name: Run Tests
         run: |
