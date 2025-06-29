@@ -11,8 +11,8 @@
 ## About
 
 Write infrastructure tests for Terraform, Docker, and Kubernetes in plain English, without writing a single line of
-code. InfraSpec combines a vast library of common infrastructure testing patterns with a domain-specific language for
-testing infrastructure.
+code. InfraSpec pairs a vast library of common testing patterns with a domain-specific language for testing
+infrastructure.
 
 Tests are written using an easy to learn [Gherkin](https://cucumber.io/docs/gherkin/) syntax suitable for both
 technical and non-technical team members.
