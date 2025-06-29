@@ -78,7 +78,7 @@ func (t *TestContext) GetAsserter(provider string) (assertions.Asserter, error) 
 	}
 
 	// Create new asserter based on provider
-	asserter, err := assertions.New(provider, t.config.DefaultRegion)
+	asserter, err := assertions.New(provider)
 	if err != nil {
 		return nil, err
 	}

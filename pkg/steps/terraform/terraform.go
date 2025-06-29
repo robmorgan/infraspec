@@ -7,11 +7,9 @@ import (
 	"strings"
 
 	"github.com/cucumber/godog"
-	"github.com/gruntwork-io/terratest/modules/terraform"
 
 	"github.com/robmorgan/infraspec/internal/contexthelpers"
-	t "github.com/robmorgan/infraspec/internal/testing"
-	"github.com/robmorgan/infraspec/pkg/terratest/logger"
+	"github.com/robmorgan/infraspec/pkg/iacprovisioner"
 )
 
 // RegisterSteps registers all Terraform-specific step definitions
@@ -41,17 +39,20 @@ func newTerraformConfigStep(ctx context.Context, path string) (context.Context, 
 		}
 	}
 
-	options := terraform.WithDefaultRetryableErrors(t.GetT(), &terraform.Options{
-		TerraformDir: absPath,
-		Logger:       logger.New(),
-		Vars:         make(map[string]interface{}),
+	options, err := iacprovisioner.WithDefaultRetryableErrors(&iacprovisioner.Options{
+		WorkingDir: absPath,
+		Vars:       make(map[string]interface{}),
 	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to create Terraform options: %w", err)
+	}
+
 	return context.WithValue(ctx, contexthelpers.TFOptionsCtxKey{}, options), nil
 }
 
 func newTerraformApplyStep(ctx context.Context) (context.Context, error) {
-	options := contexthelpers.GetTerraformOptions(ctx)
-	out, err := terraform.InitAndApplyE(t.GetT(), options)
+	options := contexthelpers.GetIacProvisionerOptions(ctx)
+	out, err := iacprovisioner.InitAndApply(options)
 	if err != nil {
 		return ctx, fmt.Errorf("there was an error running terraform apply: %s", out)
 	}
@@ -59,8 +60,8 @@ func newTerraformApplyStep(ctx context.Context) (context.Context, error) {
 }
 
 func NewTerraformDestroyStep(ctx context.Context) (context.Context, error) {
-	options := contexthelpers.GetTerraformOptions(ctx)
-	out, err := terraform.DestroyE(t.GetT(), options)
+	options := contexthelpers.GetIacProvisionerOptions(ctx)
+	out, err := iacprovisioner.Destroy(options)
 	if err != nil {
 		return ctx, fmt.Errorf("there was an error running terraform destroy: %s", out)
 	}
@@ -68,13 +69,13 @@ func NewTerraformDestroyStep(ctx context.Context) (context.Context, error) {
 }
 
 func newTerraformSetVariableStep(ctx context.Context, name, value string) (context.Context, error) {
-	options := contexthelpers.GetTerraformOptions(ctx)
+	options := contexthelpers.GetIacProvisionerOptions(ctx)
 	options.Vars[name] = value
 	return context.WithValue(ctx, contexthelpers.TFOptionsCtxKey{}, options), nil
 }
 
 func newTerraformSetMapVariableStep(ctx context.Context, name string, table *godog.Table) (context.Context, error) {
-	options := contexthelpers.GetTerraformOptions(ctx)
+	options := contexthelpers.GetIacProvisionerOptions(ctx)
 
 	// convert the table to a map[string]string
 	varMap := make(map[string]string)
@@ -88,8 +89,8 @@ func newTerraformSetMapVariableStep(ctx context.Context, name string, table *god
 }
 
 func newTerraformOutputEqualsStep(ctx context.Context, outputName, expectedValue string) error {
-	options := contexthelpers.GetTerraformOptions(ctx)
-	actualValue, err := terraform.OutputE(t.GetT(), options, outputName)
+	options := contexthelpers.GetIacProvisionerOptions(ctx)
+	actualValue, err := iacprovisioner.Output(options, outputName)
 	if err != nil {
 		return fmt.Errorf("failed to get output %s, got %s: %w", outputName, actualValue, err)
 	}
@@ -101,8 +102,8 @@ func newTerraformOutputEqualsStep(ctx context.Context, outputName, expectedValue
 }
 
 func newTerraformOutputContainsStep(ctx context.Context, outputName, expectedValue string) error {
-	options := contexthelpers.GetTerraformOptions(ctx)
-	actualValue, err := terraform.OutputE(t.GetT(), options, outputName)
+	options := contexthelpers.GetIacProvisionerOptions(ctx)
+	actualValue, err := iacprovisioner.Output(options, outputName)
 	if err != nil {
 		return fmt.Errorf("failed to get output %s, got %s: %w", outputName, actualValue, err)
 	}
