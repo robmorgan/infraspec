@@ -28,14 +28,14 @@ func New(cfg *config.Config) *Runner {
 
 // Run executes the specified feature file
 func (r *Runner) Run(featurePath string) error {
-	defer r.cfg.Logger.Sync()
+	defer config.Logging.Logger.Sync()
 
 	// Validate feature file exists
 	if _, err := os.Stat(featurePath); os.IsNotExist(err) {
 		return fmt.Errorf("feature file not found: %s", featurePath)
 	}
 
-	r.cfg.Logger.Infof("Starting test execution using: %s", featurePath)
+	config.Logging.Logger.Infof("Starting test execution using: %s", featurePath)
 
 	suite := &godog.TestSuite{
 		ScenarioInitializer: r.initializeScenario,
@@ -51,10 +51,10 @@ func (r *Runner) Run(featurePath string) error {
 	duration := time.Since(start)
 
 	// Log test execution summary
-	r.cfg.Logger.Debugf("\nTest execution completed in %s with status: %d", duration, status)
+	config.Logging.Logger.Debugf("\nTest execution completed in %s with status: %d", duration, status)
 
 	if err := r.cleanup(); err != nil {
-		r.cfg.Logger.Error("Cleanup failed", zap.Error(err))
+		config.Logging.Logger.Error("Cleanup failed", zap.Error(err))
 		return err
 	}
 
@@ -81,29 +81,29 @@ func (r *Runner) initializeScenario(sc *godog.ScenarioContext) {
 
 	// Add hooks for logging
 	sc.StepContext().Before(func(ctx context.Context, st *godog.Step) (context.Context, error) {
-		r.cfg.Logger.Debug("Executing step", st, st.Text)
+		config.Logging.Logger.Debug("Executing step", st, st.Text)
 		return ctx, nil
 	})
 
 	sc.StepContext().After(func(ctx context.Context, st *godog.Step, status godog.StepResultStatus, err error) (context.Context, error) {
 		if err != nil {
-			r.cfg.Logger.Error("Step failed", "step", st.Text, "error", err)
+			config.Logging.Logger.Error("Step failed", "step", st.Text, "error", err)
 		} else {
-			r.cfg.Logger.Debug("Step completed successfully", "step", st.Text)
+			config.Logging.Logger.Debug("Step completed successfully", "step", st.Text)
 		}
 		return ctx, nil
 	})
 
 	sc.After(func(ctx context.Context, sc *godog.Scenario, err error) (context.Context, error) {
 		if err != nil {
-			r.cfg.Logger.Error("Scenario failed", "scenario", sc.Name, "error", err)
+			config.Logging.Logger.Error("Scenario failed", "scenario", sc.Name, "error", err)
 		} else {
-			r.cfg.Logger.Debugf("Scenario completed successfully: %s", sc.Name)
+			config.Logging.Logger.Debugf("Scenario completed successfully: %s", sc.Name)
 		}
 
 		// If a Terraform configuration was applied, destroy it
 		if contexthelpers.GetTerraformHasApplied(ctx) {
-			r.cfg.Logger.Debug("Terraform has been applied, destroying resources")
+			config.Logging.Logger.Debug("Terraform has been applied, destroying resources")
 			terraform.NewTerraformDestroyStep(ctx)
 		}
 		return ctx, nil
@@ -114,11 +114,11 @@ func (r *Runner) initializeScenario(sc *godog.ScenarioContext) {
 // TODO - this might be necessary if we've invoked tools like Terraform or need to cleanup resources
 func (r *Runner) cleanup() error {
 	if !r.cfg.Cleanup.Automatic {
-		r.cfg.Logger.Debug("Automatic cleanup disabled, skipping...")
+		config.Logging.Logger.Debug("Automatic cleanup disabled, skipping...")
 		return nil
 	}
 
-	r.cfg.Logger.Info("Starting cleanup",
+	config.Logging.Logger.Info("Starting cleanup",
 		zap.Int("timeout", r.cfg.Cleanup.Timeout),
 	)
 
@@ -138,6 +138,6 @@ func (r *Runner) cleanup() error {
 	// 	return fmt.Errorf("cleanup timed out after %d seconds", r.cfg.Cleanup.Timeout)
 	// }
 
-	r.cfg.Logger.Debug("Cleanup completed successfully")
+	config.Logging.Logger.Debug("Cleanup completed successfully")
 	return nil
 }

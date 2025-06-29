@@ -42,7 +42,7 @@ var (
 
 			if verbose {
 				cfg.Verbose = true
-				cfg.Logger.Debug("Verbose mode enabled")
+				config.Logging.Logger.Debug("Verbose mode enabled")
 			}
 
 			// Disable telemetry if requested
