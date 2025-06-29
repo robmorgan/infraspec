@@ -1,12 +1,13 @@
 package aws
 
 import (
+	"context"
 	"fmt"
-	"reflect"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
-	"github.com/gruntwork-io/terratest/modules/aws"
-	"github.com/gruntwork-io/terratest/modules/testing"
 )
 
 // Ensure the `AWSAsserter` struct implements the `DynamoDBAsserter` interface.
@@ -14,32 +15,52 @@ var _ DynamoDBAsserter = (*AWSAsserter)(nil)
 
 // DynamoDBAsserter defines DynamoDB-specific assertions
 type DynamoDBAsserter interface {
-	AssertTableTags(t testing.TestingT, tableName string, expectedTags map[string]string) error
-	AssertBillingMode(t testing.TestingT, tableName, expectedMode string) error
-	AssertCapacity(t testing.TestingT, tableName string, readCapacity, writeCapacity int64) error
+	AssertTableTags(tableName string, expectedTags map[string]string) error
+	AssertBillingMode(tableName, expectedMode string) error
+	AssertCapacity(tableName string, readCapacity, writeCapacity int64) error
 }
 
-func (a *AWSAsserter) AssertTableTags(t testing.TestingT, tableName string, expectedTags map[string]string) error {
-	actualTags, err := aws.GetDynamoDbTableTagsE(t, a.region, tableName)
+func (a *AWSAsserter) AssertTableTags(tableName string, expectedTags map[string]string) error {
+	client, err := a.createDynamoDBClient()
 	if err != nil {
 		return err
 	}
 
-	// convert the terratest tags to a map[string]string
-	actualTagsMap := make(map[string]string)
-	for _, tag := range actualTags {
-		actualTagsMap[*tag.Key] = *tag.Value
+	// First, get the table ARN
+	table, err := a.getDynamoDBTable(tableName)
+
+	// List tags for the table
+	input := &dynamodb.ListTagsOfResourceInput{
+		ResourceArn: table.TableArn,
 	}
 
-	// Compare expected and actual tags
-	if !reflect.DeepEqual(expectedTags, actualTagsMap) {
-		return fmt.Errorf("expected tags %v, but got %v", expectedTags, actualTagsMap)
+	result, err := client.ListTagsOfResource(context.TODO(), input)
+	if err != nil {
+		return fmt.Errorf("error listing tags for table %s: %v", tableName, err)
 	}
+
+	// Convert the tags to a map
+	actualTags := make(map[string]string)
+	for _, tag := range result.Tags {
+		actualTags[aws.ToString(tag.Key)] = aws.ToString(tag.Value)
+	}
+
+	// Compare the expected and actual tags
+	for key, value := range expectedTags {
+		actualValue, exists := actualTags[key]
+		if !exists {
+			return fmt.Errorf("expected tag %s not found", key)
+		}
+		if actualValue != value {
+			return fmt.Errorf("expected tag %s to have value %s, but got %s", key, value, actualValue)
+		}
+	}
+
 	return nil
 }
 
-func (a *AWSAsserter) AssertBillingMode(t testing.TestingT, tableName, expectedMode string) error {
-	table, err := aws.GetDynamoDBTableE(t, a.region, tableName)
+func (a *AWSAsserter) AssertBillingMode(tableName, expectedMode string) error {
+	table, err := a.getDynamoDBTable(tableName)
 	if err != nil {
 		return err
 	}
@@ -57,8 +78,8 @@ func (a *AWSAsserter) AssertBillingMode(t testing.TestingT, tableName, expectedM
 	return nil
 }
 
-func (a *AWSAsserter) AssertCapacity(t testing.TestingT, tableName string, readCapacity, writeCapacity int64) error {
-	table, err := aws.GetDynamoDBTableE(t, a.region, tableName)
+func (a *AWSAsserter) AssertCapacity(tableName string, readCapacity, writeCapacity int64) error {
+	table, err := a.getDynamoDBTable(tableName)
 	if err != nil {
 		return err
 	}
@@ -86,6 +107,37 @@ func (a *AWSAsserter) AssertCapacity(t testing.TestingT, tableName string, readC
 	return nil
 }
 
+// Helper method to get a DynamoDB table
+func (a *AWSAsserter) getDynamoDBTable(tableName string) (*types.TableDescription, error) {
+	client, err := a.createDynamoDBClient()
+	if err != nil {
+		return nil, err
+	}
+
+	// Describe the table
+	input := &dynamodb.DescribeTableInput{
+		TableName: aws.String(tableName),
+	}
+
+	result, err := client.DescribeTable(context.TODO(), input)
+	if err != nil {
+		return nil, fmt.Errorf("error describing DynamoDB table %s: %v", tableName, err)
+	}
+
+	return result.Table, nil
+}
+
+// Helper method to create a DynamoDB client
+func (a *AWSAsserter) createDynamoDBClient() (*dynamodb.Client, error) {
+	cfg, err := config.LoadDefaultConfig(context.TODO())
+	if err != nil {
+		return nil, fmt.Errorf("failed to load AWS config: %v", err)
+	}
+
+	return dynamodb.NewFromConfig(cfg), nil
+}
+
+// Helper method to get the billing mode of a DynamoDB table
 func getDynamoDBBTableBillingMode(tableDesc *types.TableDescription) (types.BillingMode, error) {
 	// Note: as per https://github.com/aws/aws-sdk-go-v2/blob/main/service/dynamodb/types/types.go#L600-L601
 	// if we don't receive a response that includes the BillingModeSummary, it means the table is in PROVISIONED mode.
