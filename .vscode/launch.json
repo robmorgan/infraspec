@@ -9,11 +9,27 @@
       "type": "go",
       "request": "launch",
       "mode": "debug",
-      "program": "${workspaceFolder}",
+      "program": "${workspaceFolder}/cmd",
       "env": {
         "AWS_PROFILE": "dev"
       },
-      "args": ["test/features/dynamodb.feature"],
+      "args": ["test/features/aws/dynamodb.feature"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "RDS",
+      "type": "go",
+      "request": "launch",
+      "mode": "debug",
+      "program": "${workspaceFolder}/cmd",
+      "env": {
+        "AWS_PROFILE": "dev",
+        "AWS_ACCESS_KEY_ID": "test",
+        "AWS_SECRET_ACCESS_KEY": "test",
+        "AWS_DEFAULT_REGION": "us-east-1",
+        "AWS_ENDPOINT_URL": "http://localhost:4566"
+      },
+      "args": ["../test/features/aws/rds.feature"],
       "console": "integratedTerminal"
     },
     {
