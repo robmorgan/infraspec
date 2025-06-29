@@ -15,13 +15,47 @@ var _ RDSAsserter = (*AWSAsserter)(nil)
 
 // RDSAsserter defines RDS-specific assertions
 type RDSAsserter interface {
+	AssertRDSServiceAccess() error
+	AssertRDSDescribeInstances() error
 	AssertDBInstanceExists(dbInstanceID string) error
+	AssertDBInstanceStatus(dbInstanceID, status string) error
 	AssertDBInstanceClass(dbInstanceID, instanceClass string) error
 	AssertDBInstanceEngine(dbInstanceID, engine string) error
 	AssertDBInstanceStorage(dbInstanceID string, allocatedStorage int32) error
 	AssertDBInstanceMultiAZ(dbInstanceID string, multiAZ bool) error
 	AssertDBInstanceEncryption(dbInstanceID string, encrypted bool) error
 	AssertDBInstanceTags(dbInstanceID string, expectedTags map[string]string) error
+}
+
+// AssertRDSServiceAccess checks if the AWS account has permission to access the RDS service
+func (a *AWSAsserter) AssertRDSServiceAccess() error {
+	client, err := a.createRDSClient()
+	if err != nil {
+		return err
+	}
+
+	_, err = client.DescribeAccountAttributes(context.TODO(), &rds.DescribeAccountAttributesInput{})
+	if err != nil {
+		return fmt.Errorf("error accessing the RDS service: %v", err)
+	}
+
+	return nil
+}
+
+// AssertRDSDescribeInstances checks if the AWS account has permission to describe RDS instances
+func (a *AWSAsserter) AssertRDSDescribeInstances() error {
+	client, err := a.createRDSClient()
+	if err != nil {
+		return err
+	}
+
+	// Describe the DB instances
+	_, err = client.DescribeDBInstances(context.TODO(), &rds.DescribeDBInstancesInput{})
+	if err != nil {
+		return fmt.Errorf("error describing DB instances: %v", err)
+	}
+
+	return nil
 }
 
 // AssertDBInstanceExists checks if a DB instance exists
@@ -44,6 +78,20 @@ func (a *AWSAsserter) AssertDBInstanceExists(dbInstanceID string) error {
 	// Check if the DB instance exists
 	if len(result.DBInstances) == 0 {
 		return fmt.Errorf("DB instance %s does not exist", dbInstanceID)
+	}
+
+	return nil
+}
+
+// AssertDBInstanceStatus checks if a DB instance has the expected status
+func (a *AWSAsserter) AssertDBInstanceStatus(dbInstanceID, status string) error {
+	instance, err := a.getDBInstance(dbInstanceID)
+	if err != nil {
+		return err
+	}
+
+	if aws.ToString(instance.DBInstanceStatus) != status {
+		return fmt.Errorf("expected instance status %s, but got %s", status, *instance.DBInstanceStatus)
 	}
 
 	return nil
@@ -189,7 +237,7 @@ func (a *AWSAsserter) getDBInstance(dbInstanceID string) (*types.DBInstance, err
 
 // Helper method to create an RDS client
 func (a *AWSAsserter) createRDSClient() (*rds.Client, error) {
-	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(a.region))
+	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
 		return nil, fmt.Errorf("failed to load AWS config: %v", err)
 	}

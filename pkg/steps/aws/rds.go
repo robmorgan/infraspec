@@ -13,6 +13,79 @@ import (
 )
 
 // RDS Step Definitions
+func registerRDSSteps(sc *godog.ScenarioContext) {
+	sc.Step(`^I have access to AWS RDS service$`, newVerifyAWSRDSAccessStep)
+	sc.Step(`^I have the necessary IAM permissions to describe RDS instances$`, newVerifyAWSRDSDescribeInstancesStep)
+	sc.Step(`^I have an RDS instance with identifier "([^"]*)"$`, newExistingRDSInstanceWithIdentifierStep)
+	sc.Step(`^I describe the RDS instance$`, newRDSDescribeInstanceStep)
+	sc.Step(`^the existing RDS DB instance with the identifier "([^"]*)"$`, newRDSExistingDBInstanceStep)
+	sc.Step(`^the RDS instance "([^"]*)" should exist$`, newRDSInstanceExistsStep)
+	sc.Step(`^the RDS instance "([^"]*)" status should be "([^"]*)"$`, newRDSInstanceStatusStep)
+	sc.Step(`^the RDS instance "([^"]*)" should have instance class "([^"]*)"$`, newRDSInstanceClassStep)
+	sc.Step(`^the RDS instance "([^"]*)" should have engine "([^"]*)"$`, newRDSInstanceEngineStep)
+	sc.Step(`^the RDS instance "([^"]*)" should have allocated storage (\d+)$`, newRDSInstanceStorageStep)
+	sc.Step(`^the RDS instance "([^"]*)" should have MultiAZ "(true|false)"$`, newRDSInstanceMultiAZStep)
+	sc.Step(`^the RDS instance "([^"]*)" should have encryption "(true|false)"$`, newRDSInstanceEncryptionStep)
+	sc.Step(`^the RDS instance "([^"]*)" should have tags$`, newRDSInstanceTagsStep)
+}
+
+func newVerifyAWSRDSAccessStep(ctx context.Context) error {
+	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+	if err != nil {
+		return err
+	}
+
+	rdsAssert, ok := asserter.(aws.RDSAsserter)
+	if !ok {
+		return fmt.Errorf("asserter does not implement RDSAsserter")
+	}
+
+	return rdsAssert.AssertRDSServiceAccess()
+}
+
+func newVerifyAWSRDSDescribeInstancesStep(ctx context.Context) error {
+	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+	if err != nil {
+		return err
+	}
+
+	rdsAssert, ok := asserter.(aws.RDSAsserter)
+	if !ok {
+		return fmt.Errorf("asserter does not implement RDSAsserter")
+	}
+
+	return rdsAssert.AssertRDSDescribeInstances()
+}
+
+func newExistingRDSInstanceWithIdentifierStep(ctx context.Context, dbInstanceID string) error {
+	contexthelpers.SetRDSDBInstanceID(ctx, dbInstanceID)
+	return nil
+}
+
+func newRDSDescribeInstanceStep(ctx context.Context) error {
+	// do nothing for now, as we pass the identifier to the steps
+	return nil
+}
+
+func newRDSExistingDBInstanceStep(ctx context.Context, dbInstanceID string) error {
+	contexthelpers.SetRDSDBInstanceID(ctx, dbInstanceID)
+	return nil
+}
+
+func newRDSInstanceStatusStep(ctx context.Context, dbInstanceID string, status string) error {
+	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+	if err != nil {
+		return err
+	}
+
+	rdsAssert, ok := asserter.(aws.RDSAsserter)
+	if !ok {
+		return fmt.Errorf("asserter does not implement RDSAsserter")
+	}
+
+	return rdsAssert.AssertDBInstanceStatus(dbInstanceID, status)
+}
+
 func newRDSInstanceExistsStep(ctx context.Context, dbInstanceID string) error {
 	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
 	if err != nil {
