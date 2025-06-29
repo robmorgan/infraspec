@@ -3,8 +3,8 @@ package iacprovisioner
 import (
 	"time"
 
-	"github.com/gruntwork-io/terratest/modules/ssh"
 	"github.com/jinzhu/copier"
+	"github.com/robmorgan/infraspec/pkg/ssh"
 )
 
 var (

@@ -1,19 +1,18 @@
 package context
 
 import (
-	"github.com/gruntwork-io/terratest/modules/terraform"
-
 	"github.com/robmorgan/infraspec/internal/config"
 	"github.com/robmorgan/infraspec/pkg/assertions"
+	"github.com/robmorgan/infraspec/pkg/iacprovisioner"
 )
 
 type TestContext struct {
-	config       *config.Config
-	tfOptions    *terraform.Options
-	storedValues map[string]string
-	assertions   map[string]assertions.Asserter
-	cleanup      []func() error
-	scenarioUri  string
+	config                *config.Config
+	iacProvisionerOptions *iacprovisioner.Options
+	storedValues          map[string]string
+	assertions            map[string]assertions.Asserter
+	cleanup               []func() error
+	scenarioUri           string
 }
 
 func New(cfg *config.Config) *TestContext {
@@ -29,12 +28,12 @@ func (t *TestContext) Config() *config.Config {
 	return t.config
 }
 
-func (t *TestContext) GetTerraformOptions() *terraform.Options {
-	return t.tfOptions
+func (t *TestContext) GetIacProvisionerOptions() *iacprovisioner.Options {
+	return t.iacProvisionerOptions
 }
 
-func (t *TestContext) SetTerraformOptions(opts *terraform.Options) {
-	t.tfOptions = opts
+func (t *TestContext) SetIacProvisionerOptions(opts *iacprovisioner.Options) {
+	t.iacProvisionerOptions = opts
 }
 
 func (t *TestContext) SetScenarioUri(uri string) {

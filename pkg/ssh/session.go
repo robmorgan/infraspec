@@ -4,11 +4,10 @@ import (
 	"io"
 	"net"
 	"reflect"
+	"slices"
 	"strconv"
 
-	"github.com/gruntwork-io/terratest/modules/collections"
-	"github.com/gruntwork-io/terratest/modules/logger"
-	"github.com/gruntwork-io/terratest/modules/testing"
+	"github.com/robmorgan/infraspec/internal/config"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -39,7 +38,7 @@ type SshSession struct {
 }
 
 // Cleanup cleans up an existing SSH session.
-func (sshSession *SshSession) Cleanup(t testing.TestingT) {
+func (sshSession *SshSession) Cleanup() {
 	if sshSession == nil {
 		return
 	}
@@ -59,16 +58,16 @@ type JumpHostSession struct {
 }
 
 // Cleanup cleans the jump host session up.
-func (jumpHost *JumpHostSession) Cleanup(t testing.TestingT) {
+func (jumpHost *JumpHostSession) Cleanup() {
 	if jumpHost == nil {
 		return
 	}
 
 	// Closing a connection may result in an EOF error if it's already closed (e.g. due to hitting CTRL + D), so
 	// don't report those errors, as there is nothing actually wrong in that case.
-	Close(t, jumpHost.HostConnection, io.EOF.Error())
-	Close(t, jumpHost.HostVirtualConnection, io.EOF.Error())
-	Close(t, jumpHost.JumpHostClient)
+	Close(jumpHost.HostConnection, io.EOF.Error())
+	Close(jumpHost.HostVirtualConnection, io.EOF.Error())
+	Close(jumpHost.JumpHostClient)
 }
 
 // Closeable can be closed.
@@ -77,13 +76,13 @@ type Closeable interface {
 }
 
 // Close closes a Closeable.
-func Close(t testing.TestingT, closeable Closeable, ignoreErrors ...string) {
+func Close(closeable Closeable, ignoreErrors ...string) {
 	if interfaceIsNil(closeable) {
 		return
 	}
 
-	if err := closeable.Close(); err != nil && !collections.ListContains(ignoreErrors, err.Error()) {
-		logger.Default.Logf(t, "Error closing %s: %s", closeable, err.Error())
+	if err := closeable.Close(); err != nil && !slices.Contains(ignoreErrors, err.Error()) {
+		config.Logging.Logger.Infof(t, "Error closing %s: %s", closeable, err.Error())
 	}
 }
 

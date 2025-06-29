@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"testing"
 
-	grunttest "github.com/gruntwork-io/terratest/modules/testing"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -36,7 +35,7 @@ func TestCheckSshConnectionWithRetryE(t *testing.T) {
 	host := Host{Hostname: "Host"}
 	retries := 10
 
-	assert.Nil(t, CheckSshConnectionWithRetryE(t, host, retries, 3, mockSshConnectionE))
+	assert.Nil(t, CheckSshConnectionWithRetryE(t, host, retries, 3, mockSshConnection))
 }
 
 func TestCheckSshConnectionWithRetryEExceedsMaxRetries(t *testing.T) {
@@ -48,7 +47,7 @@ func TestCheckSshConnectionWithRetryEExceedsMaxRetries(t *testing.T) {
 	// Not enough retries
 	retries := 3
 
-	assert.Error(t, CheckSshConnectionWithRetryE(t, host, retries, 3, mockSshConnectionE))
+	assert.Error(t, CheckSshConnectionWithRetryE(t, host, retries, 3, mockSshConnection))
 }
 
 func TestCheckSshConnectionWithRetry(t *testing.T) {
@@ -69,7 +68,7 @@ func TestCheckSshCommandWithRetryE(t *testing.T) {
 	command := "echo -n hello world"
 	retries := 10
 
-	_, err := CheckSshCommandWithRetryE(t, host, command, retries, 3, mockSshCommandE)
+	_, err := CheckSshCommandWithRetryE(t, host, command, retries, 3, mockSshCommand)
 	assert.Nil(t, err)
 }
 
@@ -83,7 +82,7 @@ func TestCheckSshCommandWithRetryEExceedsRetries(t *testing.T) {
 	// Not enough retries
 	retries := 3
 
-	_, err := CheckSshCommandWithRetryE(t, host, command, retries, 3, mockSshCommandE)
+	_, err := CheckSshCommandWithRetryE(t, host, command, retries, 3, mockSshCommand)
 	assert.Error(t, err)
 }
 
@@ -95,18 +94,14 @@ func TestCheckSshCommandWithRetry(t *testing.T) {
 	command := "echo -n hello world"
 	retries := 10
 
-	CheckSshCommandWithRetry(t, host, command, retries, 3, mockSshCommandE)
+	CheckSshCommandWithRetry(t, host, command, retries, 3, mockSshCommand)
 }
 
-func mockSshConnectionE(t grunttest.TestingT, host Host) error {
+func mockSshConnection(t testing.T, host Host) error {
 	timesCalled += 1
 	if timesCalled >= 5 {
 		return nil
 	} else {
 		return errors.New(fmt.Sprintf("Called %v times", timesCalled))
 	}
-}
-
-func mockSshCommandE(t grunttest.TestingT, host Host, command string) (string, error) {
-	return "", mockSshConnectionE(t, host)
 }
