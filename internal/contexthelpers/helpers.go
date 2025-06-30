@@ -15,6 +15,9 @@ type ConfigCtxKey struct{}
 // TFOptionsCtxKey is the key used to store the Terraform options in the context.Context.
 type TFOptionsCtxKey struct{}
 
+// AwsRegionCtxKey is the key used to store the AWS region in the context.Context.
+type AwsRegionCtxKey struct{}
+
 // RDSDBInstanceIDCtxKey is the key used to store the RDS DB instance ID in the context.Context.
 type RDSDBInstanceIDCtxKey struct{}
 
@@ -75,6 +78,20 @@ func GetIacProvisionerOptions(ctx context.Context) *iacprovisioner.Options {
 		return nil
 	}
 	return opts
+}
+
+// SetAwsRegion sets the AWS region in the context.
+func SetAwsRegion(ctx context.Context, region string) context.Context {
+	return context.WithValue(ctx, AwsRegionCtxKey{}, region)
+}
+
+// GetAwsRegion returns the AWS region from the context.
+func GetAwsRegion(ctx context.Context) string {
+	region, exists := ctx.Value(AwsRegionCtxKey{}).(string)
+	if !exists {
+		return ""
+	}
+	return region
 }
 
 // GetRDSDBInstanceID returns the RDS DB instance ID from the context.
