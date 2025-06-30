@@ -16,11 +16,8 @@ type Config struct {
 	Functions       Functions        `yaml:"functions"`
 	Cleanup         CleanupConfig    `yaml:"cleanup"`
 	Retries         RetryConfig      `yaml:"retries"`
-	//AWS             AWSConfig         `yaml:"aws"`
-	//Logging         LoggingConfig     `yaml:"logging"`
-	Verbose bool
-	//	Logger    *zap.SugaredLogger
-	Telemetry TelemetryConfig
+	Verbose         bool
+	Telemetry       TelemetryConfig
 }
 
 // StepDefinition defines a mapping between Gherkin steps and actions

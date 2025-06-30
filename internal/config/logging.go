@@ -8,6 +8,7 @@ import (
 )
 
 type logging struct {
+	FastLogger      *zap.Logger
 	Logger          *zap.SugaredLogger
 	AtomicLogLevel  zap.AtomicLevel
 	DefaultLogLevel zapcore.Level
@@ -45,6 +46,7 @@ func init() {
 
 	defer logger.Sync() // flushes buffer, if any
 	log = logger.Sugar()
+	Logging.FastLogger = logger
 	Logging.Logger = log
 
 	//cfg.DisableStacktrace = true
@@ -60,4 +62,21 @@ func (logging) setLogLevel(lvl zapcore.Level) {
 		log.Infof("setting LogLevel to %s", lvl)
 		Logging.AtomicLogLevel.SetLevel(lvl)
 	}
+}
+
+// SetDevelopmentLogger sets the logger to use the development console output
+func (logging) SetDevelopmentLogger() {
+	// then configure the logger for development output
+	clone := Logging.FastLogger.WithOptions(
+		zap.WrapCore(
+			func(zapcore.Core) zapcore.Core {
+				return zapcore.NewCore(zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig()), zapcore.AddSync(os.Stderr), Logging.AtomicLogLevel)
+			}))
+	// zap.ReplaceGlobals(clone)
+	defer logger.Sync() //nolint:errcheck
+	log = clone.Sugar()
+
+	Logging.FastLogger = log.Desugar()
+	Logging.Logger = log
+	log.Info("using development console logger")
 }

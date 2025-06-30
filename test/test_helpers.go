@@ -6,18 +6,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 
 	"github.com/robmorgan/infraspec/internal/config"
 )
-
-// GetDevelopmentLogger returns a logger suitable for development or testing environments
-func GetDevelopmentLogger() *zap.SugaredLogger {
-	logger := zap.Must(zap.NewDevelopment())
-	defer logger.Sync() //nolint:errcheck
-
-	return logger.Sugar()
-}
 
 // GetTestConfig returns a config suitable for testing
 func GetTestConfig(t *testing.T) *config.Config {
@@ -25,7 +16,7 @@ func GetTestConfig(t *testing.T) *config.Config {
 	require.NoError(t, err)
 
 	// override the config for testing
-	cfg.Logger = GetDevelopmentLogger()
+	config.Logging.SetDevelopmentLogger()
 
 	return cfg
 }
