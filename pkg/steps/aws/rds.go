@@ -83,7 +83,12 @@ func newRDSInstanceStatusStep(ctx context.Context, dbInstanceID string, status s
 		return fmt.Errorf("asserter does not implement RDSAsserter")
 	}
 
-	return rdsAssert.AssertDBInstanceStatus(dbInstanceID, status)
+	region := contexthelpers.GetAwsRegion(ctx)
+	if region == "" {
+		return fmt.Errorf("no AWS region available")
+	}
+
+	return rdsAssert.AssertDBInstanceStatus(dbInstanceID, status, region)
 }
 
 func newRDSInstanceExistsStep(ctx context.Context, dbInstanceID string) error {
@@ -97,7 +102,12 @@ func newRDSInstanceExistsStep(ctx context.Context, dbInstanceID string) error {
 		return fmt.Errorf("asserter does not implement RDSAsserter")
 	}
 
-	return rdsAssert.AssertDBInstanceExists(dbInstanceID)
+	region := contexthelpers.GetAwsRegion(ctx)
+	if region == "" {
+		return fmt.Errorf("no AWS region available")
+	}
+
+	return rdsAssert.AssertDBInstanceExists(dbInstanceID, region)
 }
 
 func newRDSInstanceClassStep(ctx context.Context, dbInstanceID, instanceClass string) error {
@@ -111,7 +121,12 @@ func newRDSInstanceClassStep(ctx context.Context, dbInstanceID, instanceClass st
 		return fmt.Errorf("asserter does not implement RDSAsserter")
 	}
 
-	return rdsAssert.AssertDBInstanceClass(dbInstanceID, instanceClass)
+	region := contexthelpers.GetAwsRegion(ctx)
+	if region == "" {
+		return fmt.Errorf("no AWS region available")
+	}
+
+	return rdsAssert.AssertDBInstanceClass(dbInstanceID, instanceClass, region)
 }
 
 func newRDSInstanceEngineStep(ctx context.Context, dbInstanceID, engine string) error {
@@ -125,7 +140,12 @@ func newRDSInstanceEngineStep(ctx context.Context, dbInstanceID, engine string) 
 		return fmt.Errorf("asserter does not implement RDSAsserter")
 	}
 
-	return rdsAssert.AssertDBInstanceEngine(dbInstanceID, engine)
+	region := contexthelpers.GetAwsRegion(ctx)
+	if region == "" {
+		return fmt.Errorf("no AWS region available")
+	}
+
+	return rdsAssert.AssertDBInstanceEngine(dbInstanceID, engine, region)
 }
 
 func newRDSInstanceStorageStep(ctx context.Context, dbInstanceID string, allocatedStorage int32) error {
@@ -139,7 +159,12 @@ func newRDSInstanceStorageStep(ctx context.Context, dbInstanceID string, allocat
 		return fmt.Errorf("asserter does not implement RDSAsserter")
 	}
 
-	return rdsAssert.AssertDBInstanceStorage(dbInstanceID, allocatedStorage)
+	region := contexthelpers.GetAwsRegion(ctx)
+	if region == "" {
+		return fmt.Errorf("no AWS region available")
+	}
+
+	return rdsAssert.AssertDBInstanceStorage(dbInstanceID, allocatedStorage, region)
 }
 
 func newRDSInstanceStorageStepWrapper(ctx context.Context, dbInstanceID string, allocatedStorageStr string) error {
@@ -167,7 +192,12 @@ func newRDSInstanceMultiAZStep(ctx context.Context, dbInstanceID string, multiAZ
 		return fmt.Errorf("invalid MultiAZ value: %s", multiAZStr)
 	}
 
-	return rdsAssert.AssertDBInstanceMultiAZ(dbInstanceID, multiAZ)
+	region := contexthelpers.GetAwsRegion(ctx)
+	if region == "" {
+		return fmt.Errorf("no AWS region available")
+	}
+
+	return rdsAssert.AssertDBInstanceMultiAZ(dbInstanceID, multiAZ, region)
 }
 
 func newRDSInstanceEncryptionStep(ctx context.Context, dbInstanceID string, encryptedStr string) error {
@@ -186,7 +216,12 @@ func newRDSInstanceEncryptionStep(ctx context.Context, dbInstanceID string, encr
 		return fmt.Errorf("invalid encryption value: %s", encryptedStr)
 	}
 
-	return rdsAssert.AssertDBInstanceEncryption(dbInstanceID, encrypted)
+	region := contexthelpers.GetAwsRegion(ctx)
+	if region == "" {
+		return fmt.Errorf("no AWS region available")
+	}
+
+	return rdsAssert.AssertDBInstanceEncryption(dbInstanceID, encrypted, region)
 }
 
 func newRDSInstanceTagsStep(ctx context.Context, dbInstanceID string, table *godog.Table) error {
@@ -206,5 +241,10 @@ func newRDSInstanceTagsStep(ctx context.Context, dbInstanceID string, table *god
 		tags[row.Cells[0].Value] = row.Cells[1].Value
 	}
 
-	return rdsAssert.AssertDBInstanceTags(dbInstanceID, tags)
+	region := contexthelpers.GetAwsRegion(ctx)
+	if region == "" {
+		return fmt.Errorf("no AWS region available")
+	}
+
+	return rdsAssert.AssertDBInstanceTags(dbInstanceID, tags, region)
 }

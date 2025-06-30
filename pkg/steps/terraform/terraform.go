@@ -9,6 +9,7 @@ import (
 	"github.com/cucumber/godog"
 
 	"github.com/robmorgan/infraspec/internal/contexthelpers"
+	"github.com/robmorgan/infraspec/pkg/awshelpers"
 	"github.com/robmorgan/infraspec/pkg/iacprovisioner"
 )
 
@@ -19,6 +20,7 @@ func RegisterSteps(sc *godog.ScenarioContext) {
 	sc.Step(`^I have a Terraform configuration in "([^"]*)"$`, newTerraformConfigStep)
 	sc.Step(`^I set variable "([^"]*)" to "([^"]*)"$`, newTerraformSetVariableStep)
 	sc.Step(`^I set variable "([^"]*)" to$`, newTerraformSetMapVariableStep)
+	sc.Step(`^I set variable "([^"]*)" to a random stable AWS region$`, newTerraformSetRandomStableAWSRegion)
 	sc.Step(`^the "([^"]*)" output is "([^"]*)"$`, newTerraformOutputEqualsStep)
 	sc.Step(`^the output "([^"]*)" should equal "([^"]*)"$`, newTerraformOutputEqualsStep)
 	sc.Step(`^the output "([^"]*)" should contain "([^"]*)"$`, newTerraformOutputContainsStep)
@@ -86,6 +88,15 @@ func newTerraformSetMapVariableStep(ctx context.Context, name string, table *god
 	options.Vars[name] = varMap
 
 	return context.WithValue(ctx, contexthelpers.TFOptionsCtxKey{}, options), nil
+}
+
+func newTerraformSetRandomStableAWSRegion(ctx context.Context, name string) (context.Context, error) {
+	awsRegion, err := awshelpers.GetRandomStableRegion(nil, nil)
+	if err != nil {
+		return ctx, fmt.Errorf("failed to get random stable AWS region: %w", err)
+	}
+	ctx = contexthelpers.SetAwsRegion(ctx, awsRegion)
+	return newTerraformSetVariableStep(ctx, name, awsRegion)
 }
 
 func newTerraformOutputEqualsStep(ctx context.Context, outputName, expectedValue string) error {

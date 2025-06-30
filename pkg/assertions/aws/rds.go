@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/rds"
 	"github.com/aws/aws-sdk-go-v2/service/rds/types"
+	"github.com/robmorgan/infraspec/pkg/awshelpers"
 )
 
 // Ensure the `AWSAsserter` struct implements the `RDSAsserter` interface.
@@ -17,19 +17,19 @@ var _ RDSAsserter = (*AWSAsserter)(nil)
 type RDSAsserter interface {
 	AssertRDSServiceAccess() error
 	AssertRDSDescribeInstances() error
-	AssertDBInstanceExists(dbInstanceID string) error
-	AssertDBInstanceStatus(dbInstanceID, status string) error
-	AssertDBInstanceClass(dbInstanceID, instanceClass string) error
-	AssertDBInstanceEngine(dbInstanceID, engine string) error
-	AssertDBInstanceStorage(dbInstanceID string, allocatedStorage int32) error
-	AssertDBInstanceMultiAZ(dbInstanceID string, multiAZ bool) error
-	AssertDBInstanceEncryption(dbInstanceID string, encrypted bool) error
-	AssertDBInstanceTags(dbInstanceID string, expectedTags map[string]string) error
+	AssertDBInstanceExists(dbInstanceID, region string) error
+	AssertDBInstanceStatus(dbInstanceID, status, region string) error
+	AssertDBInstanceClass(dbInstanceID, instanceClass, region string) error
+	AssertDBInstanceEngine(dbInstanceID, engine, region string) error
+	AssertDBInstanceStorage(dbInstanceID string, allocatedStorage int32, region string) error
+	AssertDBInstanceMultiAZ(dbInstanceID string, multiAZ bool, region string) error
+	AssertDBInstanceEncryption(dbInstanceID string, encrypted bool, region string) error
+	AssertDBInstanceTags(dbInstanceID string, expectedTags map[string]string, region string) error
 }
 
 // AssertRDSServiceAccess checks if the AWS account has permission to access the RDS service
 func (a *AWSAsserter) AssertRDSServiceAccess() error {
-	client, err := a.createRDSClient()
+	client, err := awshelpers.NewRdsClientWithDefaultRegion()
 	if err != nil {
 		return err
 	}
@@ -44,7 +44,8 @@ func (a *AWSAsserter) AssertRDSServiceAccess() error {
 
 // AssertRDSDescribeInstances checks if the AWS account has permission to describe RDS instances
 func (a *AWSAsserter) AssertRDSDescribeInstances() error {
-	client, err := a.createRDSClient()
+	// Use the default region
+	client, err := awshelpers.NewRdsClientWithDefaultRegion()
 	if err != nil {
 		return err
 	}
@@ -59,8 +60,8 @@ func (a *AWSAsserter) AssertRDSDescribeInstances() error {
 }
 
 // AssertDBInstanceExists checks if a DB instance exists
-func (a *AWSAsserter) AssertDBInstanceExists(dbInstanceID string) error {
-	client, err := a.createRDSClient()
+func (a *AWSAsserter) AssertDBInstanceExists(dbInstanceID, region string) error {
+	client, err := awshelpers.NewRdsClient(region)
 	if err != nil {
 		return err
 	}
@@ -84,8 +85,8 @@ func (a *AWSAsserter) AssertDBInstanceExists(dbInstanceID string) error {
 }
 
 // AssertDBInstanceStatus checks if a DB instance has the expected status
-func (a *AWSAsserter) AssertDBInstanceStatus(dbInstanceID, status string) error {
-	instance, err := a.getDBInstance(dbInstanceID)
+func (a *AWSAsserter) AssertDBInstanceStatus(dbInstanceID, status, region string) error {
+	instance, err := a.getDBInstance(dbInstanceID, region)
 	if err != nil {
 		return err
 	}
@@ -98,8 +99,8 @@ func (a *AWSAsserter) AssertDBInstanceStatus(dbInstanceID, status string) error 
 }
 
 // AssertDBInstanceClass checks if a DB instance has the expected instance class
-func (a *AWSAsserter) AssertDBInstanceClass(dbInstanceID, instanceClass string) error {
-	instance, err := a.getDBInstance(dbInstanceID)
+func (a *AWSAsserter) AssertDBInstanceClass(dbInstanceID, instanceClass, region string) error {
+	instance, err := a.getDBInstance(dbInstanceID, region)
 	if err != nil {
 		return err
 	}
@@ -112,8 +113,8 @@ func (a *AWSAsserter) AssertDBInstanceClass(dbInstanceID, instanceClass string) 
 }
 
 // AssertDBInstanceEngine checks if a DB instance has the expected engine
-func (a *AWSAsserter) AssertDBInstanceEngine(dbInstanceID, engine string) error {
-	instance, err := a.getDBInstance(dbInstanceID)
+func (a *AWSAsserter) AssertDBInstanceEngine(dbInstanceID, engine, region string) error {
+	instance, err := a.getDBInstance(dbInstanceID, region)
 	if err != nil {
 		return err
 	}
@@ -126,8 +127,8 @@ func (a *AWSAsserter) AssertDBInstanceEngine(dbInstanceID, engine string) error 
 }
 
 // AssertDBInstanceStorage checks if a DB instance has the expected allocated storage
-func (a *AWSAsserter) AssertDBInstanceStorage(dbInstanceID string, allocatedStorage int32) error {
-	instance, err := a.getDBInstance(dbInstanceID)
+func (a *AWSAsserter) AssertDBInstanceStorage(dbInstanceID string, allocatedStorage int32, region string) error {
+	instance, err := a.getDBInstance(dbInstanceID, region)
 	if err != nil {
 		return err
 	}
@@ -140,8 +141,8 @@ func (a *AWSAsserter) AssertDBInstanceStorage(dbInstanceID string, allocatedStor
 }
 
 // AssertDBInstanceMultiAZ checks if a DB instance has the expected MultiAZ setting
-func (a *AWSAsserter) AssertDBInstanceMultiAZ(dbInstanceID string, multiAZ bool) error {
-	instance, err := a.getDBInstance(dbInstanceID)
+func (a *AWSAsserter) AssertDBInstanceMultiAZ(dbInstanceID string, multiAZ bool, region string) error {
+	instance, err := a.getDBInstance(dbInstanceID, region)
 	if err != nil {
 		return err
 	}
@@ -154,8 +155,8 @@ func (a *AWSAsserter) AssertDBInstanceMultiAZ(dbInstanceID string, multiAZ bool)
 }
 
 // AssertDBInstanceEncryption checks if a DB instance has the expected encryption setting
-func (a *AWSAsserter) AssertDBInstanceEncryption(dbInstanceID string, encrypted bool) error {
-	instance, err := a.getDBInstance(dbInstanceID)
+func (a *AWSAsserter) AssertDBInstanceEncryption(dbInstanceID string, encrypted bool, region string) error {
+	instance, err := a.getDBInstance(dbInstanceID, region)
 	if err != nil {
 		return err
 	}
@@ -168,14 +169,14 @@ func (a *AWSAsserter) AssertDBInstanceEncryption(dbInstanceID string, encrypted 
 }
 
 // AssertDBInstanceTags checks if a DB instance has the expected tags
-func (a *AWSAsserter) AssertDBInstanceTags(dbInstanceID string, expectedTags map[string]string) error {
-	client, err := a.createRDSClient()
+func (a *AWSAsserter) AssertDBInstanceTags(dbInstanceID string, expectedTags map[string]string, region string) error {
+	client, err := awshelpers.NewRdsClientWithDefaultRegion()
 	if err != nil {
 		return err
 	}
 
 	// First, get the DB instance ARN
-	instance, err := a.getDBInstance(dbInstanceID)
+	instance, err := a.getDBInstance(dbInstanceID, region)
 	if err != nil {
 		return err
 	}
@@ -211,8 +212,8 @@ func (a *AWSAsserter) AssertDBInstanceTags(dbInstanceID string, expectedTags map
 }
 
 // Helper method to get a DB instance
-func (a *AWSAsserter) getDBInstance(dbInstanceID string) (*types.DBInstance, error) {
-	client, err := a.createRDSClient()
+func (a *AWSAsserter) getDBInstance(dbInstanceID string, region string) (*types.DBInstance, error) {
+	client, err := awshelpers.NewRdsClient(region)
 	if err != nil {
 		return nil, err
 	}
@@ -233,14 +234,4 @@ func (a *AWSAsserter) getDBInstance(dbInstanceID string) (*types.DBInstance, err
 	}
 
 	return &result.DBInstances[0], nil
-}
-
-// Helper method to create an RDS client
-func (a *AWSAsserter) createRDSClient() (*rds.Client, error) {
-	cfg, err := config.LoadDefaultConfig(context.TODO())
-	if err != nil {
-		return nil, fmt.Errorf("failed to load AWS config: %v", err)
-	}
-
-	return rds.NewFromConfig(cfg), nil
 }
