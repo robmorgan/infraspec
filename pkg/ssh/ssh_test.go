@@ -1,7 +1,6 @@
 package ssh
 
 import (
-	"errors"
 	"fmt"
 	"testing"
 
@@ -28,28 +27,6 @@ func TestHostWithCustomPort(t *testing.T) {
 // global var for use in mock callback
 var timesCalled int
 
-func TestCheckSshConnectionWithRetryE(t *testing.T) {
-	// Reset the global call count
-	timesCalled = 0
-
-	host := Host{Hostname: "Host"}
-	retries := 10
-
-	assert.Nil(t, CheckSshConnectionWithRetryE(t, host, retries, 3, mockSshConnection))
-}
-
-func TestCheckSshConnectionWithRetryEExceedsMaxRetries(t *testing.T) {
-	// Reset the global call count
-	timesCalled = 0
-
-	host := Host{Hostname: "Host"}
-
-	// Not enough retries
-	retries := 3
-
-	assert.Error(t, CheckSshConnectionWithRetryE(t, host, retries, 3, mockSshConnection))
-}
-
 func TestCheckSshConnectionWithRetry(t *testing.T) {
 	// Reset the global call count
 	timesCalled = 0
@@ -57,33 +34,19 @@ func TestCheckSshConnectionWithRetry(t *testing.T) {
 	host := Host{Hostname: "Host"}
 	retries := 10
 
-	CheckSshConnectionWithRetry(t, host, retries, 3, mockSshConnectionE)
+	assert.Nil(t, CheckSshConnectionWithRetry(host, retries, 3, mockSshConnection))
 }
 
-func TestCheckSshCommandWithRetryE(t *testing.T) {
+func TestCheckSshConnectionWithRetryExceedsMaxRetries(t *testing.T) {
 	// Reset the global call count
 	timesCalled = 0
 
 	host := Host{Hostname: "Host"}
-	command := "echo -n hello world"
-	retries := 10
-
-	_, err := CheckSshCommandWithRetryE(t, host, command, retries, 3, mockSshCommand)
-	assert.Nil(t, err)
-}
-
-func TestCheckSshCommandWithRetryEExceedsRetries(t *testing.T) {
-	// Reset the global call count
-	timesCalled = 0
-
-	host := Host{Hostname: "Host"}
-	command := "echo -n hello world"
 
 	// Not enough retries
 	retries := 3
 
-	_, err := CheckSshCommandWithRetryE(t, host, command, retries, 3, mockSshCommand)
-	assert.Error(t, err)
+	assert.Error(t, CheckSshConnectionWithRetry(host, retries, 3, mockSshConnection))
 }
 
 func TestCheckSshCommandWithRetry(t *testing.T) {
@@ -94,14 +57,33 @@ func TestCheckSshCommandWithRetry(t *testing.T) {
 	command := "echo -n hello world"
 	retries := 10
 
-	CheckSshCommandWithRetry(t, host, command, retries, 3, mockSshCommand)
+	_, err := CheckSshCommandWithRetry(host, command, retries, 3, mockSshCommand)
+	assert.Nil(t, err)
 }
 
-func mockSshConnection(t testing.T, host Host) error {
+func TestCheckSshCommandWithRetryExceedsRetries(t *testing.T) {
+	// Reset the global call count
+	timesCalled = 0
+
+	host := Host{Hostname: "Host"}
+	command := "echo -n hello world"
+
+	// Not enough retries
+	retries := 3
+
+	_, err := CheckSshCommandWithRetry(host, command, retries, 3, mockSshCommand)
+	assert.Error(t, err)
+}
+
+func mockSshCommand(host Host, command string) (string, error) {
+	return "", mockSshConnection(host)
+}
+
+func mockSshConnection(host Host) error {
 	timesCalled += 1
 	if timesCalled >= 5 {
 		return nil
 	} else {
-		return errors.New(fmt.Sprintf("Called %v times", timesCalled))
+		return fmt.Errorf("Called %v times", timesCalled)
 	}
 }

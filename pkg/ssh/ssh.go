@@ -65,7 +65,7 @@ func ScpFileTo(host Host, mode os.FileMode, remotePath, contents string) error {
 		Input:    &scp,
 	}
 
-	defer sshSession.Cleanup(t)
+	defer sshSession.Cleanup()
 
 	_, err = runSSHCommand(sshSession)
 	return err
@@ -122,9 +122,9 @@ func ScpDirFrom(options ScpDownloadOptions, useSudo bool) error {
 		JumpHost: &JumpHostSession{},
 	}
 
-	defer sshSession.Cleanup(t)
+	defer sshSession.Cleanup()
 
-	filesInDir, err := listFileInRemoteDir(t, sshSession, options, useSudo)
+	filesInDir, err := listFileInRemoteDir(sshSession, options, useSudo)
 
 	if err != nil {
 		return err
@@ -158,7 +158,7 @@ func ScpDirFrom(options ScpDownloadOptions, useSudo bool) error {
 
 		config.Logging.Logger.Infof("Copying remote file: %s to local path %s", fullRemoteFilePath, localFilePath)
 
-		err = copyFileFromRemote(t, sshSession, localFile, fullRemoteFilePath, useSudo)
+		err = copyFileFromRemote(sshSession, localFile, fullRemoteFilePath, useSudo)
 		errorsOccurred = multierror.Append(errorsOccurred, err)
 	}
 
@@ -205,9 +205,9 @@ func CheckSshCommand(host Host, command string) (string, error) {
 		JumpHost: &JumpHostSession{},
 	}
 
-	defer sshSession.Cleanup(t)
+	defer sshSession.Cleanup()
 
-	return runSSHCommand(t, sshSession)
+	return runSSHCommand(sshSession)
 }
 
 // CheckSshCommandWithRetry checks that you can connect via SSH to the given host and run the given command until max retries has been exceeded.
@@ -217,7 +217,7 @@ func CheckSshCommandWithRetry(host Host, command string, retries int, sleepBetwe
 	if f != nil {
 		handler = f[0]
 	}
-	return retry.DoWithRetry(t, fmt.Sprintf("Checking SSH connection to %s", host.Hostname), retries, sleepBetweenRetries, func() (string, error) {
+	return retry.DoWithRetry(fmt.Sprintf("Checking SSH connection to %s", host.Hostname), retries, sleepBetweenRetries, func() (string, error) {
 		return handler(host, command)
 	})
 }

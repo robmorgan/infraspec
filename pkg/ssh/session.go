@@ -45,9 +45,9 @@ func (sshSession *SshSession) Cleanup() {
 
 	// Closing the session may result in an EOF error if it's already closed (e.g. due to hitting CTRL + D), so
 	// don't report those errors, as there is nothing actually wrong in that case.
-	Close(t, sshSession.Session, io.EOF.Error())
-	Close(t, sshSession.Client)
-	sshSession.JumpHost.Cleanup(t)
+	Close(sshSession.Session, io.EOF.Error())
+	Close(sshSession.Client)
+	sshSession.JumpHost.Cleanup()
 }
 
 // JumpHostSession is a session with a jump host.
@@ -82,7 +82,7 @@ func Close(closeable Closeable, ignoreErrors ...string) {
 	}
 
 	if err := closeable.Close(); err != nil && !slices.Contains(ignoreErrors, err.Error()) {
-		config.Logging.Logger.Infof(t, "Error closing %s: %s", closeable, err.Error())
+		config.Logging.Logger.Infof("Error closing %s: %s", closeable, err.Error())
 	}
 }
 
