@@ -20,13 +20,28 @@ type Command struct {
 	Env        map[string]string
 }
 
-// RunCommandAndGetOutput runs the given command and returns the output as a string.
-func RunCommandAndGetOutput(command Command) (string, error) {
-	return "", nil
+// ErrWithCmdOutput is an error that includes the output of the command.
+type ErrWithCmdOutput struct {
+	Underlying error
+	Output     *output
 }
 
-// RunCommand runs the given command and returns an error if the command fails.
-func RunCommand(command Command) (*output, error) {
+func (e *ErrWithCmdOutput) Error() string {
+	return fmt.Sprintf("error while running command: %v; %s", e.Underlying, e.Output.Stderr())
+}
+
+// RunCommandAndGetOutput runs the given command and returns the output as a string or an error if the command fails.
+func RunCommandAndGetOutput(command Command) (string, error) {
+	output, err := runCommand(command)
+	if err != nil {
+		return output.Stdout(), &ErrWithCmdOutput{err, output}
+	}
+
+	return output.Stdout(), nil
+}
+
+// runCommand runs the given command and returns an error if the command fails.
+func runCommand(command Command) (*output, error) {
 	config.Logging.Logger.Infof("Running command %s with args %s", command.Name, command.Args)
 
 	cmd := exec.Command(command.Name, command.Args...)
