@@ -56,9 +56,9 @@ func GetRandomStableRegion(approvedRegions []string, forbiddenRegions []string) 
 	return GetRandomRegion(regionsToPickFrom, nil)
 }
 
-// GetRandomRegion gets a randomly chosen AWS region. If approvedRegions is not empty, this will be a region from the approvedRegions
-// list; otherwise, this method will fetch the latest list of regions from the AWS APIs and pick one of those. If
-// forbiddenRegions is not empty, this method will make sure the returned region is not in the forbiddenRegions list.
+// GetRandomRegion gets a randomly chosen AWS region. If approvedRegions is not empty, this will be a region from the
+// approvedRegions list; otherwise, this method will fetch the latest list of regions from the AWS APIs and pick one of
+// those. If forbiddenRegions is not empty, this method will make sure the returned region is not in the forbiddenRegions list.
 func GetRandomRegion(approvedRegions []string, forbiddenRegions []string) (string, error) {
 	regionFromEnvVar := os.Getenv(regionOverrideEnvVarName)
 	if regionFromEnvVar != "" {

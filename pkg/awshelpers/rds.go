@@ -12,6 +12,7 @@ func NewRdsClient(region string) (*rds.Client, error) {
 	return rds.NewFromConfig(*s), nil
 }
 
+// NewRdsClientWithDefaultRegion creates an RDS client with the default region.
 func NewRdsClientWithDefaultRegion() (*rds.Client, error) {
 	return NewRdsClient(defaultRegion)
 }
