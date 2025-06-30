@@ -10,9 +10,13 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-west-2"
+  region = var.region
 }
 
+variable "region" {
+  description = "The AWS region to deploy to"
+  type        = string
+}
 variable "name" {
   description = "The name of the RDS instance"
   type        = string
@@ -27,7 +31,7 @@ variable "engine" {
 variable "engine_version" {
   description = "The engine version to use"
   type        = string
-  default     = "8.0"
+  default     = "8.4"
 }
 
 variable "instance_class" {

@@ -10,7 +10,12 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-west-2"
+  region = var.region
+}
+
+variable "region" {
+  description = "The AWS region to deploy to"
+  type        = string
 }
 
 variable "name" {
@@ -27,7 +32,7 @@ variable "engine" {
 variable "engine_version" {
   description = "The engine version to use"
   type        = string
-  default     = "13.7"
+  default     = "17.5"
 }
 
 variable "instance_class" {
