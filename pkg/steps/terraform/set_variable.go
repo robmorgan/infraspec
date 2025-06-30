@@ -41,9 +41,9 @@ func (s *SetVariableStep) Execute(args ...string) error {
 		return fmt.Errorf("failed to interpolate value: %w", err)
 	}
 
-	// Store in Terraform options
-	if s.ctx.GetTerraformOptions() != nil {
-		s.ctx.GetTerraformOptions().Vars[name] = interpolatedValue
+	// Store in the IaC provisioner options
+	if s.ctx.GetIacProvisionerOptions() != nil {
+		s.ctx.GetIacProvisionerOptions().Vars[name] = interpolatedValue
 	}
 
 	// Also store in context values for future reference
