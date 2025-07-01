@@ -21,39 +21,28 @@ func registerRDSSteps(sc *godog.ScenarioContext) {
 	sc.Step(`^the existing RDS DB instance with the identifier "([^"]*)"$`, newRDSExistingDBInstanceStep)
 	sc.Step(`^the RDS instance "([^"]*)" should exist$`, newRDSInstanceExistsStep)
 	sc.Step(`^the RDS instance "([^"]*)" status should be "([^"]*)"$`, newRDSInstanceStatusStep)
-	sc.Step(`^the RDS instance "([^"]*)" should have instance class "([^"]*)"$`, newRDSInstanceClassStep)
-	sc.Step(`^the RDS instance "([^"]*)" should have engine "([^"]*)"$`, newRDSInstanceEngineStep)
-	sc.Step(`^the RDS instance "([^"]*)" should have allocated storage (\d+)$`, newRDSInstanceStorageStep)
-	sc.Step(`^the RDS instance "([^"]*)" should have MultiAZ "(true|false)"$`, newRDSInstanceMultiAZStep)
-	sc.Step(`^the RDS instance "([^"]*)" should have encryption "(true|false)"$`, newRDSInstanceEncryptionStep)
-	sc.Step(`^the RDS instance "([^"]*)" should have tags$`, newRDSInstanceTagsStep)
+	sc.Step(`^the RDS instance "([^"]*)" instance class should be "([^"]*)"$`, newRDSInstanceClassStep)
+	sc.Step(`^the RDS instance "([^"]*)" engine should be "([^"]*)"$`, newRDSInstanceEngineStep)
+	sc.Step(`^the RDS instance "([^"]*)" allocated storage should be (\d+)$`, newRDSInstanceStorageStep)
+	sc.Step(`^the RDS instance "([^"]*)" MultiAZ should be "(true|false)"$`, newRDSInstanceMultiAZStep)
+	sc.Step(`^the RDS instance "([^"]*)" encryption should be "(true|false)"$`, newRDSInstanceEncryptionStep)
+	sc.Step(`^the RDS instance "([^"]*)" should not be publicly accessible$`, newRDSInstanceNotPubliclyAccessibleStep)
+	sc.Step(`^the RDS instance "([^"]*)" should have the tags$`, newRDSInstanceTagsStep)
 }
 
 func newVerifyAWSRDSAccessStep(ctx context.Context) error {
-	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+	rdsAssert, err := getRdsAsserter(ctx)
 	if err != nil {
 		return err
 	}
-
-	rdsAssert, ok := asserter.(aws.RDSAsserter)
-	if !ok {
-		return fmt.Errorf("asserter does not implement RDSAsserter")
-	}
-
 	return rdsAssert.AssertRDSServiceAccess()
 }
 
 func newVerifyAWSRDSDescribeInstancesStep(ctx context.Context) error {
-	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+	rdsAssert, err := getRdsAsserter(ctx)
 	if err != nil {
 		return err
 	}
-
-	rdsAssert, ok := asserter.(aws.RDSAsserter)
-	if !ok {
-		return fmt.Errorf("asserter does not implement RDSAsserter")
-	}
-
 	return rdsAssert.AssertRDSDescribeInstances()
 }
 
@@ -73,14 +62,9 @@ func newRDSExistingDBInstanceStep(ctx context.Context, dbInstanceID string) erro
 }
 
 func newRDSInstanceStatusStep(ctx context.Context, dbInstanceID string, status string) error {
-	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+	rdsAssert, err := getRdsAsserter(ctx)
 	if err != nil {
 		return err
-	}
-
-	rdsAssert, ok := asserter.(aws.RDSAsserter)
-	if !ok {
-		return fmt.Errorf("asserter does not implement RDSAsserter")
 	}
 
 	region := contexthelpers.GetAwsRegion(ctx)
@@ -92,14 +76,9 @@ func newRDSInstanceStatusStep(ctx context.Context, dbInstanceID string, status s
 }
 
 func newRDSInstanceExistsStep(ctx context.Context, dbInstanceID string) error {
-	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+	rdsAssert, err := getRdsAsserter(ctx)
 	if err != nil {
 		return err
-	}
-
-	rdsAssert, ok := asserter.(aws.RDSAsserter)
-	if !ok {
-		return fmt.Errorf("asserter does not implement RDSAsserter")
 	}
 
 	region := contexthelpers.GetAwsRegion(ctx)
@@ -111,14 +90,9 @@ func newRDSInstanceExistsStep(ctx context.Context, dbInstanceID string) error {
 }
 
 func newRDSInstanceClassStep(ctx context.Context, dbInstanceID, instanceClass string) error {
-	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+	rdsAssert, err := getRdsAsserter(ctx)
 	if err != nil {
 		return err
-	}
-
-	rdsAssert, ok := asserter.(aws.RDSAsserter)
-	if !ok {
-		return fmt.Errorf("asserter does not implement RDSAsserter")
 	}
 
 	region := contexthelpers.GetAwsRegion(ctx)
@@ -130,14 +104,9 @@ func newRDSInstanceClassStep(ctx context.Context, dbInstanceID, instanceClass st
 }
 
 func newRDSInstanceEngineStep(ctx context.Context, dbInstanceID, engine string) error {
-	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+	rdsAssert, err := getRdsAsserter(ctx)
 	if err != nil {
 		return err
-	}
-
-	rdsAssert, ok := asserter.(aws.RDSAsserter)
-	if !ok {
-		return fmt.Errorf("asserter does not implement RDSAsserter")
 	}
 
 	region := contexthelpers.GetAwsRegion(ctx)
@@ -149,14 +118,9 @@ func newRDSInstanceEngineStep(ctx context.Context, dbInstanceID, engine string) 
 }
 
 func newRDSInstanceStorageStep(ctx context.Context, dbInstanceID string, allocatedStorage int32) error {
-	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+	rdsAssert, err := getRdsAsserter(ctx)
 	if err != nil {
 		return err
-	}
-
-	rdsAssert, ok := asserter.(aws.RDSAsserter)
-	if !ok {
-		return fmt.Errorf("asserter does not implement RDSAsserter")
 	}
 
 	region := contexthelpers.GetAwsRegion(ctx)
@@ -177,14 +141,9 @@ func newRDSInstanceStorageStepWrapper(ctx context.Context, dbInstanceID string, 
 }
 
 func newRDSInstanceMultiAZStep(ctx context.Context, dbInstanceID string, multiAZStr string) error {
-	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+	rdsAssert, err := getRdsAsserter(ctx)
 	if err != nil {
 		return err
-	}
-
-	rdsAssert, ok := asserter.(aws.RDSAsserter)
-	if !ok {
-		return fmt.Errorf("asserter does not implement RDSAsserter")
 	}
 
 	multiAZ, err := strconv.ParseBool(multiAZStr)
@@ -201,14 +160,9 @@ func newRDSInstanceMultiAZStep(ctx context.Context, dbInstanceID string, multiAZ
 }
 
 func newRDSInstanceEncryptionStep(ctx context.Context, dbInstanceID string, encryptedStr string) error {
-	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+	rdsAssert, err := getRdsAsserter(ctx)
 	if err != nil {
 		return err
-	}
-
-	rdsAssert, ok := asserter.(aws.RDSAsserter)
-	if !ok {
-		return fmt.Errorf("asserter does not implement RDSAsserter")
 	}
 
 	encrypted, err := strconv.ParseBool(encryptedStr)
@@ -224,15 +178,24 @@ func newRDSInstanceEncryptionStep(ctx context.Context, dbInstanceID string, encr
 	return rdsAssert.AssertDBInstanceEncryption(dbInstanceID, encrypted, region)
 }
 
-func newRDSInstanceTagsStep(ctx context.Context, dbInstanceID string, table *godog.Table) error {
-	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+func newRDSInstanceNotPubliclyAccessibleStep(ctx context.Context, dbInstance string) error {
+	rdsAssert, err := getRdsAsserter(ctx)
 	if err != nil {
 		return err
 	}
 
-	rdsAssert, ok := asserter.(aws.RDSAsserter)
-	if !ok {
-		return fmt.Errorf("asserter does not implement RDSAsserter")
+	region := contexthelpers.GetAwsRegion(ctx)
+	if region == "" {
+		return fmt.Errorf("no AWS region available")
+	}
+
+	return rdsAssert.AssertDBInstancePubliclyAccessible(dbInstance, false, region)
+}
+
+func newRDSInstanceTagsStep(ctx context.Context, dbInstanceID string, table *godog.Table) error {
+	rdsAssert, err := getRdsAsserter(ctx)
+	if err != nil {
+		return err
 	}
 
 	// Convert the table to a map of tags
@@ -247,4 +210,17 @@ func newRDSInstanceTagsStep(ctx context.Context, dbInstanceID string, table *god
 	}
 
 	return rdsAssert.AssertDBInstanceTags(dbInstanceID, tags, region)
+}
+
+func getRdsAsserter(ctx context.Context) (aws.RDSAsserter, error) {
+	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+	if err != nil {
+		return nil, err
+	}
+
+	rdsAssert, ok := asserter.(aws.RDSAsserter)
+	if !ok {
+		return nil, fmt.Errorf("asserter does not implement RDSAsserter")
+	}
+	return rdsAssert, nil
 }
