@@ -70,7 +70,7 @@ func (st *outputStream) String() string {
 
 type merged struct {
 	// ensure that there are no parallel writes
-	sync.Mutex
+	mut   sync.Mutex
 	Lines []string
 }
 
@@ -83,8 +83,8 @@ func (m *merged) String() string {
 }
 
 func (m *merged) WriteString(s string) (n int, err error) {
-	m.Lock()
-	defer m.Unlock()
+	m.mut.Lock()
+	defer m.mut.Unlock()
 
 	m.Lines = append(m.Lines, string(s))
 
