@@ -7,8 +7,10 @@
     "Infof",
 
     // InfraSpec
+    "awshelpers",
     "contexthelpers",
     "iacprovisioner",
+    "infratest",
 
     // Brightfame
     "InfraSpec",
