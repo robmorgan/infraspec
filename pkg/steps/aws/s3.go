@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/robmorgan/infraspec/internal/contexthelpers"
-	t "github.com/robmorgan/infraspec/internal/testing"
 	"github.com/robmorgan/infraspec/pkg/assertions"
 	"github.com/robmorgan/infraspec/pkg/assertions/aws"
 )
@@ -22,7 +21,7 @@ func newS3BucketExistsStep(ctx context.Context, bucketName string) error {
 		return fmt.Errorf("asserter does not implement S3Asserter")
 	}
 
-	return s3Assert.AssertBucketExists(t.GetT(), bucketName)
+	return s3Assert.AssertBucketExists(bucketName)
 }
 
 func newS3BucketVersioningStep(ctx context.Context, bucketName string) error {
@@ -36,5 +35,5 @@ func newS3BucketVersioningStep(ctx context.Context, bucketName string) error {
 		return fmt.Errorf("asserter does not implement S3Asserter")
 	}
 
-	return s3Assert.AssertBucketVersioning(t.GetT(), bucketName, true)
+	return s3Assert.AssertBucketVersioning(bucketName, true)
 }

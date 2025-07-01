@@ -4,10 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/gruntwork-io/terratest/modules/terraform"
-
 	"github.com/robmorgan/infraspec/internal/config"
 	"github.com/robmorgan/infraspec/pkg/assertions"
+	"github.com/robmorgan/infraspec/pkg/iacprovisioner"
 )
 
 // ConfigCtxKey is the key used to store the configuration in the context.Context.
@@ -15,6 +14,12 @@ type ConfigCtxKey struct{}
 
 // TFOptionsCtxKey is the key used to store the Terraform options in the context.Context.
 type TFOptionsCtxKey struct{}
+
+// AwsRegionCtxKey is the key used to store the AWS region in the context.Context.
+type AwsRegionCtxKey struct{}
+
+// RDSDBInstanceIDCtxKey is the key used to store the RDS DB instance ID in the context.Context.
+type RDSDBInstanceIDCtxKey struct{}
 
 // TerraformHasAppliedCtxKey is the key used to store the Terraform has applied flag in the context.Context.
 type TerraformHasAppliedCtxKey struct{}
@@ -49,7 +54,7 @@ func GetAsserter(ctx context.Context, provider string) (assertions.Asserter, err
 		return nil, fmt.Errorf("no assertions available for provider: %s", provider)
 	}
 
-	asserter, err := assertions.New(provider, cfg.DefaultRegion)
+	asserter, err := assertions.New(provider)
 	if err != nil {
 		return nil, err
 	}
@@ -66,13 +71,27 @@ func GetConfig(ctx context.Context) *config.Config {
 	return cfg
 }
 
-// GetTerraformOptions returns the Terraform options from the context.
-func GetTerraformOptions(ctx context.Context) *terraform.Options {
-	opts, exists := ctx.Value(TFOptionsCtxKey{}).(*terraform.Options)
+// GetIacProvisionerOptions returns the IaC provisioner options from the context.
+func GetIacProvisionerOptions(ctx context.Context) *iacprovisioner.Options {
+	opts, exists := ctx.Value(TFOptionsCtxKey{}).(*iacprovisioner.Options)
 	if !exists {
 		return nil
 	}
 	return opts
+}
+
+// SetAwsRegion sets the AWS region in the context.
+func SetAwsRegion(ctx context.Context, region string) context.Context {
+	return context.WithValue(ctx, AwsRegionCtxKey{}, region)
+}
+
+// GetAwsRegion returns the AWS region from the context.
+func GetAwsRegion(ctx context.Context) string {
+	region, exists := ctx.Value(AwsRegionCtxKey{}).(string)
+	if !exists {
+		return ""
+	}
+	return region
 }
 
 // GetTerraformHasApplied returns the Terraform has applied flag from the context.

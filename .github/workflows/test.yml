@@ -19,23 +19,18 @@ jobs:
         env:
           LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
 
-      - uses: actions/checkout@v4
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.0.11"
 
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version: "1.24"
 
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: "1.0.11"
+      - uses: actions/checkout@v4
 
       - name: Run Tests
-        env:
-          AWS_ACCESS_KEY_ID: test
-          AWS_SECRET_ACCESS_KEY: test
-          AWS_DEFAULT_REGION: us-east-1
-          AWS_ENDPOINT_URL: http://localhost:4566
         run: |
           go test -v ./...

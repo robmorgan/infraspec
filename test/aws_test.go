@@ -7,13 +7,33 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/robmorgan/infraspec/internal/runner"
+	"github.com/robmorgan/infraspec/test/testhelpers"
 )
 
 func TestDynamoDBFeature(t *testing.T) {
-	cfg := GetTestConfig(t)
-	featurePath := filepath.Join("features", "aws", "dynamodb.feature")
-	configureEnvForTests()
+	cfg := testhelpers.SetupAWSTestsAndConfig()
+	featurePath := filepath.Join("../", "features", "aws", "dynamodb", "dynamodb_table.feature")
 
 	err := runner.New(cfg).Run(featurePath)
 	require.NoError(t, err)
+}
+
+func TestRdsFeature(t *testing.T) {
+	t.Parallel()
+
+	testCases := []struct {
+		featurePath string
+	}{
+		{filepath.Join("../", "features", "aws", "rds", "rds_db_instance.feature")},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.featurePath, func(t *testing.T) {
+			t.Parallel()
+			cfg := testhelpers.SetupAWSTestsAndConfig()
+
+			err := runner.New(cfg).Run(testCase.featurePath)
+			require.NoError(t, err)
+		})
+	}
 }

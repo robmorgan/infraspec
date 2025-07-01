@@ -3,7 +3,6 @@ package assertions
 import (
 	"fmt"
 
-	"github.com/gruntwork-io/terratest/modules/testing"
 	"github.com/robmorgan/infraspec/pkg/assertions/aws"
 )
 
@@ -16,15 +15,15 @@ const (
 // Provider-specific assertions must be implemented by concrete types
 type Asserter interface {
 	// Common assertions
-	AssertExists(t testing.TestingT, resourceType, resourceName string) error
-	AssertTags(t testing.TestingT, resourceType, resourceName string, tags map[string]string) error
+	AssertExists(resourceType, resourceName string) error
+	AssertTags(resourceType, resourceName string, tags map[string]string) error
 }
 
 // Factory function to create new asserters
-func New(provider, region string) (Asserter, error) {
+func New(provider string) (Asserter, error) {
 	switch provider {
 	case "aws":
-		return aws.NewAWSAsserter(region)
+		return aws.NewAWSAsserter(), nil
 	default:
 		return nil, fmt.Errorf("unsupported provider: %s", provider)
 	}

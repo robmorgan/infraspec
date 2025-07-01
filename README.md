@@ -10,9 +10,12 @@
 
 ## About
 
-Write infrastructure tests for Terraform, Docker, and Kubernetes in plain English, without writing a single line of code. InfraSpec combines a vast library of common infrastructure testing patterns with a domain-specific language for testing infrastructure.
+Write infrastructure tests for Terraform, Docker, and Kubernetes in plain English, without writing a single line of
+code. InfraSpec pairs a vast library of common testing patterns with a domain-specific language for testing
+infrastructure.
 
-Tests are written using an easy to learn [Gherkin](https://cucumber.io/docs/gherkin/) syntax.
+Tests are written using an easy to learn [Gherkin](https://cucumber.io/docs/gherkin/) syntax suitable for both
+technical and non-technical team members.
 
 ```gherkin
 Feature: S3 Bucket Creation
@@ -30,7 +33,6 @@ Feature: S3 Bucket Creation
     And the S3 bucket "my-bucket" should have a server access logging configuration
     And the S3 bucket "my-bucket" should have a encryption configuration
 ```
-
 
 InfraSpec translates your natural language specifications into executable infrastructure tests.
 

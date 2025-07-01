@@ -6,7 +6,6 @@ import (
 	"github.com/cucumber/godog"
 
 	"github.com/robmorgan/infraspec/internal/contexthelpers"
-	t "github.com/robmorgan/infraspec/internal/testing"
 	"github.com/robmorgan/infraspec/pkg/assertions"
 )
 
@@ -22,6 +21,9 @@ func RegisterSteps(sc *godog.ScenarioContext) {
 	// sc.Step(`^the S3 bucket "([^"]*)" should exist$`, newS3BucketExistsStep(ctx))
 	// sc.Step(`^the S3 bucket "([^"]*)" should have versioning enabled$`, newS3BucketVersioningStep(ctx))
 	// sc.Step(`^the S3 bucket "([^"]*)" should have encryption "([^"]*)"$`, newS3BucketEncryptionStep(ctx))
+
+	// RDS steps
+	registerRDSSteps(sc)
 
 	// Generic AWS steps
 	sc.Step(`^the AWS resource "([^"]*)" should exist$`, newAWSResourceExistsStep)
@@ -49,5 +51,5 @@ func newAWSTagsStep(ctx context.Context, table *godog.Table) error {
 	// TODO - you'll need to get the resource ID from the context
 	resourceID := ""
 
-	return asserter.AssertTags(t.GetT(), "", resourceID, tags)
+	return asserter.AssertTags("", resourceID, tags)
 }
