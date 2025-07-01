@@ -14,10 +14,11 @@ import (
 	"time"
 
 	"github.com/hashicorp/go-multierror"
-	"github.com/robmorgan/infraspec/internal/config"
-	"github.com/robmorgan/infraspec/pkg/retry"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
+
+	"github.com/robmorgan/infraspec/internal/config"
+	"github.com/robmorgan/infraspec/pkg/retry"
 )
 
 // Host is a remote host.

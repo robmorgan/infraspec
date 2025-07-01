@@ -7,8 +7,9 @@ import (
 	"slices"
 	"strconv"
 
-	"github.com/robmorgan/infraspec/internal/config"
 	"golang.org/x/crypto/ssh"
+
+	"github.com/robmorgan/infraspec/internal/config"
 )
 
 // SshConnectionOptions are the options for an SSH connection.

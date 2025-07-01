@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	"github.com/aws/aws-sdk-go-v2/service/ssm"
+
 	"github.com/robmorgan/infraspec/internal/collections"
 	"github.com/robmorgan/infraspec/internal/config"
 )

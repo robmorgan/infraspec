@@ -8,8 +8,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/robmorgan/infraspec/internal/config"
 	"golang.org/x/crypto/ssh/agent"
+
+	"github.com/robmorgan/infraspec/internal/config"
 )
 
 type SshAgent struct {

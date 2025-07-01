@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/jinzhu/copier"
+
 	"github.com/robmorgan/infraspec/pkg/ssh"
 )
 
