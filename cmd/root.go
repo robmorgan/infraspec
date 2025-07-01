@@ -79,6 +79,4 @@ func init() {
 	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
 
 	RootCmd.SetVersionTemplate(`{{printf "%s version %s\n" .Name .Version}}`)
-
-	RootCmd.AddCommand(initCmd)
 }
