@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	"go.uber.org/zap/zapcore"
 	"gopkg.in/yaml.v3"
 )
 
@@ -16,8 +17,9 @@ type Config struct {
 	Functions       Functions        `yaml:"functions"`
 	Cleanup         CleanupConfig    `yaml:"cleanup"`
 	Retries         RetryConfig      `yaml:"retries"`
-	Verbose         bool
-	Telemetry       TelemetryConfig
+	Verbose         bool             `yaml:"verbose"` // Enable verbose mode
+	Debug           bool             `yaml:"debug"`   // Enable debug mode
+	Telemetry       TelemetryConfig  `yaml:"telemetry"`
 }
 
 // StepDefinition defines a mapping between Gherkin steps and actions
@@ -58,6 +60,13 @@ type RetryConfig struct {
 
 // DefaultConfig returns a default configuration
 func DefaultConfig() (*Config, error) {
+	// Configure log level
+	Logging.setLogLevel(zapcore.InfoLevel)
+
+	if os.Getenv("INFRASPEC_DEBUG") != "" {
+		Logging.setLogLevel(zapcore.DebugLevel)
+	}
+
 	return &Config{
 		Version:  "1.0",
 		Provider: "aws",

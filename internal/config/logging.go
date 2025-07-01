@@ -59,7 +59,7 @@ func init() {
 
 func (logging) setLogLevel(lvl zapcore.Level) {
 	if Logging.AtomicLogLevel.Level() != lvl {
-		log.Infof("setting LogLevel to %s", lvl)
+		log.Infof("Setting log level to %s", lvl)
 		Logging.AtomicLogLevel.SetLevel(lvl)
 	}
 }

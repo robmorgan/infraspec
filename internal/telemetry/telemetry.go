@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/amplitude/analytics-go/amplitude"
+	"go.uber.org/zap"
 )
 
 const (
@@ -21,6 +22,7 @@ type Client struct {
 type Config struct {
 	Enabled bool
 	UserID  string
+	Logger  *zap.SugaredLogger
 }
 
 // Event types for infraspec
@@ -42,6 +44,7 @@ func New(cfg Config) *Client {
 	config := amplitude.NewConfig(AmplitudeAPIKey)
 	config.FlushQueueSize = 10
 	config.FlushInterval = 10 * time.Second
+	config.Logger = cfg.Logger
 	client := amplitude.NewClient(config)
 
 	return &Client{

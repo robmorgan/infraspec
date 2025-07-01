@@ -8,6 +8,7 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
 
 	"github.com/robmorgan/infraspec/internal/build"
 	"github.com/robmorgan/infraspec/internal/config"
@@ -45,15 +46,11 @@ var (
 				config.Logging.Logger.Debug("Verbose mode enabled")
 			}
 
-			// Disable telemetry if requested
-			if disableTelemetry {
-				cfg.Telemetry.Enabled = false
-			}
-
 			// Initialize telemetry
 			tel := telemetry.New(telemetry.Config{
 				Enabled: cfg.Telemetry.Enabled,
 				UserID:  cfg.Telemetry.UserID,
+				Logger:  zap.NewNop().Sugar(), // Discard all telemetry output
 			})
 
 			// Ensure telemetry is flushed on exit
@@ -83,7 +80,6 @@ var (
 func init() {
 	// Global flags
 	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
-	rootCmd.PersistentFlags().BoolVar(&disableTelemetry, "disable-telemetry", false, "disable telemetry collection")
 
 	rootCmd.SetVersionTemplate(`{{printf "%s version %s\n" .Name .Version}}`)
 }
