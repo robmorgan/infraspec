@@ -69,8 +69,8 @@ func runCommand(command Command) (*output, error) {
 		return output, err
 	}
 
-	//go streamOutputToLogger(stdout, config.Logging.Logger.Info)
-	//go streamOutputToLogger(stderr, config.Logging.Logger.Error)
+	// go streamOutputToLogger(stdout, config.Logging.Logger.Info)
+	// go streamOutputToLogger(stderr, config.Logging.Logger.Error)
 
 	return output, cmd.Wait()
 }

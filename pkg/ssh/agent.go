@@ -8,8 +8,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/robmorgan/infraspec/internal/config"
 	"golang.org/x/crypto/ssh/agent"
+
+	"github.com/robmorgan/infraspec/internal/config"
 )
 
 type SshAgent struct {
@@ -84,7 +85,6 @@ func (s *SshAgent) Stop() {
 // You should stop the agent to cleanup files afterwards by calling `defer sshAgent.Stop()`
 func SshAgentWithKeyPair(keyPair *KeyPair) (*SshAgent, error) {
 	sshAgent, err := SshAgentWithKeyPairs([]*KeyPair{keyPair})
-
 	if err != nil {
 		return nil, err
 	}

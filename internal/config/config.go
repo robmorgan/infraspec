@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"go.uber.org/zap/zapcore"
-	"gopkg.in/yaml.v3"
+	yaml "gopkg.in/yaml.v3"
 )
 
 // Config represents the main configuration structure

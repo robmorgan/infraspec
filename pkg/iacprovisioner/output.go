@@ -30,7 +30,6 @@ func Output(options *Options, key string) (string, error) {
 // OutputRequired calls terraform output for the given variable and return its value. If the value is empty, return an error.
 func OutputRequired(options *Options, key string) (string, error) {
 	out, err := Output(options, key)
-
 	if err != nil {
 		return "", err
 	}
@@ -53,7 +52,6 @@ func OutputRequired(options *Options, key string) (string, error) {
 //
 // This also allows the work to be executed recursively to support complex data types.
 func parseMap(m map[string]interface{}) (map[string]interface{}, error) {
-
 	result := make(map[string]interface{})
 
 	for k, v := range m {
@@ -75,7 +73,6 @@ func parseMap(m map[string]interface{}) (map[string]interface{}, error) {
 		default:
 			result[k] = vt
 		}
-
 	}
 
 	return result, nil
@@ -112,7 +109,6 @@ func parseFloat(v interface{}) interface{} {
 // If the output value is not a map of lists/maps, then it fails the test.
 func OutputMapOfObjects(options *Options, key string) (map[string]interface{}, error) {
 	out, err := OutputJson(options, key)
-
 	if err != nil {
 		return nil, err
 	}
@@ -131,7 +127,6 @@ func OutputMapOfObjects(options *Options, key string) (map[string]interface{}, e
 // If the output value is not a list of maps/lists, then it fails the test.
 func OutputListOfObjects(options *Options, key string) ([]map[string]interface{}, error) {
 	out, err := OutputJson(options, key)
-
 	if err != nil {
 		return nil, err
 	}
@@ -146,7 +141,6 @@ func OutputListOfObjects(options *Options, key string) ([]map[string]interface{}
 
 	for _, m := range output {
 		newMap, err := parseMap(m)
-
 		if err != nil {
 			return nil, err
 		}
