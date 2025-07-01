@@ -32,7 +32,6 @@ func (a *AWSAsserter) AssertBucketExists(bucketName string) error {
 	_, err = client.HeadBucket(context.TODO(), &s3.HeadBucketInput{
 		Bucket: aws.String(bucketName),
 	})
-
 	if err != nil {
 		return fmt.Errorf("bucket %s does not exist or is not accessible: %v", bucketName, err)
 	}

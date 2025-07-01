@@ -47,7 +47,7 @@ func runNew(cmd *cobra.Command, args []string) error {
 	}
 
 	// Create features directory if it doesn't exist
-	if err := os.MkdirAll("features", 0755); err != nil {
+	if err := os.MkdirAll("features", 0o755); err != nil {
 		return fmt.Errorf("failed to create features directory: %w", err)
 	}
 
@@ -63,7 +63,7 @@ func runNew(cmd *cobra.Command, args []string) error {
     Then the service should be healthy
 `
 
-	if err := os.WriteFile(filePath, []byte(template), 0644); err != nil {
+	if err := os.WriteFile(filePath, []byte(template), 0o644); err != nil {
 		return fmt.Errorf("failed to create feature file: %w", err)
 	}
 

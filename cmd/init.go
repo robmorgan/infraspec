@@ -29,7 +29,7 @@ func runInit(cmd *cobra.Command, args []string) error {
 	}
 
 	// Create the features directory
-	if err := os.MkdirAll(featuresDir, 0755); err != nil {
+	if err := os.MkdirAll(featuresDir, 0o755); err != nil {
 		return fmt.Errorf("failed to create features directory: %w", err)
 	}
 

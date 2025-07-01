@@ -21,7 +21,6 @@ lint: ## lint
 
 .PHONY: fmt
 fmt: tidy ## tidy, format and imports
-	[ ! -e buf.gen.yaml ] || buf format -w
 	gofumpt -w `find . -type f -name '*.go' -not -path "./vendor/*"`
 	goimports -w `find . -type f -name '*.go' -not -path "./vendor/*"`
 	gci write --skip-generated -s standard -s default -s "prefix(github.com/robmorgan/infraspec)" .
