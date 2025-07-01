@@ -7,10 +7,11 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/robmorgan/infraspec/internal/runner"
+	"github.com/robmorgan/infraspec/test/testhelpers"
 )
 
 func TestHelloWorldFeature(t *testing.T) {
-	cfg := GetTestConfig(t)
+	cfg := testhelpers.SetupAWSTestsAndConfig()
 	featurePath := filepath.Join("features", "terraform", "helloworld.feature")
 
 	err := runner.New(cfg).Run(featurePath)
