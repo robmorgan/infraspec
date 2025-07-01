@@ -14,8 +14,12 @@ Write infrastructure tests for Terraform, Docker, and Kubernetes in plain Englis
 code. InfraSpec pairs a vast library of common testing patterns with a domain-specific language for testing
 infrastructure.
 
-Tests are written using an easy to learn [Gherkin](https://cucumber.io/docs/gherkin/) syntax suitable for both
+Tests are written using easy to learn [Gherkin](https://cucumber.io/docs/gherkin/) syntax, which is suitable for both
 technical and non-technical team members.
+
+## Quick Start
+
+Here's how easy it is to test a Terraform S3 bucket configuration:
 
 ```gherkin
 Feature: S3 Bucket Creation
@@ -34,19 +38,43 @@ Feature: S3 Bucket Creation
     And the S3 bucket "my-bucket" should have a encryption configuration
 ```
 
-InfraSpec translates your natural language specifications into executable infrastructure tests.
+InfraSpec automatically translates your natural language specifications into executable infrastructure tests.
 
 > [!WARNING]
 > This project is still in heavy development and is likely to change!
 
-## Features
+## ✨ Features
 
-- Write tests in plain English using Gherkin syntax
-- Supports AWS infrastructure testing
-- Integrates with Terraform configurations
-- Zero code required for writing tests
+- 🗣️ **Plain English syntax** - Write tests that read like documentation.
+- 👥 **Team-friendly** - Non-technical stakeholders can contribute and review.
+- 🚀 **Zero setup** - Works with your existing Terraform, Docker, and Kubernetes configurations.
+- 📚 **Rich test library** - Hundreds of pre-built testing patterns for common scenarios.
+- ⚡ **Fast feedback** - Catch infrastructure issues before they reach production.
 
-## Status
+## What can you test?
+
+🏗️ Terraform
+
+- Resource configurations and relationships
+- Security policies and compliance
+- Cost optimization rules
+- Multi-environment consistency
+
+🐳 Docker
+
+- Image security and vulnerabilities
+- Container resource limits
+- Network configurations
+- Build optimization
+
+☸️ Kubernetes
+
+- Deployment strategies and rollouts
+- Resource quotas and limits
+- Network policies and security contexts
+- Service mesh configurations
+
+## Roadmap & Status
 
 At the moment, only a subset of AWS infrastructure is supported, but over time we hope to support other clouds and
 tooling.
@@ -56,29 +84,30 @@ tooling.
 | API Gateway   | Not Implemented     |      ⏳     |
 | DynamoDB      | Partially Supported |      ✅     |
 | ElastiCache   | Not Implemented     |      ⏳     |
+| RDS           | Partially Supported |      ✅     |
 | RDS Aurora    | Not Implemented     |      ⏳     |
 | S3            | Not Implemented     |      ⏳     |
 
-## Why InfraSpec?
-
-- **Natural Language Testing.** Write tests in plain English that both technical and non-technical team members can understand.
-- **LLM Integration.** Leverage AI to generate test scenarios.
-- **Supply Chain Security.** Ensure your infrastructure meets security and compliance requirements.
-- **No Code Required:** Focus on what to test rather than how to test.
 
 ## Installation
 
 ```sh
-go install github.com/robmorgan/infraspec@latest
+
 ```
 
-## Quick Start
+## Getting Started
 
 1. Install InfraSpec using Homebrew:
 
 ```sh
 brew tap robmorgan/infraspec
 brew install infraspec
+```
+
+Or if you have Go installed, you can install InfraSpec using:
+
+```sh
+go install github.com/robmorgan/infraspec@latest
 ```
 
 2. Initialize a repo containing your infrastructure code:
