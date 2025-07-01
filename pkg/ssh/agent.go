@@ -84,7 +84,6 @@ func (s *SshAgent) Stop() {
 // You should stop the agent to cleanup files afterwards by calling `defer sshAgent.Stop()`
 func SshAgentWithKeyPair(keyPair *KeyPair) (*SshAgent, error) {
 	sshAgent, err := SshAgentWithKeyPairs([]*KeyPair{keyPair})
-
 	if err != nil {
 		return nil, err
 	}

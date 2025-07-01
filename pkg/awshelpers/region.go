@@ -135,7 +135,6 @@ func GetAvailabilityZones(region string) ([]string, error) {
 func GetRegionsForService(serviceName string) ([]string, error) {
 	// These values are available in any region, defaulting to us-east-1 since it's the oldest
 	ssmClient, err := NewSsmClient("us-east-1")
-
 	if err != nil {
 		return nil, err
 	}
@@ -144,7 +143,6 @@ func GetRegionsForService(serviceName string) ([]string, error) {
 	resp, err := ssmClient.GetParametersByPath(context.Background(), &ssm.GetParametersByPathInput{
 		Path: aws.String(fmt.Sprintf(paramPath, serviceName)),
 	})
-
 	if err != nil {
 		return nil, err
 	}

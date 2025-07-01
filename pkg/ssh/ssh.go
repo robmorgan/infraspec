@@ -34,11 +34,11 @@ type Host struct {
 }
 
 type ScpDownloadOptions struct {
-	FileNameFilters []string //File names to match. May include bash-style wildcards. E.g., *.log.
-	MaxFileSizeMB   int      //Don't grab any files > MaxFileSizeMB
-	RemoteDir       string   //Copy from this directory on the remote machine
-	LocalDir        string   //Copy RemoteDir to this directory on the local machine
-	RemoteHost      Host     //Connection information for the remote machine
+	FileNameFilters []string // File names to match. May include bash-style wildcards. E.g., *.log.
+	MaxFileSizeMB   int      // Don't grab any files > MaxFileSizeMB
+	RemoteDir       string   // Copy from this directory on the remote machine
+	LocalDir        string   // Copy RemoteDir to this directory on the local machine
+	RemoteHost      Host     // Connection information for the remote machine
 }
 
 // ScpFileTo uploads the contents using SCP to the given host and return an error if the process fails.
@@ -74,7 +74,6 @@ func ScpFileTo(host Host, mode os.FileMode, remotePath, contents string) error {
 // ScpFileFrom downloads the file from remotePath on the given host using SCP and returns an error if the process fails.
 func ScpFileFrom(host Host, remotePath string, localDestination *os.File, useSudo bool) error {
 	authMethods, err := createAuthMethodsForHost(host)
-
 	if err != nil {
 		return err
 	}
@@ -125,7 +124,6 @@ func ScpDirFrom(options ScpDownloadOptions, useSudo bool) error {
 	defer sshSession.Cleanup()
 
 	filesInDir, err := listFileInRemoteDir(sshSession, options, useSudo)
-
 	if err != nil {
 		return err
 	}
@@ -137,21 +135,19 @@ func ScpDirFrom(options ScpDownloadOptions, useSudo bool) error {
 	}
 
 	if errors.Is(err, fs.ErrNotExist) {
-		err := os.MkdirAll(options.LocalDir, 0755)
-
+		err := os.MkdirAll(options.LocalDir, 0o755)
 		if err != nil {
 			return err
 		}
 	}
 
-	var errorsOccurred = new(multierror.Error)
+	errorsOccurred := new(multierror.Error)
 
 	for _, fullRemoteFilePath := range filesInDir {
 		fileName := filepath.Base(fullRemoteFilePath)
 
 		localFilePath := filepath.Join(options.LocalDir, fileName)
 		localFile, err := os.Create(localFilePath)
-
 		if err != nil {
 			return err
 		}
@@ -328,7 +324,6 @@ func listFileInRemoteDir(sshSession *SshSession, options ScpDownloadOptions, use
 
 	finalCommandString := strings.Join(findCommandArgs, " ")
 	resultString, err := CheckSshCommand(options.RemoteHost, finalCommandString)
-
 	if err != nil {
 		return result, err
 	}
@@ -364,7 +359,7 @@ func copyFileFromRemote(sshSession *SshSession, file *os.File, remotePath string
 		fmt.Printf("error reading from remote stdout: %s", err)
 	}
 	defer sshSession.Session.Close()
-	//write to local file
+	// write to local file
 	_, err = file.Write(r)
 
 	return err
@@ -408,7 +403,6 @@ func setUpSSHClient(sshSession *SshSession) error {
 
 func fillSSHClientForHost(sshSession *SshSession) error {
 	client, err := createSSHClient(sshSession.Options)
-
 	if err != nil {
 		return err
 	}
@@ -528,7 +522,6 @@ func createAuthMethodsForHost(host Host) ([]ssh.AuthMethod, error) {
 // https://web.archive.org/web/20170215184048/https://blogs.oracle.com/janp/entry/how_the_scp_protocol_works
 func sendScpCommandsToCopyFile(mode os.FileMode, fileName, contents string) func(io.WriteCloser) {
 	return func(input io.WriteCloser) {
-
 		octalMode := "0" + strconv.FormatInt(int64(mode), 8)
 
 		// Create a file at <filename> with Unix permissions set to <octalMost> and the file will be <len(content)> bytes long.
