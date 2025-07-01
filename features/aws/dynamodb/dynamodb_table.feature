@@ -5,10 +5,10 @@ Feature: DynamoDB Table Creation
 
     Scenario: Create DynamoDB table with basic configuration
         Given I have a Terraform configuration in "../../../examples/aws/dynamodb/dynamodb-table-with-autoscaling"
-        And I set variable "name" to "test-xyzg23"
-        And I set variable "hash_key" to "id"
-        And I set variable "billing_mode" to "PROVISIONED"
-        And I set variable "tags" to
+        And I set the variable "name" to "test-xyzg23"
+        And I set the variable "hash_key" to "id"
+        And I set the variable "billing_mode" to "PROVISIONED"
+        And I set the variable "tags" to
             | Key         | Value     |
             | Environment | test      |
             | Project     | infratest |

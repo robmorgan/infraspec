@@ -12,7 +12,7 @@ import (
 
 func TestHelloWorldFeature(t *testing.T) {
 	cfg := testhelpers.SetupAWSTestsAndConfig()
-	featurePath := filepath.Join("features", "terraform", "helloworld.feature")
+	featurePath := filepath.Join("../", "features", "terraform", "hello_world.feature")
 
 	err := runner.New(cfg).Run(featurePath)
 	require.NoError(t, err)

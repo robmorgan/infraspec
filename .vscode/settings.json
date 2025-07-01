@@ -11,6 +11,7 @@
     "contexthelpers",
     "iacprovisioner",
     "infratest",
+    "testhelpers",
 
     // Brightfame
     "InfraSpec",
