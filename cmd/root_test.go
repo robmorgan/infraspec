@@ -33,10 +33,10 @@ func TestRootCommand(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			buf := new(bytes.Buffer)
-			rootCmd.SetOut(buf)
-			rootCmd.SetArgs(tt.args)
+			RootCmd.SetOut(buf)
+			RootCmd.SetArgs(tt.args)
 
-			err := rootCmd.Execute()
+			err := RootCmd.Execute()
 
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -54,7 +54,7 @@ func TestRootCommandFlags(t *testing.T) {
 	cmd.SetOut(buf)
 
 	assert.False(t, verbose)
-	rootCmd.PersistentFlags().VisitAll(func(flag *pflag.Flag) {
+	RootCmd.PersistentFlags().VisitAll(func(flag *pflag.Flag) {
 		if flag.Name == "verbose" {
 			assert.Equal(t, "false", flag.DefValue)
 		}
