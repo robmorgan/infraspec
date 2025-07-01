@@ -12,17 +12,10 @@ import (
 // RegisterSteps registers all AWS-specific step definitions
 func RegisterSteps(sc *godog.ScenarioContext) {
 	// DynamoDB steps
-	sc.Step(`^the DynamoDB table "([^"]*)" should have tags$`, newDynamoDBTagsStep)
-	sc.Step(`^the DynamoDB table "([^"]*)" should have billing mode "([^"]*)"$`, newDynamoDBBillingModeStep)
-	sc.Step(`^the DynamoDB table "([^"]*)" should have read capacity (\d+)$`, newDynamoDBReadCapacityStep)
-	sc.Step(`^the DynamoDB table "([^"]*)" should have write capacity (\d+)$`, newDynamoDBWriteCapacityStep)
+	registerDynamoDBSteps(sc)
 
 	// S3 steps
-	sc.Step(`^the S3 bucket "([^"]*)" should exist$`, newS3BucketExistsStep)
-	sc.Step(`^the S3 bucket "([^"]*)" should have a versioning configuration$`, newS3BucketVersioningStep)
-	sc.Step(`^the S3 bucket "([^"]*)" should have a public access block$`, newS3BucketPublicAccessBlockStep)
-	sc.Step(`^the S3 bucket "([^"]*)" should have a server access logging configuration$`, newS3BucketServerAccessLoggingStep)
-	sc.Step(`^the S3 bucket "([^"]*)" should have an encryption configuration$`, newS3BucketEncryptionStep)
+	registerS3Steps(sc)
 
 	// RDS steps
 	registerRDSSteps(sc)

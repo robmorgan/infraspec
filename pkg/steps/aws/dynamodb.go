@@ -12,15 +12,27 @@ import (
 )
 
 // DynamoDB Step Definitions
-func newDynamoDBTagsStep(ctx context.Context, tableName string, table *godog.Table) error {
-	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+func registerDynamoDBSteps(sc *godog.ScenarioContext) {
+	sc.Step(`^the DynamoDB table "([^"]*)" should exist$`, newDynamoDBTableExistsStep)
+	sc.Step(`^the DynamoDB table "([^"]*)" should have tags$`, newDynamoDBTagsStep)
+	sc.Step(`^the DynamoDB table "([^"]*)" should have billing mode "([^"]*)"$`, newDynamoDBBillingModeStep)
+	sc.Step(`^the DynamoDB table "([^"]*)" should have read capacity (\d+)$`, newDynamoDBReadCapacityStep)
+	sc.Step(`^the DynamoDB table "([^"]*)" should have write capacity (\d+)$`, newDynamoDBWriteCapacityStep)
+}
+
+func newDynamoDBTableExistsStep(ctx context.Context, tableName string) error {
+	dynamoAssert, err := getDynamoDBAsserter(ctx)
 	if err != nil {
 		return err
 	}
 
-	dynamoAssert, ok := asserter.(aws.DynamoDBAsserter)
-	if !ok {
-		return fmt.Errorf("asserter does not implement DynamoDBAsserter")
+	return dynamoAssert.AssertTableExists(tableName)
+}
+
+func newDynamoDBTagsStep(ctx context.Context, tableName string, table *godog.Table) error {
+	dynamoAssert, err := getDynamoDBAsserter(ctx)
+	if err != nil {
+		return err
 	}
 
 	// convert the tags to map[string]string
@@ -33,28 +45,17 @@ func newDynamoDBTagsStep(ctx context.Context, tableName string, table *godog.Tab
 }
 
 func newDynamoDBBillingModeStep(ctx context.Context, tableName, expectedMode string) error {
-	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+	dynamoAssert, err := getDynamoDBAsserter(ctx)
 	if err != nil {
 		return err
 	}
-
-	dynamoAssert, ok := asserter.(aws.DynamoDBAsserter)
-	if !ok {
-		return fmt.Errorf("asserter does not implement DynamoDBAsserter")
-	}
-
 	return dynamoAssert.AssertBillingMode(tableName, expectedMode)
 }
 
 func newDynamoDBReadCapacityStep(ctx context.Context, tableName string, capacity int64) error {
-	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+	dynamoAssert, err := getDynamoDBAsserter(ctx)
 	if err != nil {
 		return err
-	}
-
-	dynamoAssert, ok := asserter.(aws.DynamoDBAsserter)
-	if !ok {
-		return fmt.Errorf("asserter does not implement DynamoDBAsserter")
 	}
 
 	// We only check read capacity here
@@ -62,16 +63,24 @@ func newDynamoDBReadCapacityStep(ctx context.Context, tableName string, capacity
 }
 
 func newDynamoDBWriteCapacityStep(ctx context.Context, tableName string, capacity int64) error {
-	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+	dynamoAssert, err := getDynamoDBAsserter(ctx)
 	if err != nil {
 		return err
 	}
 
-	dynamoAssert, ok := asserter.(aws.DynamoDBAsserter)
-	if !ok {
-		return fmt.Errorf("asserter does not implement DynamoDBAsserter")
-	}
-
 	// We only check write capacity here
 	return dynamoAssert.AssertCapacity(tableName, -1, capacity)
+}
+
+func getDynamoDBAsserter(ctx context.Context) (aws.DynamoDBAsserter, error) {
+	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+	if err != nil {
+		return nil, err
+	}
+
+	dynamoAssert, ok := asserter.(aws.DynamoDBAsserter)
+	if !ok {
+		return nil, fmt.Errorf("asserter does not implement DynamoDBAsserter")
+	}
+	return dynamoAssert, nil
 }
