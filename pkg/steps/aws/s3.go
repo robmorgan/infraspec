@@ -35,5 +35,47 @@ func newS3BucketVersioningStep(ctx context.Context, bucketName string) error {
 		return fmt.Errorf("asserter does not implement S3Asserter")
 	}
 
-	return s3Assert.AssertBucketVersioning(bucketName, true)
+	return s3Assert.AssertBucketVersioning(bucketName)
+}
+
+func newS3BucketPublicAccessBlockStep(ctx context.Context, bucketName string) error {
+	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+	if err != nil {
+		return err
+	}
+
+	s3Assert, ok := asserter.(aws.S3Asserter)
+	if !ok {
+		return fmt.Errorf("asserter does not implement S3Asserter")
+	}
+
+	return s3Assert.AssertBucketPublicAccessBlock(bucketName)
+}
+
+func newS3BucketServerAccessLoggingStep(ctx context.Context, bucketName string) error {
+	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+	if err != nil {
+		return err
+	}
+
+	s3Assert, ok := asserter.(aws.S3Asserter)
+	if !ok {
+		return fmt.Errorf("asserter does not implement S3Asserter")
+	}
+
+	return s3Assert.AssertBucketServerAccessLogging(bucketName)
+}
+
+func newS3BucketEncryptionStep(ctx context.Context, bucketName string) error {
+	asserter, err := contexthelpers.GetAsserter(ctx, assertions.AWS)
+	if err != nil {
+		return err
+	}
+
+	s3Assert, ok := asserter.(aws.S3Asserter)
+	if !ok {
+		return fmt.Errorf("asserter does not implement S3Asserter")
+	}
+
+	return s3Assert.AssertBucketEncryption(bucketName)
 }
