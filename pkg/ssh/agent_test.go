@@ -76,5 +76,4 @@ func TestMultipleSshAgents(t *testing.T) {
 	assert.NotEqual(t, keys, keys2)
 	assert.Equal(t, strings.TrimSpace(keyPair.PublicKey), keys[0].String())
 	assert.Equal(t, strings.TrimSpace(keyPair2.PublicKey), keys2[0].String())
-
 }

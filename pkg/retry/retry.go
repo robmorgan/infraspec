@@ -5,8 +5,9 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/robmorgan/infraspec/internal/config"
 	"golang.org/x/net/context"
+
+	"github.com/robmorgan/infraspec/internal/config"
 )
 
 // Either contains a result and potentially an error.

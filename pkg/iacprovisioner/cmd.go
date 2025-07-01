@@ -100,7 +100,6 @@ func RunCommand(additionalOptions *Options, additionalArgs ...string) (string, e
 		}
 		return s, err
 	})
-
 }
 
 func defaultExecutable() string {

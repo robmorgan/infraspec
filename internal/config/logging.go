@@ -35,7 +35,7 @@ func init() {
 	encoderCfg.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	encoderCfg.EncodeDuration = nil
 	encoderCfg.EncodeTime = nil
-	//encoderCfg.TimeKey = ""
+	// encoderCfg.TimeKey = ""
 	encoderCfg.EncodeCaller = nil
 
 	logger = zap.New(zapcore.NewCore(
@@ -49,8 +49,8 @@ func init() {
 	Logging.FastLogger = logger
 	Logging.Logger = log
 
-	//cfg.DisableStacktrace = true
-	//cfg.EncoderConfig.EncodeCaller = nil
+	// cfg.DisableStacktrace = true
+	// cfg.EncoderConfig.EncodeCaller = nil
 	// if os.Getenv("INFRASPEC_DEBUG") != "" {
 	// 	cfg.DisableStacktrace = false
 	// 	cfg.EncoderConfig.EncodeCaller = zapcore.ShortCallerEncoder
