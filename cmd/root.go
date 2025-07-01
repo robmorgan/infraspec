@@ -1,9 +1,8 @@
-package main
+package cmd
 
 import (
 	"fmt"
 	"log"
-	"os"
 	"time"
 
 	"github.com/charmbracelet/lipgloss"
@@ -17,16 +16,14 @@ import (
 )
 
 var (
-	verbose          bool
-	disableTelemetry bool
+	verbose bool
 
-	primaryStyle   = lipgloss.NewStyle().Foreground(lipgloss.Color("#0099cc"))
-	secondaryStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#ff69b4"))
+	primaryStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#0099cc"))
 
-	rootCmd = &cobra.Command{
+	RootCmd = &cobra.Command{
 		Use:     "infraspec [features...]",
-		Short:   "InfraSpec tests infrastructure code using Gherkin syntax.",
-		Long:    `InfraSpec is a tool for running infrastructure tests written in pure Gherkin syntax.`,
+		Short:   "InfraSpec tests infrastructure code in plain English.",
+		Long:    `InfraSpec is a tool for testing your cloud infrastructure in plain English, no code required.`,
 		Version: build.Version,
 		Args:    cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
@@ -79,14 +76,7 @@ var (
 
 func init() {
 	// Global flags
-	rootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
+	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
 
-	rootCmd.SetVersionTemplate(`{{printf "%s version %s\n" .Name .Version}}`)
-}
-
-func main() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+	RootCmd.SetVersionTemplate(`{{printf "%s version %s\n" .Name .Version}}`)
 }
