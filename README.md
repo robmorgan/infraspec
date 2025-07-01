@@ -81,19 +81,12 @@ tooling.
 
 | **Product**   | **Description**     | **Status**   |
 | ------------- | ------------------- | ------------ |
-| API Gateway   | Not Implemented     |      ⏳     |
-| DynamoDB      | Partially Supported |      ✅     |
-| ElastiCache   | Not Implemented     |      ⏳     |
-| RDS           | Partially Supported |      ✅     |
-| RDS Aurora    | Not Implemented     |      ⏳     |
-| S3            | Not Implemented     |      ⏳     |
-
-
-## Installation
-
-```sh
-
-```
+| API Gateway   | Not Implemented     |       ⏳     |
+| DynamoDB      | Partially Supported |       ✅     |
+| ElastiCache   | Not Implemented     |       ⏳     |
+| RDS           | Partially Supported |       ✅     |
+| RDS Aurora    | Not Implemented     |       ⏳     |
+| S3            | Partially Supported |       ✅     |
 
 ## Getting Started
 
