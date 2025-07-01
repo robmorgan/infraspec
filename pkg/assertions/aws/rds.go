@@ -24,10 +24,14 @@ type RDSAsserter interface {
 	AssertDBInstanceStorage(dbInstanceID string, allocatedStorage int32, region string) error
 	AssertDBInstanceMultiAZ(dbInstanceID string, multiAZ bool, region string) error
 	AssertDBInstanceEncryption(dbInstanceID string, encrypted bool, region string) error
+	AssertDBInstancePubliclyAccessible(dbInstanceID string, publiclyAccessible bool, region string) error
 	AssertDBInstanceTags(dbInstanceID string, expectedTags map[string]string, region string) error
 }
 
 // AssertRDSServiceAccess checks if the AWS account has permission to access the RDS service
+//
+// TODO: This doesn't work on LocalStack as the API isn't supported, so we're best off leaving this call undocumented,
+// until its ported to use something like the IAM policy simulator instead.
 func (a *AWSAsserter) AssertRDSServiceAccess() error {
 	client, err := awshelpers.NewRdsClientWithDefaultRegion()
 	if err != nil {
@@ -163,6 +167,19 @@ func (a *AWSAsserter) AssertDBInstanceEncryption(dbInstanceID string, encrypted 
 
 	if aws.ToBool(instance.StorageEncrypted) != encrypted {
 		return fmt.Errorf("expected encryption %t, but got %t", encrypted, aws.ToBool(instance.StorageEncrypted))
+	}
+
+	return nil
+}
+
+func (a *AWSAsserter) AssertDBInstancePubliclyAccessible(dbInstanceID string, publiclyAccessible bool, region string) error {
+	instance, err := a.getDBInstance(dbInstanceID, region)
+	if err != nil {
+		return err
+	}
+
+	if aws.ToBool(instance.PubliclyAccessible) != publiclyAccessible {
+		return fmt.Errorf("expected publicly accessible %t, but got %t", publiclyAccessible, aws.ToBool(instance.PubliclyAccessible))
 	}
 
 	return nil
