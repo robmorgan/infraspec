@@ -29,7 +29,7 @@
         "AWS_DEFAULT_REGION": "us-east-1",
         "AWS_ENDPOINT_URL": "http://localhost:4566"
       },
-      "args": ["../test/features/aws/rds.feature"],
+      "args": ["../features/aws/rds/rds_db_instance.feature"],
       "console": "integratedTerminal"
     },
     {
