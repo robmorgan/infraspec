@@ -16,9 +16,7 @@ import (
 func registerRDSSteps(sc *godog.ScenarioContext) {
 	sc.Step(`^I have access to AWS RDS service$`, newVerifyAWSRDSAccessStep)
 	sc.Step(`^I have the necessary IAM permissions to describe RDS instances$`, newVerifyAWSRDSDescribeInstancesStep)
-	sc.Step(`^I have an RDS instance with identifier "([^"]*)"$`, newExistingRDSInstanceWithIdentifierStep)
 	sc.Step(`^I describe the RDS instance$`, newRDSDescribeInstanceStep)
-	sc.Step(`^the existing RDS DB instance with the identifier "([^"]*)"$`, newRDSExistingDBInstanceStep)
 	sc.Step(`^the RDS instance "([^"]*)" should exist$`, newRDSInstanceExistsStep)
 	sc.Step(`^the RDS instance "([^"]*)" status should be "([^"]*)"$`, newRDSInstanceStatusStep)
 	sc.Step(`^the RDS instance "([^"]*)" instance class should be "([^"]*)"$`, newRDSInstanceClassStep)
@@ -46,18 +44,8 @@ func newVerifyAWSRDSDescribeInstancesStep(ctx context.Context) error {
 	return rdsAssert.AssertRDSDescribeInstances()
 }
 
-func newExistingRDSInstanceWithIdentifierStep(ctx context.Context, dbInstanceID string) error {
-	contexthelpers.SetRDSDBInstanceID(ctx, dbInstanceID)
-	return nil
-}
-
 func newRDSDescribeInstanceStep(ctx context.Context) error {
 	// do nothing for now, as we pass the identifier to the steps
-	return nil
-}
-
-func newRDSExistingDBInstanceStep(ctx context.Context, dbInstanceID string) error {
-	contexthelpers.SetRDSDBInstanceID(ctx, dbInstanceID)
 	return nil
 }
 

@@ -5,6 +5,7 @@ import (
 	"slices"
 )
 
+// Intersection returns a new slice with the common elements between a and b.
 func Intersection[T comparable](a, b []T) []T {
 	if len(a) == 0 || len(b) == 0 {
 		return []T{}

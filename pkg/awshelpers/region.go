@@ -82,7 +82,6 @@ func GetRandomRegion(approvedRegions []string, forbiddenRegions []string) (strin
 		return "", fmt.Errorf("no regions available")
 	}
 
-	config.Logging.Logger.Infof("Using region %s", region)
 	return region, nil
 }
 

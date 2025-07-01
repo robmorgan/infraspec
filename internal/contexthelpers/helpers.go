@@ -94,20 +94,6 @@ func GetAwsRegion(ctx context.Context) string {
 	return region
 }
 
-// GetRDSDBInstanceID returns the RDS DB instance ID from the context.
-func GetRDSDBInstanceID(ctx context.Context) string {
-	instanceID, exists := ctx.Value(RDSDBInstanceIDCtxKey{}).(string)
-	if !exists {
-		return ""
-	}
-	return instanceID
-}
-
-// SetRDSDBInstanceID sets the RDS DB instance ID in the context.
-func SetRDSDBInstanceID(ctx context.Context, instanceID string) context.Context {
-	return context.WithValue(ctx, RDSDBInstanceIDCtxKey{}, instanceID)
-}
-
 // GetTerraformHasApplied returns the Terraform has applied flag from the context.
 func GetTerraformHasApplied(ctx context.Context) bool {
 	hasApplied, exists := ctx.Value(TerraformHasAppliedCtxKey{}).(bool)
