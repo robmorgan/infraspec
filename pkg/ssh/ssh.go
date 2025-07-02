@@ -13,7 +13,6 @@ import (
 	"strings"
 	"time"
 
-	multierror "github.com/hashicorp/go-multierror"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
 
@@ -142,8 +141,7 @@ func ScpDirFrom(options ScpDownloadOptions, useSudo bool) error {
 		}
 	}
 
-	errorsOccurred := new(multierror.Error)
-
+	errorsOccurred := []error{}
 	for _, fullRemoteFilePath := range filesInDir {
 		fileName := filepath.Base(fullRemoteFilePath)
 
@@ -156,10 +154,12 @@ func ScpDirFrom(options ScpDownloadOptions, useSudo bool) error {
 		config.Logging.Logger.Infof("Copying remote file: %s to local path %s", fullRemoteFilePath, localFilePath)
 
 		err = copyFileFromRemote(sshSession, localFile, fullRemoteFilePath, useSudo)
-		errorsOccurred = multierror.Append(errorsOccurred, err)
+		if err != nil {
+			errorsOccurred = append(errorsOccurred, err)
+		}
 	}
 
-	return errorsOccurred.ErrorOrNil()
+	return errors.Join(errorsOccurred...)
 }
 
 // CheckSshConnection checks that you can connect via SSH to the given host and return an error if the connection fails.

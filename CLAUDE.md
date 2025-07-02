@@ -4,10 +4,12 @@ This document provides guidance for AI coding assistants working on the InfraSpe
 
 ## Project Overview
 
-**InfraSpec** is a testing framework for cloud infrastructure written in Go that allows users to write infrastructure tests in plain English using Gherkin syntax. The project tests infrastructure code for Terraform, Docker, and Kubernetes without requiring users to write traditional test code.
+**InfraSpec** is a tool for testing your cloud infrastructure written in Go that allows users to write infrastructure
+tests in plain English using Gherkin syntax. The project tests infrastructure code for Terraform, Docker, and
+Kubernetes without requiring users to write traditional test code using frameworks like Terratest.
 
 ### Key Technologies
-- **Language**: Go 1.24.3
+- **Language**: Go 1.24.4
 - **Testing Framework**: Cucumber/Godog for BDD testing
 - **Cloud Integration**: AWS SDK v2 (DynamoDB, RDS, S3, EC2, SSM)
 - **Website**: Next.js with Nextra documentation theme
@@ -17,7 +19,7 @@ This document provides guidance for AI coding assistants working on the InfraSpe
 - `cmd/` - CLI commands and main entry point
 - `pkg/` - Public packages (assertions, helpers, provisioners)
 - `internal/` - Private packages (config, runners, generators)
-- `examples/` - Terraform examples for testing
+- `examples/` - Infrastructure as Code examples for testing
 - `features/` - Gherkin feature files for testing
 - `test/` - Integration tests and test helpers
 - `website/` - Next.js documentation website
@@ -25,16 +27,17 @@ This document provides guidance for AI coding assistants working on the InfraSpe
 ## Development Setup
 
 ### Prerequisites
-- Go 1.24.3 or later
+- Go 1.24.4 or later
 - Make (for build automation)
 - LocalStack (for AWS emulation during testing)
 
 ### Getting Started
-1. Clone the repository
-2. Install dependencies: `make deps`
-3. Run tests: `make go-test-cover`
-4. Format code: `make fmt`
-5. Lint code: `make lint`
+1. Clone the repository.
+2. Fix a bug, improve documentation, or add a new feature.
+3. Install dependencies: `make deps`.
+4. Run tests: `make go-test-cover`.
+5. Format code: `make fmt`.
+6. Lint code: `make lint`.
 
 ### Build Commands
 - `make deps` - Install all dependencies and development tools
@@ -65,7 +68,6 @@ This document provides guidance for AI coding assistants working on the InfraSpe
 - Include retry logic for flaky cloud operations
 
 ### Error Handling
-- Use `github.com/hashicorp/go-multierror` for collecting multiple errors
 - Provide clear, actionable error messages
 - Log appropriately using `go.uber.org/zap`
 - Handle AWS SDK errors gracefully
@@ -111,8 +113,8 @@ Use these scopes when relevant:
 
 ## Architecture Guidelines
 
-### Adding New Cloud Services
-1. Create service-specific assertion functions in `pkg/assertions/aws/`
+### Adding New AWS Cloud Services
+1. Create AWS service-specific assertion functions in `pkg/assertions/aws/`
 2. Add corresponding step definitions in `pkg/steps/aws/`
 3. Create feature examples in `examples/aws/`
 4. Write Gherkin feature files in `features/aws/`
