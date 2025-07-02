@@ -3,6 +3,7 @@ package aws
 import (
 	"context"
 	"fmt"
+	"slices"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -15,11 +16,35 @@ var _ DynamoDBAsserter = (*AWSAsserter)(nil)
 
 // DynamoDBAsserter defines DynamoDB-specific assertions
 type DynamoDBAsserter interface {
+	AssertTableExists(tableName string) error
 	AssertTableTags(tableName string, expectedTags map[string]string) error
 	AssertBillingMode(tableName, expectedMode string) error
 	AssertCapacity(tableName string, readCapacity, writeCapacity int64) error
 }
 
+// AssertTableExists checks if the DynamoDB table exists.
+func (a *AWSAsserter) AssertTableExists(tableName string) error {
+	client, err := a.createDynamoDBClient()
+	if err != nil {
+		return err
+	}
+
+	// List tables
+	input := &dynamodb.ListTablesInput{}
+	result, err := client.ListTables(context.TODO(), input)
+	if err != nil {
+		return fmt.Errorf("error listing tables: %v", err)
+	}
+
+	// Check if the table exists
+	if slices.Contains(result.TableNames, tableName) {
+		return nil
+	}
+
+	return fmt.Errorf("table %s does not exist", tableName)
+}
+
+// AssertTableTags checks if the DynamoDB table has the expected tags.
 func (a *AWSAsserter) AssertTableTags(tableName string, expectedTags map[string]string) error {
 	client, err := a.createDynamoDBClient()
 	if err != nil {
@@ -28,6 +53,9 @@ func (a *AWSAsserter) AssertTableTags(tableName string, expectedTags map[string]
 
 	// First, get the table ARN
 	table, err := a.getDynamoDBTable(tableName)
+	if err != nil {
+		return err
+	}
 
 	// List tags for the table
 	input := &dynamodb.ListTagsOfResourceInput{
@@ -59,6 +87,7 @@ func (a *AWSAsserter) AssertTableTags(tableName string, expectedTags map[string]
 	return nil
 }
 
+// AssertBillingMode checks if the DynamoDB table has the expected billing mode.
 func (a *AWSAsserter) AssertBillingMode(tableName, expectedMode string) error {
 	table, err := a.getDynamoDBTable(tableName)
 	if err != nil {
@@ -78,6 +107,7 @@ func (a *AWSAsserter) AssertBillingMode(tableName, expectedMode string) error {
 	return nil
 }
 
+// AssertCapacity checks if the DynamoDB table has the expected read and write capacity.
 func (a *AWSAsserter) AssertCapacity(tableName string, readCapacity, writeCapacity int64) error {
 	table, err := a.getDynamoDBTable(tableName)
 	if err != nil {

@@ -18,6 +18,14 @@ func TestDynamoDBFeature(t *testing.T) {
 	require.NoError(t, err)
 }
 
+func TestS3Feature(t *testing.T) {
+	cfg := testhelpers.SetupAWSTestsAndConfig()
+	featurePath := filepath.Join("../", "features", "aws", "s3", "s3_bucket.feature")
+
+	err := runner.New(cfg).Run(featurePath)
+	require.NoError(t, err)
+}
+
 func TestRdsFeature(t *testing.T) {
 	t.Parallel()
 
