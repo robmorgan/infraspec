@@ -135,4 +135,4 @@ save both time and money.
 
 ## License
 
-[Fair Core License, Version 1.0, ALv2 Future License](https://github.com/robmorgan/infraspec/blob/main/LICENSE.md)
+[Apache License 2.0](https://github.com/robmorgan/infraspec/blob/main/LICENSE.md)

@@ -55,7 +55,7 @@ const navbar = (
     // ... Your additional navbar options
   />
 )
-const footer = <Footer>{new Date().getFullYear()} © Brightfame.</Footer>
+const footer = <Footer>{new Date().getFullYear()} © Rob Morgan.</Footer>
  
 export default async function RootLayout({ children }) {
   return (
