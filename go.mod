@@ -1,6 +1,6 @@
 module github.com/robmorgan/infraspec
 
-go 1.24.3
+go 1.24.4
 
 require (
 	github.com/amplitude/analytics-go v1.2.0
@@ -17,7 +17,6 @@ require (
 	github.com/cli/safeexec v1.0.1
 	github.com/cucumber/godog v0.15.0
 	github.com/denisbrodbeck/machineid v1.0.1
-	github.com/hashicorp/go-multierror v1.1.1
 	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/pflag v1.0.5
@@ -50,7 +49,6 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gofrs/uuid v4.3.1+incompatible // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.1 // indirect
 	github.com/hashicorp/go-memdb v1.3.4 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
