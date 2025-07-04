@@ -34,3 +34,5 @@ jobs:
       - name: Run Tests
         run: |
           go test -v ./...
+        env:
+          INFRASPEC_TELEMETRY_DISABLED: "1"
