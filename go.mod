@@ -12,7 +12,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/rds v1.91.0
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.82.0
 	github.com/aws/aws-sdk-go-v2/service/ssm v1.59.3
-	github.com/aws/aws-sdk-go-v2/service/sts v1.33.1
+	github.com/aws/aws-sdk-go-v2/service/sts v1.34.0
 	github.com/charmbracelet/lipgloss v1.0.0
 	github.com/cli/safeexec v1.0.1
 	github.com/cucumber/godog v0.15.0
