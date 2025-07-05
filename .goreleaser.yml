@@ -1,0 +1,94 @@
+project_name: infraspec
+
+version: 2
+
+release:
+  github:
+    owner: robmorgan
+    name: infraspec
+  draft: false
+  prerelease: false
+
+builds:
+  - id: infraspec
+    main: ./cmd/infraspec/main.go
+    binary: infraspec
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w -X github.com/robmorgan/infraspec/internal/build.Version={{.Version}}
+      - -X github.com/robmorgan/infraspec/internal/build.Commit={{.Commit}}
+      - -X github.com/robmorgan/infraspec/internal/build.Date={{.Date}}
+    env:
+      - CGO_ENABLED=0
+
+notarize:
+  macos:
+    - enabled: '{{ isEnvSet "MACOS_SIGN_P12" }}'
+      sign:
+        certificate: "{{.Env.MACOS_SIGN_P12}}"
+        password: "{{.Env.MACOS_SIGN_PASSWORD}}"
+        entitlements: ./resources/entitlements.mac.plist
+      notarize:
+        issuer_id: "{{.Env.MACOS_NOTARY_ISSUER_ID}}"
+        key_id: "{{.Env.MACOS_NOTARY_KEY_ID}}"
+        key: "{{.Env.MACOS_NOTARY_KEY}}"
+        wait: true
+        timeout: 30m
+
+archives:
+  - id: archive
+    builds:
+      - infraspec
+    files:
+      - LICENSE
+      - README.md
+    name_template: >-
+      {{ .ProjectName }}-webapp-{{- .Os }}-{{ .Arch }}
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  use: github
+
+homebrew_casks:
+  - name: infraspec
+    ids:
+      - archive
+    binary: infraspec
+    url:
+      template: "https://github.com/robmorgan/infraspec/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
+      verified: "github.com/robmorgan/infraspec/"
+      using: ":homebrew_curl"
+      cookies:
+        license: "accept-backup"
+      referer: "https://infraspec.sh/download/"
+      headers:
+        - "X-Version: {{ .Version }}"
+      user_agent: "InfraSpec/{{ .Version }} ({{ .Os }}/{{ .Arch }})"
+    commit_author:
+      name: goreleaserbot
+      email: bot@goreleaser.com
+    commit_msg_template: "Brew cask update for {{ .ProjectName }} version {{ .Tag }}"
+    directory: Casks
+    caveats: "How to use this binary"
+    homepage: "https://infraspec.sh/"
+    description: "Test your cloud infrastructure in plain English, no code required."
+    skip_upload: true
+
+announce:
+  slack:
+    enabled: true
+    message_template: ":tada: infraspec {{.Tag}} is now available!!!! :tada:"
+    channel: "#infraspec"
+    username: "infraspecbot"

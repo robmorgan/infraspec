@@ -7,7 +7,10 @@ import (
 // Version is dynamically set by the toolchain or overridden by the Makefile.
 var Version = "DEV"
 
-// Date is dynamically set at build time in the Makefile.
+// Commit is dynamically set by the toolchain or overridden in the Makefile.
+var Commit = ""
+
+// Date is dynamically set by the toolchain or overridden in the Makefile.
 var Date = "" // YYYY-MM-DD
 
 func init() {
