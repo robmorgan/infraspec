@@ -2,6 +2,7 @@
   "cSpell.words": [
     // Go
     "fsys",
+    "gomod",
 
     // Logger
     "Infof",
@@ -12,9 +13,11 @@
     "iacprovisioner",
     "infratest",
     "testhelpers",
+    "rollouts",
 
     // Brightfame
     "InfraSpec",
+    "robmorgan",
 
     // Cucumber
     "godog"

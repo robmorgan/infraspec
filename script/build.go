@@ -50,7 +50,7 @@ var tasks = map[string]func(string) error{
 		if buildTags != "" {
 			args = append(args, "-tags", buildTags)
 		}
-		args = append(args, "-ldflags", ldflags, "-o", exe, "./cmd")
+		args = append(args, "-ldflags", ldflags, "-o", exe, "./cmd/infraspec")
 
 		return run(args...)
 	},

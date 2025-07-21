@@ -66,14 +66,14 @@ InfraSpec automatically translates your natural language specifications into exe
 - RDS DB instances
 - S3 bucket configurations
 
-🐳 Docker
+🐳 Docker (Coming Soon)
 
 - Image security and vulnerabilities
 - Container resource limits
 - Network configurations
 - Build optimization
 
-☸️ Kubernetes
+☸️ Kubernetes (Coming Soon)
 
 - Deployment strategies and rollouts
 - Resource quotas and limits
