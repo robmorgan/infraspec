@@ -7,7 +7,7 @@ deps: ## install dependencies
 	go install mvdan.cc/gofumpt@latest
 	go install github.com/daixiang0/gci@latest
 	go install golang.org/x/tools/cmd/goimports@latest
-	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $(go env GOPATH)/bin v2.2.1
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $(go env GOPATH)/bin v2.3.0
 
 .PHONY: tidy
 tidy: ## go mod tidy
