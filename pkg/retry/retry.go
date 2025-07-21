@@ -1,6 +1,7 @@
 package retry
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 	"time"
@@ -42,7 +43,7 @@ func DoWithTimeout(actionDescription string, timeout time.Duration, action func(
 // maxRetries retries. If maxRetries is exceeded, return a MaxRetriesExceeded error.
 func DoWithRetry(actionDescription string, maxRetries int, sleepBetweenRetries time.Duration, action func() (string, error)) (string, error) {
 	out, err := DoWithRetryInterface(actionDescription, maxRetries, sleepBetweenRetries, func() (interface{}, error) { return action() })
-	return out.(string), err
+	return out.(string), err //nolint:errcheck // we also want the output in an error scenario
 }
 
 // DoWithRetryInterface runs the specified action. If it returns a value, return that value. If it returns a FatalError, return that error
@@ -60,7 +61,7 @@ func DoWithRetryInterface(actionDescription string, maxRetries int, sleepBetween
 			return output, nil
 		}
 
-		if _, isFatalErr := err.(FatalError); isFatalErr {
+		if errors.As(err, &FatalError{}) {
 			config.Logging.Logger.Infof("Returning due to fatal error: %v", err)
 			return output, err
 		}

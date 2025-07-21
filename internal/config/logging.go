@@ -35,7 +35,6 @@ func init() {
 	encoderCfg.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	encoderCfg.EncodeDuration = nil
 	encoderCfg.EncodeTime = nil
-	// encoderCfg.TimeKey = ""
 	encoderCfg.EncodeCaller = nil
 
 	logger = zap.New(zapcore.NewCore(
@@ -44,17 +43,10 @@ func init() {
 		Logging.AtomicLogLevel,
 	))
 
-	defer logger.Sync() // flushes buffer, if any
+	defer logger.Sync() //nolint:errcheck // flushes buffer, if any
 	log = logger.Sugar()
 	Logging.FastLogger = logger
 	Logging.Logger = log
-
-	// cfg.DisableStacktrace = true
-	// cfg.EncoderConfig.EncodeCaller = nil
-	// if os.Getenv("INFRASPEC_DEBUG") != "" {
-	// 	cfg.DisableStacktrace = false
-	// 	cfg.EncoderConfig.EncodeCaller = zapcore.ShortCallerEncoder
-	// }
 }
 
 func (logging) setLogLevel(lvl zapcore.Level) {
@@ -72,7 +64,7 @@ func (logging) SetDevelopmentLogger() {
 			func(zapcore.Core) zapcore.Core {
 				return zapcore.NewCore(zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig()), zapcore.AddSync(os.Stderr), Logging.AtomicLogLevel)
 			}))
-	// zap.ReplaceGlobals(clone)
+
 	defer logger.Sync() //nolint:errcheck
 	log = clone.Sugar()
 

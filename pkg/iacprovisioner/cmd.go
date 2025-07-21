@@ -45,7 +45,7 @@ func generateCommand(options *Options, args ...string) shell.Command {
 }
 
 // GetCommonOptions extracts commons terraform options
-func GetCommonOptions(options *Options, args ...string) (*Options, []string) {
+func GetCommonOptions(options *Options, args ...string) (*Options, []string) { //nolint:gocritic
 	if options.Binary == "" {
 		options.Binary = DefaultExecutable
 	}

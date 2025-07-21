@@ -42,6 +42,7 @@ func TestGetAllAwsRegions(t *testing.T) {
 }
 
 func assertLooksLikeRegionName(t *testing.T, regionName string) {
+	t.Helper()
 	assert.Regexp(t, "[a-z]{2}-[a-z]+?-[[:digit:]]+", regionName)
 }
 

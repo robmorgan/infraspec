@@ -9,6 +9,8 @@ import (
 	yaml "gopkg.in/yaml.v3"
 )
 
+var randomStringLength = 6
+
 // Config represents the main configuration structure
 type Config struct {
 	Version         string           `yaml:"version"`
@@ -72,7 +74,7 @@ func DefaultConfig() (*Config, error) {
 		Provider: "aws",
 		Functions: Functions{
 			RandomString: RandomStringConfig{
-				Length:  6,
+				Length:  randomStringLength,
 				Charset: "abcdefghijklmnopqrstuvwxyz0123456789",
 			},
 		},
