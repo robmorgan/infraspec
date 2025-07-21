@@ -13,7 +13,7 @@ jobs:
       - name: Start LocalStack
         uses: LocalStack/setup-localstack@v0.2.4
         with:
-          image-tag: "4.5.0"
+          image-tag: "4.6.0"
           install-awslocal: "true"
           use-pro: "true"
         env:
