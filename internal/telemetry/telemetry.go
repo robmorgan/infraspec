@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	AmplitudeAPIKey = "9dc54881885bd60f8ccbb9cef2dfaa7a" //nolint:gosec
+	AmplitudeAPIKey = "9dc54881885bd60f8ccbb9cef2dfaa7a" //nolint:gosec // TODO - rotate and inject via env var
 )
 
 var (
