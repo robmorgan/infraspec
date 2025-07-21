@@ -60,6 +60,12 @@ InfraSpec automatically translates your natural language specifications into exe
 - Cost optimization rules
 - Multi-environment consistency
 
+☁️ AWS
+
+- DynamoDB tables
+- RDS DB instances
+- S3 bucket configurations
+
 🐳 Docker
 
 - Image security and vulnerabilities
