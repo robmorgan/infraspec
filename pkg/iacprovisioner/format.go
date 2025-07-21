@@ -51,7 +51,7 @@ func FormatArgs(options *Options, args ...string) []string {
 	planFileSupported := slices.Contains(TerraformCommandsWithPlanFileSupport, commandType)
 
 	// Include -var and -var-file flags unless we're running 'apply' with a plan file
-	includeVars := commandType != "apply" || options.PlanFilePath != ""
+	includeVars := commandType != "apply" || options.PlanFilePath == ""
 
 	terraformArgs = append(terraformArgs, args...)
 
@@ -249,7 +249,7 @@ func mapToHclString(m map[string]interface{}) string {
 	keyValuePairs := []string{}
 
 	for key, value := range m {
-		keyValuePair := fmt.Sprintf(`"%q" = %q`, key, toHclString(value, true))
+		keyValuePair := fmt.Sprintf(`%q = %s`, key, toHclString(value, true))
 		keyValuePairs = append(keyValuePairs, keyValuePair)
 	}
 
