@@ -10,7 +10,12 @@ import (
 )
 
 const (
-	AmplitudeAPIKey = "9dc54881885bd60f8ccbb9cef2dfaa7a"
+	AmplitudeAPIKey = "9dc54881885bd60f8ccbb9cef2dfaa7a" //nolint:gosec // TODO - rotate and inject via env var
+)
+
+var (
+	flushQueueSize = 10
+	flushInterval  = 10 * time.Second
 )
 
 type Client struct {
@@ -42,8 +47,8 @@ func New(cfg Config) *Client {
 	}
 
 	config := amplitude.NewConfig(AmplitudeAPIKey)
-	config.FlushQueueSize = 10
-	config.FlushInterval = 10 * time.Second
+	config.FlushQueueSize = flushQueueSize
+	config.FlushInterval = flushInterval
 	config.Logger = cfg.Logger
 	client := amplitude.NewClient(config)
 

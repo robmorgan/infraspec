@@ -24,7 +24,7 @@ type SshAgent struct {
 
 // Create SSH agent, start it in background and returns control back to the main thread
 // You should stop the agent to cleanup files afterwards by calling `defer s.Stop()`
-func NewSshAgent(socketDir string, socketFile string) (*SshAgent, error) {
+func NewSshAgent(socketDir, socketFile string) (*SshAgent, error) {
 	var err error
 	s := &SshAgent{make(chan bool), make(chan bool), socketDir, socketFile, agent.NewKeyring(), nil}
 	s.ln, err = net.Listen("unix", s.socketFile)
@@ -61,7 +61,7 @@ func (s *SshAgent) run() {
 					continue
 				}
 			} else {
-				defer c.Close()
+				defer c.Close() //nolint:gocritic
 				go func(c io.ReadWriter) {
 					err := agent.ServeAgent(s.agent, c)
 					if err != nil {
@@ -115,7 +115,10 @@ func SshAgentWithKeyPairs(keyPairs []*KeyPair) (*SshAgent, error) {
 			return nil, err
 		}
 		key := agent.AddedKey{PrivateKey: privateKey}
-		sshAgent.agent.Add(key)
+		err = sshAgent.agent.Add(key)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return sshAgent, err

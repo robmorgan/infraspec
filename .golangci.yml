@@ -1,62 +1,151 @@
+version: "2"
 run:
-  skip-dirs-use-default: true
-  skip-dirs:
-    - vendor
-    - ent
-    - graph
-  skip-files:
-    - ".*\\.peg\\.go$"
-    - ".*ignored_.*.go$"
-    - "generated.go$"
-    - model_gen.go
-
+  modules-download-mode: readonly
+  issues-exit-code: 1
+  tests: true
 linters:
-  disable-all: true
   enable:
+    - asasalint
+    - asciicheck
+    - bidichk
     - bodyclose
-    - depguard
-    - dogsled
+    - containedctx
+    - contextcheck
+    - cyclop
+    - dupl
+    - durationcheck
+    - errorlint
+    - exhaustive
     - funlen
+    - gocognit
     - goconst
     - gocritic
     - gocyclo
-    - gofmt
-    - goimports
-    - revive
-    - gomnd
+    #- godot
+    - goheader
+    - gomoddirectives
+    - gomodguard
+    - goprintffuncname
     - gosec
+    - makezero
     - misspell
+    - mnd
+    - nakedret
+    - nestif
+    - nilerr
+    - nilnil
+    - noctx
+    - nolintlint
+    - prealloc
+    - predeclared
+    - promlinter
+    - reassign
+    - rowserrcheck
+    - sqlclosecheck
+    - staticcheck
+    - testableexamples
+    - thelper
     - unconvert
-    - typecheck
+    - unparam
+    - usestdlibvars
+    - wastedassign
+    - whitespace
+  settings:
+    cyclop:
+      max-complexity: 11
+    dupl:
+      threshold: 100
+    errcheck:
+      check-type-assertions: true
+      check-blank: false
+    errorlint:
+      errorf: true
+      asserts: true
+      comparison: true
+    exhaustive:
+      default-signifies-exhaustive: false
+    funlen:
+      lines: 100
+      statements: 50
+    gocognit:
+      min-complexity: 15
+    goconst:
+      min-len: 3
+      min-occurrences: 3
+    gocritic:
+      disabled-checks:
+        - dupImport
+        - ifElseChain
+        - octalLiteral
+        - whyNoLint
+        - wrapperFunc
+      enabled-tags:
+        - diagnostic
+        - experimental
+        - opinionated
+        - performance
+        - style
+    gocyclo:
+      min-complexity: 15
+    godot:
+      scope: declarations
+      exclude:
+        - "^fixme:"
+        - "^todo:"
+      capital: false
+    misspell:
+      locale: US
+    nestif:
+      min-complexity: 4
+    prealloc:
+      simple: true
+      range-loops: true
+      for-loops: false
+    staticcheck:
+      checks:
+        - all
+        - -ST1000
+        - -ST1003
+        - -ST1016
+        - -ST1020
+        - -ST1021
+        - -ST1022
+      dot-import-whitelist:
+        - fmt
+    unparam:
+      check-exported: false
+    whitespace:
+      multi-if: false
+      multi-func: false
+  exclusions:
+    generated: lax
 
-    # default
-    - errcheck
-    #- govet
-    - ineffassign
-    #- staticcheck
-    - unused
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
 
-linters-settings:
-  dupl:
-    threshold: 100
-  funlen:
-    lines: 100
-    statements: 60
-  depguard:
-    list-type: blacklist
-    packages:
-      - golang.org/x/net/context
-      - github.com/prometheus/common/log
-#  gocyclo:
-#    min-complexity: 15
+    rules: []
 
+    warn-unused: true
 issues:
-  # Excluding configuration per-path, per-linter, per-text and per-source
-  exclude-rules:
-    - path: _test\.go
-      linters:
-        - gomnd
-    # https://github.com/go-critic/go-critic/issues/926
-    - linters:
-        - gocritic
-      text: "unnecessaryDefer:"
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  new: false
+  fix: false
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - goimports
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(github.com/robmorgan/infraspec)
+    goimports:
+      local-prefixes:
+        - github.com/robmorgan/infraspec

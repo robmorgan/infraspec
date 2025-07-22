@@ -11,9 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Start LocalStack
-        uses: LocalStack/setup-localstack@v0.2.3
+        uses: LocalStack/setup-localstack@v0.2.4
         with:
-          image-tag: "4.5.0"
+          image-tag: "4.6.0"
           install-awslocal: "true"
           use-pro: "true"
         env:
@@ -24,13 +24,15 @@ jobs:
         with:
           terraform_version: "1.0.11"
 
+      - uses: actions/checkout@v4
+
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: "go.mod"
-
-      - uses: actions/checkout@v4
+          go-version-file: go.mod
 
       - name: Run Tests
         run: |
           go test -v ./...
+        env:
+          INFRASPEC_TELEMETRY_DISABLED: "1"

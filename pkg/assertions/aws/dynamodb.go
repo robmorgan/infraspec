@@ -33,7 +33,7 @@ func (a *AWSAsserter) AssertTableExists(tableName string) error {
 	input := &dynamodb.ListTablesInput{}
 	result, err := client.ListTables(context.TODO(), input)
 	if err != nil {
-		return fmt.Errorf("error listing tables: %v", err)
+		return fmt.Errorf("error listing tables: %w", err)
 	}
 
 	// Check if the table exists
@@ -64,7 +64,7 @@ func (a *AWSAsserter) AssertTableTags(tableName string, expectedTags map[string]
 
 	result, err := client.ListTagsOfResource(context.TODO(), input)
 	if err != nil {
-		return fmt.Errorf("error listing tags for table %s: %v", tableName, err)
+		return fmt.Errorf("error listing tags for table %s: %w", tableName, err)
 	}
 
 	// Convert the tags to a map
@@ -151,7 +151,7 @@ func (a *AWSAsserter) getDynamoDBTable(tableName string) (*types.TableDescriptio
 
 	result, err := client.DescribeTable(context.TODO(), input)
 	if err != nil {
-		return nil, fmt.Errorf("error describing DynamoDB table %s: %v", tableName, err)
+		return nil, fmt.Errorf("error describing DynamoDB table %s: %w", tableName, err)
 	}
 
 	return result.Table, nil
@@ -161,7 +161,7 @@ func (a *AWSAsserter) getDynamoDBTable(tableName string) (*types.TableDescriptio
 func (a *AWSAsserter) createDynamoDBClient() (*dynamodb.Client, error) {
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
-		return nil, fmt.Errorf("failed to load AWS config: %v", err)
+		return nil, fmt.Errorf("failed to load AWS config: %w", err)
 	}
 
 	return dynamodb.NewFromConfig(cfg), nil
@@ -169,6 +169,10 @@ func (a *AWSAsserter) createDynamoDBClient() (*dynamodb.Client, error) {
 
 // Helper method to get the billing mode of a DynamoDB table
 func getDynamoDBBTableBillingMode(tableDesc *types.TableDescription) (types.BillingMode, error) {
+	if tableDesc == nil {
+		return "", fmt.Errorf("table description is nil")
+	}
+
 	// Note: as per https://github.com/aws/aws-sdk-go-v2/blob/main/service/dynamodb/types/types.go#L600-L601
 	// if we don't receive a response that includes the BillingModeSummary, it means the table is in PROVISIONED mode.
 	billingMode := types.BillingModeProvisioned

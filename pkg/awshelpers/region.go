@@ -46,7 +46,7 @@ var stableRegions = []string{
 // further restrict the stable region list using approvedRegions and forbiddenRegions. We consider stable regions to be
 // those that have been around for at least 1 year.
 // Note that regions in the approvedRegions list that are not considered stable are ignored.
-func GetRandomStableRegion(approvedRegions []string, forbiddenRegions []string) (string, error) {
+func GetRandomStableRegion(approvedRegions, forbiddenRegions []string) (string, error) {
 	regionsToPickFrom := stableRegions
 	if len(approvedRegions) > 0 {
 		regionsToPickFrom = collections.Intersection[string](regionsToPickFrom, approvedRegions)
@@ -60,7 +60,7 @@ func GetRandomStableRegion(approvedRegions []string, forbiddenRegions []string) 
 // GetRandomRegion gets a randomly chosen AWS region. If approvedRegions is not empty, this will be a region from the
 // approvedRegions list; otherwise, this method will fetch the latest list of regions from the AWS APIs and pick one of
 // those. If forbiddenRegions is not empty, this method will make sure the returned region is not in the forbiddenRegions list.
-func GetRandomRegion(approvedRegions []string, forbiddenRegions []string) (string, error) {
+func GetRandomRegion(approvedRegions, forbiddenRegions []string) (string, error) {
 	regionFromEnvVar := os.Getenv(regionOverrideEnvVarName)
 	if regionFromEnvVar != "" {
 		config.Logging.Logger.Infof("Using AWS region %s from environment variable %s", regionFromEnvVar, regionOverrideEnvVarName)
@@ -100,9 +100,9 @@ func GetAllAwsRegions() ([]string, error) {
 		return nil, err
 	}
 
-	var regions []string
-	for _, region := range out.Regions {
-		regions = append(regions, aws.ToString(region.RegionName))
+	regions := make([]string, len(out.Regions))
+	for i := range out.Regions {
+		regions[i] = aws.ToString(out.Regions[i].RegionName)
 	}
 
 	return regions, nil
@@ -123,9 +123,9 @@ func GetAvailabilityZones(region string) ([]string, error) {
 		return nil, err
 	}
 
-	var out []string
-	for _, availabilityZone := range resp.AvailabilityZones {
-		out = append(out, aws.ToString(availabilityZone.ZoneName))
+	out := make([]string, len(resp.AvailabilityZones))
+	for i := range resp.AvailabilityZones {
+		out[i] = aws.ToString(resp.AvailabilityZones[i].ZoneName)
 	}
 
 	return out, nil
@@ -148,9 +148,9 @@ func GetRegionsForService(serviceName string) ([]string, error) {
 		return nil, err
 	}
 
-	var availableRegions []string
-	for _, p := range resp.Parameters {
-		availableRegions = append(availableRegions, *p.Value)
+	availableRegions := make([]string, len(resp.Parameters))
+	for i := range resp.Parameters {
+		availableRegions[i] = *resp.Parameters[i].Value
 	}
 
 	return availableRegions, nil

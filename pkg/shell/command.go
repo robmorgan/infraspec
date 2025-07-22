@@ -30,6 +30,24 @@ func (e *ErrWithCmdOutput) Error() string {
 	return fmt.Sprintf("error while running command: %v; %s", e.Underlying, e.Output.Stderr())
 }
 
+// Add this near the top of the file
+var allowedCommands = map[string]bool{
+	"terraform": true,
+	"aws":       true,
+	"kubectl":   true,
+	"docker":    true,
+	"git":       true,
+}
+
+// validateCommand checks if the command is in the list of allowed commands
+func validateCommand(command Command) error {
+	if !allowedCommands[command.Name] {
+		return fmt.Errorf("command not allowed: %s", command.Name)
+	}
+
+	return nil
+}
+
 // RunCommandAndGetOutput runs the given command and returns the output as a string or an error if the command fails.
 func RunCommandAndGetOutput(command Command) (string, error) {
 	output, err := runCommand(command)
@@ -44,7 +62,12 @@ func RunCommandAndGetOutput(command Command) (string, error) {
 func runCommand(command Command) (*output, error) {
 	config.Logging.Logger.Infof("Running command %s with args %s", command.Name, command.Args)
 
-	cmd := exec.Command(command.Name, command.Args...)
+	err := validateCommand(command)
+	if err != nil {
+		return nil, err
+	}
+
+	cmd := exec.Command(command.Name, command.Args...) //nolint:gosec
 	cmd.Dir = command.WorkingDir
 	cmd.Stdin = os.Stdin
 	cmd.Env = formatEnvVars(command)
@@ -69,9 +92,6 @@ func runCommand(command Command) (*output, error) {
 		return output, err
 	}
 
-	// go streamOutputToLogger(stdout, config.Logging.Logger.Info)
-	// go streamOutputToLogger(stderr, config.Logging.Logger.Error)
-
 	return output, cmd.Wait()
 }
 
@@ -83,8 +103,9 @@ func readStdoutAndStderr(stdout, stderr io.ReadCloser) (*output, error) {
 	stderrReader := bufio.NewReader(stderr)
 
 	wg := &sync.WaitGroup{}
+	wgSize := 2 // stdout and stderr
 
-	wg.Add(2)
+	wg.Add(wgSize)
 	var stdoutErr, stderrErr error
 	go func() {
 		defer wg.Done()
@@ -112,22 +133,17 @@ func readData(reader *bufio.Reader, writer io.StringWriter) error {
 	for {
 		line, readErr = reader.ReadString('\n')
 
-		// remove newline, our output is in a slice,
-		// one element per line.
+		// remove newline, our output is in a slice, one element per line.
 		line = strings.TrimSuffix(line, "\n")
 
-		// only return early if the line does not have
-		// any contents. We could have a line that does
-		// not not have a newline before io.EOF, we still
-		// need to add it to the output.
-		if len(line) == 0 && readErr == io.EOF {
+		// only return early if the line does not have any contents. We could have a line that does not have a newline
+		// before io.EOF, we still need to add it to the output.
+		if line == "" && readErr == io.EOF {
 			break
 		}
 
-		// logger.Logger has a Logf method, but not a Log method.
-		// We have to use the format string indirection to avoid
-		// interpreting any possible formatting characters in
-		// the line.
+		// logger.Logger has a Logf method, but not a Log method. We have to use the format string indirection to avoid
+		// interpreting any possible formatting characters in the line.
 		//
 		// See https://github.com/gruntwork-io/terratest/issues/982.
 		config.Logging.Logger.Infof("%s", line)
@@ -152,11 +168,4 @@ func formatEnvVars(command Command) []string {
 		env = append(env, fmt.Sprintf("%s=%s", key, value))
 	}
 	return env
-}
-
-func streamOutputToLogger(reader io.ReadCloser, logFunc func(args ...interface{})) {
-	scanner := bufio.NewScanner(reader)
-	for scanner.Scan() {
-		logFunc(scanner.Text())
-	}
 }

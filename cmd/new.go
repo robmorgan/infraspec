@@ -47,7 +47,7 @@ func runNew(cmd *cobra.Command, args []string) error {
 	}
 
 	// Create features directory if it doesn't exist
-	if err := os.MkdirAll("features", 0o755); err != nil {
+	if err := os.MkdirAll("features", 0o755); err != nil { //nolint:mnd
 		return fmt.Errorf("failed to create features directory: %w", err)
 	}
 
@@ -63,7 +63,7 @@ func runNew(cmd *cobra.Command, args []string) error {
     Then the service should be healthy
 `
 
-	if err := os.WriteFile(filePath, []byte(template), 0o644); err != nil {
+	if err := os.WriteFile(filePath, []byte(template), 0o600); err != nil { //nolint:mnd
 		return fmt.Errorf("failed to create feature file: %w", err)
 	}
 
@@ -86,7 +86,7 @@ func getFeatureName(filePath string) string {
 	// Simple title case conversion
 	words := strings.Fields(name)
 	for i, word := range words {
-		if len(word) > 0 {
+		if word != "" {
 			words[i] = strings.ToUpper(word[:1]) + strings.ToLower(word[1:])
 		}
 	}

@@ -132,7 +132,7 @@ func TestDoInBackgroundUntilStopped(t *testing.T) {
 	assert.Equal(t, 3, counter)
 }
 
-func TestDoWithRetryableErrors(t *testing.T) {
+func TestDoWithRetryableErrors(t *testing.T) { //nolint:funlen
 	t.Parallel()
 
 	expectedOutput := "this is the expected output"
