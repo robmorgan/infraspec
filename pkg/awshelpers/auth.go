@@ -39,7 +39,7 @@ func NewAuthenticatedSessionFromDefaultCredentials(region string) (*aws.Config, 
 // NewAuthenticatedSessionFromRole returns a new AWS Config after assuming the
 // role whose ARN is provided in roleARN. If the credentials are not properly
 // configured in the underlying environment, an error is returned.
-func NewAuthenticatedSessionFromRole(region string, roleARN string) (*aws.Config, error) {
+func NewAuthenticatedSessionFromRole(region, roleARN string) (*aws.Config, error) {
 	cfg, err := NewAuthenticatedSessionFromDefaultCredentials(region)
 	if err != nil {
 		return nil, err

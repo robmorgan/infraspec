@@ -207,7 +207,7 @@ func TestSubtractWithStrings(t *testing.T) {
 	}
 }
 
-func TestRandomElement(t *testing.T) {
+func TestRandomElement(t *testing.T) { //nolint:gocognit
 	tests := []struct {
 		name         string
 		slice        []interface{}
@@ -244,7 +244,7 @@ func TestRandomElement(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.iterations == 1 {
+			if tt.iterations == 1 { //nolint:nestif
 				value, ok := RandomElement(tt.slice)
 				if ok != tt.wantOk {
 					t.Errorf("RandomElement() ok = %v, want %v", ok, tt.wantOk)
@@ -273,7 +273,7 @@ func TestRandomElement(t *testing.T) {
 	}
 }
 
-func TestRandomElementTyped(t *testing.T) {
+func TestRandomElementTyped(t *testing.T) { //nolint:gocognit
 	tests := []struct {
 		name   string
 		slice  interface{}

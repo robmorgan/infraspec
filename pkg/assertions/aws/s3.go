@@ -33,7 +33,7 @@ func (a *AWSAsserter) AssertBucketExists(bucketName string) error {
 		Bucket: aws.String(bucketName),
 	})
 	if err != nil {
-		return fmt.Errorf("bucket %s does not exist or is not accessible: %v", bucketName, err)
+		return fmt.Errorf("bucket %s does not exist or is not accessible: %w", bucketName, err)
 	}
 
 	return nil
@@ -51,7 +51,7 @@ func (a *AWSAsserter) AssertBucketVersioning(bucketName string) error {
 
 	result, err := client.GetBucketVersioning(context.TODO(), input)
 	if err != nil {
-		return fmt.Errorf("error getting bucket versioning for %s: %v", bucketName, err)
+		return fmt.Errorf("error getting bucket versioning for %s: %w", bucketName, err)
 	}
 
 	if result.Status != types.BucketVersioningStatusEnabled {
@@ -73,7 +73,7 @@ func (a *AWSAsserter) AssertBucketEncryption(bucketName string) error {
 
 	result, err := client.GetBucketEncryption(context.TODO(), input)
 	if err != nil {
-		return fmt.Errorf("error getting bucket encryption for %s: %v", bucketName, err)
+		return fmt.Errorf("error getting bucket encryption for %s: %w", bucketName, err)
 	}
 
 	if result.ServerSideEncryptionConfiguration == nil || len(result.ServerSideEncryptionConfiguration.Rules) == 0 {
@@ -95,7 +95,7 @@ func (a *AWSAsserter) AssertBucketPublicAccessBlock(bucketName string) error {
 
 	result, err := client.GetPublicAccessBlock(context.TODO(), input)
 	if err != nil {
-		return fmt.Errorf("error getting public access block for %s: %v", bucketName, err)
+		return fmt.Errorf("error getting public access block for %s: %w", bucketName, err)
 	}
 
 	if result.PublicAccessBlockConfiguration == nil {
@@ -117,7 +117,7 @@ func (a *AWSAsserter) AssertBucketServerAccessLogging(bucketName string) error {
 
 	result, err := client.GetBucketLogging(context.TODO(), input)
 	if err != nil {
-		return fmt.Errorf("error getting bucket logging for %s: %v", bucketName, err)
+		return fmt.Errorf("error getting bucket logging for %s: %w", bucketName, err)
 	}
 
 	if result.LoggingEnabled == nil {
@@ -131,7 +131,7 @@ func (a *AWSAsserter) AssertBucketServerAccessLogging(bucketName string) error {
 func (a *AWSAsserter) createS3Client() (*s3.Client, error) {
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
-		return nil, fmt.Errorf("failed to load AWS config: %v", err)
+		return nil, fmt.Errorf("failed to load AWS config: %w", err)
 	}
 
 	return s3.NewFromConfig(cfg), nil

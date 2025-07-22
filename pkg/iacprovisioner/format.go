@@ -51,7 +51,7 @@ func FormatArgs(options *Options, args ...string) []string {
 	planFileSupported := slices.Contains(TerraformCommandsWithPlanFileSupport, commandType)
 
 	// Include -var and -var-file flags unless we're running 'apply' with a plan file
-	includeVars := !(commandType == "apply" && len(options.PlanFilePath) > 0)
+	includeVars := commandType != "apply" || options.PlanFilePath == ""
 
 	terraformArgs = append(terraformArgs, args...)
 
@@ -91,7 +91,7 @@ func FormatArgs(options *Options, args ...string) []string {
 // FormatTerraformPlanFileAsArg formats the out variable as a command-line arg for Terraform (e.g. of the format
 // -out=/some/path/to/plan.out or /some/path/to/plan.out). Only plan supports passing in the plan file as -out; the
 // other commands expect it as the first positional argument. This returns an empty string if outPath is empty string.
-func FormatTerraformPlanFileAsArg(commandType string, outPath string) []string {
+func FormatTerraformPlanFileAsArg(commandType, outPath string) []string {
 	if outPath == "" {
 		return nil
 	}
@@ -149,7 +149,7 @@ func FormatTerraformBackendConfigAsArgs(vars map[string]interface{}) []string {
 // useSpaceAsSeparator is false, an equals will separate the prefix and each var (e.g., -backend-config=foo=bar). If
 // omitNil is false, then nil values will be included, (e.g. -backend-config=foo=null). If
 // omitNil is true, then nil values will not be included, (e.g. -backend-config=foo). If
-func formatTerraformArgs(vars map[string]interface{}, prefix string, useSpaceAsSeparator bool, omitNil bool) []string {
+func formatTerraformArgs(vars map[string]interface{}, prefix string, useSpaceAsSeparator, omitNil bool) []string {
 	var args []string
 
 	for key, value := range vars {
@@ -249,7 +249,7 @@ func mapToHclString(m map[string]interface{}) string {
 	keyValuePairs := []string{}
 
 	for key, value := range m {
-		keyValuePair := fmt.Sprintf(`"%s" = %s`, key, toHclString(value, true))
+		keyValuePair := fmt.Sprintf(`%q = %s`, key, toHclString(value, true))
 		keyValuePairs = append(keyValuePairs, keyValuePair)
 	}
 
@@ -264,7 +264,6 @@ func primitiveToHclString(value interface{}, isNested bool) string {
 	}
 
 	switch v := value.(type) {
-
 	case bool:
 		return strconv.FormatBool(v)
 
@@ -274,7 +273,7 @@ func primitiveToHclString(value interface{}, isNested bool) string {
 			return fmt.Sprintf("\"%v\"", v)
 		}
 
-		return fmt.Sprintf("%v", v)
+		return v
 
 	default:
 		return fmt.Sprintf("%v", v)

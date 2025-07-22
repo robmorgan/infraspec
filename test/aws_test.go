@@ -1,6 +1,7 @@
 package test
 
 import (
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -12,7 +13,7 @@ import (
 
 func TestDynamoDBFeature(t *testing.T) {
 	cfg := testhelpers.SetupAWSTestsAndConfig()
-	featurePath := filepath.Join("../", "features", "aws", "dynamodb", "dynamodb_table.feature")
+	featurePath := filepath.Join("..", string(os.PathSeparator), "features", "aws", "dynamodb", "dynamodb_table.feature")
 
 	err := runner.New(cfg).Run(featurePath)
 	require.NoError(t, err)
@@ -20,7 +21,7 @@ func TestDynamoDBFeature(t *testing.T) {
 
 func TestS3Feature(t *testing.T) {
 	cfg := testhelpers.SetupAWSTestsAndConfig()
-	featurePath := filepath.Join("../", "features", "aws", "s3", "s3_bucket.feature")
+	featurePath := filepath.Join("..", string(os.PathSeparator), "features", "aws", "s3", "s3_bucket.feature")
 
 	err := runner.New(cfg).Run(featurePath)
 	require.NoError(t, err)
@@ -32,7 +33,7 @@ func TestRdsFeature(t *testing.T) {
 	testCases := []struct {
 		featurePath string
 	}{
-		{filepath.Join("../", "features", "aws", "rds", "rds_db_instance.feature")},
+		{filepath.Join("..", string(os.PathSeparator), "features", "aws", "rds", "rds_db_instance.feature")},
 	}
 
 	for _, testCase := range testCases {

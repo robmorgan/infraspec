@@ -28,7 +28,7 @@ func New(cfg *config.Config) *Runner {
 
 // Run executes the specified feature file
 func (r *Runner) Run(featurePath string) error {
-	defer config.Logging.Logger.Sync()
+	defer config.Logging.Logger.Sync() //nolint:errcheck // flushes buffer, if any
 
 	// Validate feature file exists
 	if _, err := os.Stat(featurePath); os.IsNotExist(err) {
@@ -104,7 +104,10 @@ func (r *Runner) initializeScenario(sc *godog.ScenarioContext) {
 		// If a Terraform configuration was applied, destroy it
 		if contexthelpers.GetTerraformHasApplied(ctx) {
 			config.Logging.Logger.Debug("Terraform has been applied, destroying resources")
-			terraform.NewTerraformDestroyStep(ctx)
+			ctx, err = terraform.NewTerraformDestroyStep(ctx)
+			if err != nil {
+				config.Logging.Logger.Error("Error destroying Terraform resources", err)
+			}
 		}
 		return ctx, nil
 	})
@@ -112,7 +115,7 @@ func (r *Runner) initializeScenario(sc *godog.ScenarioContext) {
 
 // cleanup performs necessary cleanup after test execution
 // TODO - this might be necessary if we've invoked tools like Terraform or need to cleanup resources
-func (r *Runner) cleanup() error {
+func (r *Runner) cleanup() error { //nolint:unparam
 	if !r.cfg.Cleanup.Automatic {
 		config.Logging.Logger.Debug("Automatic cleanup disabled, skipping...")
 		return nil
@@ -121,22 +124,6 @@ func (r *Runner) cleanup() error {
 	config.Logging.Logger.Info("Starting cleanup",
 		zap.Int("timeout", r.cfg.Cleanup.Timeout),
 	)
-
-	// done := make(chan error)
-	// go func() {
-	// 	done <- r.context.Cleanup()
-	// }()
-
-	// select {
-	// case err := <-done:
-	// 	if err != nil {
-	// 		return fmt.Errorf("cleanup failed: %w", err)
-	// 	}
-	// 	r.cfg.Logger.Info("Cleanup completed successfully")
-	// 	return nil
-	// case <-time.After(time.Duration(r.cfg.Cleanup.Timeout) * time.Second):
-	// 	return fmt.Errorf("cleanup timed out after %d seconds", r.cfg.Cleanup.Timeout)
-	// }
 
 	config.Logging.Logger.Debug("Cleanup completed successfully")
 	return nil

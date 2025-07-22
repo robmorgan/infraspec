@@ -49,7 +49,7 @@ func newRDSDescribeInstanceStep(ctx context.Context) error {
 	return nil
 }
 
-func newRDSInstanceStatusStep(ctx context.Context, dbInstanceID string, status string) error {
+func newRDSInstanceStatusStep(ctx context.Context, dbInstanceID, status string) error {
 	rdsAssert, err := getRdsAsserter(ctx)
 	if err != nil {
 		return err
@@ -119,16 +119,7 @@ func newRDSInstanceStorageStep(ctx context.Context, dbInstanceID string, allocat
 	return rdsAssert.AssertDBInstanceStorage(dbInstanceID, allocatedStorage, region)
 }
 
-func newRDSInstanceStorageStepWrapper(ctx context.Context, dbInstanceID string, allocatedStorageStr string) error {
-	allocatedStorage, err := strconv.ParseInt(allocatedStorageStr, 10, 32)
-	if err != nil {
-		return fmt.Errorf("invalid allocated storage value: %s", allocatedStorageStr)
-	}
-
-	return newRDSInstanceStorageStep(ctx, dbInstanceID, int32(allocatedStorage))
-}
-
-func newRDSInstanceMultiAZStep(ctx context.Context, dbInstanceID string, multiAZStr string) error {
+func newRDSInstanceMultiAZStep(ctx context.Context, dbInstanceID, multiAZStr string) error {
 	rdsAssert, err := getRdsAsserter(ctx)
 	if err != nil {
 		return err
@@ -147,7 +138,7 @@ func newRDSInstanceMultiAZStep(ctx context.Context, dbInstanceID string, multiAZ
 	return rdsAssert.AssertDBInstanceMultiAZ(dbInstanceID, multiAZ, region)
 }
 
-func newRDSInstanceEncryptionStep(ctx context.Context, dbInstanceID string, encryptedStr string) error {
+func newRDSInstanceEncryptionStep(ctx context.Context, dbInstanceID, encryptedStr string) error {
 	rdsAssert, err := getRdsAsserter(ctx)
 	if err != nil {
 		return err
