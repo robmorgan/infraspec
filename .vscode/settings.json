@@ -13,11 +13,16 @@
     "iacprovisioner",
     "infratest",
     "testhelpers",
+    "retryable",
     "rollouts",
 
     // Brightfame
     "InfraSpec",
     "robmorgan",
+
+    // Go Dependencies
+    "lipgloss",
+    "goreleaser",
 
     // Cucumber
     "godog"
