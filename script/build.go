@@ -71,7 +71,7 @@ func main() {
 		}
 	}
 
-	if len(args) < 2 {
+	if len(args) < 2 { //nolint:mnd
 		if isWindowsTarget() {
 			args = append(args, filepath.Join("bin", "infraspec.exe"))
 		} else {
@@ -131,7 +131,7 @@ func date() string {
 	return t.Format("2006-01-02")
 }
 
-func sourceFilesLaterThan(t time.Time) bool {
+func sourceFilesLaterThan(t time.Time) bool { //nolint:gocognit,gocyclo,cyclop
 	foundLater := false
 	err := filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
 		if err != nil {

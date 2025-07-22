@@ -23,7 +23,6 @@ func RegisterSteps(sc *godog.ScenarioContext) {
 	// Generic AWS steps
 	sc.Step(`^the AWS resource "([^"]*)" should exist$`, newAWSResourceExistsStep)
 	sc.Step(`^the resource "([^"]*)" should have tags$`, newAWSTagsStep)
-	// sc.Step(`^I wait for resource "([^"]*)" to be "([^"]*)"$`, newAWSWaitForStateStep(ctx))
 }
 
 // Generic AWS Steps

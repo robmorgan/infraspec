@@ -81,11 +81,11 @@ func parseMap(m map[string]interface{}) (map[string]interface{}, error) {
 func parseList(items []interface{}) (_ []interface{}, err error) {
 	for i, v := range items {
 		rv := reflect.ValueOf(v)
-		switch rv.Kind() {
+		switch rv.Kind() { //nolint:exhaustive // we only care about maps and slices, but we should revisit this soon
 		case reflect.Map:
-			items[i], err = parseMap(rv.Interface().(map[string]interface{}))
+			items[i], err = parseMap(rv.Interface().(map[string]interface{})) //nolint:errcheck
 		case reflect.Slice, reflect.Array:
-			items[i], err = parseList(rv.Interface().([]interface{}))
+			items[i], err = parseList(rv.Interface().([]interface{})) //nolint:errcheck
 		case reflect.Float64:
 			items[i] = parseFloat(v)
 		}
@@ -132,20 +132,18 @@ func OutputListOfObjects(options *Options, key string) ([]map[string]interface{}
 	}
 
 	var output []map[string]interface{}
-
 	if err := json.Unmarshal([]byte(out), &output); err != nil {
 		return nil, err
 	}
 
-	var result []map[string]interface{}
-
-	for _, m := range output {
+	result := make([]map[string]interface{}, len(output))
+	for i, m := range output {
 		newMap, err := parseMap(m)
 		if err != nil {
 			return nil, err
 		}
 
-		result = append(result, newMap)
+		result[i] = newMap
 	}
 
 	return result, nil
@@ -165,14 +163,14 @@ func OutputList(options *Options, key string) ([]string, error) {
 	}
 
 	if outputList, isList := output.([]interface{}); isList {
-		return parseListOutputTerraform(outputList, key)
+		return parseListOutputTerraform(outputList)
 	}
 
 	return nil, UnexpectedOutputType{Key: key, ExpectedType: "map or list", ActualType: reflect.TypeOf(output).String()}
 }
 
 // Parse a list output in the format it is returned by Terraform 0.12 and newer versions
-func parseListOutputTerraform(outputList []interface{}, key string) ([]string, error) {
+func parseListOutputTerraform(outputList []interface{}) ([]string, error) {
 	list := []string{}
 
 	for _, item := range outputList {
@@ -256,7 +254,7 @@ func OutputForKeys(options *Options, keys []string) (map[string]interface{}, err
 	for _, key := range keys {
 		value, containsValue := outputMap[key]["value"]
 		if !containsValue {
-			return nil, OutputKeyNotFound(string(key))
+			return nil, OutputKeyNotFound(key)
 		}
 		resultMap[key] = value
 	}

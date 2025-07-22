@@ -41,7 +41,7 @@ func (a *AWSAsserter) AssertRDSServiceAccess() error {
 
 	_, err = client.DescribeAccountAttributes(context.TODO(), &rds.DescribeAccountAttributesInput{})
 	if err != nil {
-		return fmt.Errorf("error accessing the RDS service: %v", err)
+		return fmt.Errorf("error accessing the RDS service: %w", err)
 	}
 
 	return nil
@@ -58,7 +58,7 @@ func (a *AWSAsserter) AssertRDSDescribeInstances() error {
 	// Describe the DB instances
 	_, err = client.DescribeDBInstances(context.TODO(), &rds.DescribeDBInstancesInput{})
 	if err != nil {
-		return fmt.Errorf("error describing DB instances: %v", err)
+		return fmt.Errorf("error describing DB instances: %w", err)
 	}
 
 	return nil
@@ -78,7 +78,7 @@ func (a *AWSAsserter) AssertDBInstanceExists(dbInstanceID, region string) error 
 
 	result, err := client.DescribeDBInstances(context.TODO(), input)
 	if err != nil {
-		return fmt.Errorf("error describing DB instance %s: %v", dbInstanceID, err)
+		return fmt.Errorf("error describing DB instance %s: %w", dbInstanceID, err)
 	}
 
 	// Check if the DB instance exists
@@ -206,7 +206,7 @@ func (a *AWSAsserter) AssertDBInstanceTags(dbInstanceID string, expectedTags map
 
 	result, err := client.ListTagsForResource(context.TODO(), input)
 	if err != nil {
-		return fmt.Errorf("error listing tags for DB instance %s: %v", dbInstanceID, err)
+		return fmt.Errorf("error listing tags for DB instance %s: %w", dbInstanceID, err)
 	}
 
 	// Convert the tags to a map
@@ -230,7 +230,7 @@ func (a *AWSAsserter) AssertDBInstanceTags(dbInstanceID string, expectedTags map
 }
 
 // Helper method to get a DB instance
-func (a *AWSAsserter) getDBInstance(dbInstanceID string, region string) (*types.DBInstance, error) {
+func (a *AWSAsserter) getDBInstance(dbInstanceID, region string) (*types.DBInstance, error) {
 	client, err := awshelpers.NewRdsClient(region)
 	if err != nil {
 		return nil, err
@@ -243,7 +243,7 @@ func (a *AWSAsserter) getDBInstance(dbInstanceID string, region string) (*types.
 
 	result, err := client.DescribeDBInstances(context.TODO(), input)
 	if err != nil {
-		return nil, fmt.Errorf("error describing DB instance %s: %v", dbInstanceID, err)
+		return nil, fmt.Errorf("error describing DB instance %s: %w", dbInstanceID, err)
 	}
 
 	// Check if the DB instance exists

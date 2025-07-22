@@ -56,7 +56,7 @@ type outputStream struct {
 }
 
 func (st *outputStream) WriteString(s string) (n int, err error) {
-	st.Lines = append(st.Lines, string(s))
+	st.Lines = append(st.Lines, s)
 	return st.merged.WriteString(s)
 }
 
@@ -86,7 +86,7 @@ func (m *merged) WriteString(s string) (n int, err error) {
 	m.mut.Lock()
 	defer m.mut.Unlock()
 
-	m.Lines = append(m.Lines, string(s))
+	m.Lines = append(m.Lines, s)
 
 	return len(s), nil
 }
