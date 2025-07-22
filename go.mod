@@ -15,7 +15,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.34.1
 	github.com/charmbracelet/lipgloss v1.0.0
 	github.com/cli/safeexec v1.0.1
-	github.com/cucumber/godog v0.15.0
+	github.com/cucumber/godog v0.15.1
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
 	github.com/spf13/cobra v1.8.1
