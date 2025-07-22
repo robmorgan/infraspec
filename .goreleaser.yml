@@ -16,6 +16,7 @@ builds:
     goos:
       - linux
       - darwin
+      - windows
     goarch:
       - amd64
       - arm64
@@ -32,7 +33,7 @@ notarize:
       sign:
         certificate: "{{.Env.MACOS_SIGN_P12}}"
         password: "{{.Env.MACOS_SIGN_PASSWORD}}"
-        entitlements: ./resources/entitlements.mac.plist
+        #entitlements: ./resources/entitlements.mac.plist
       notarize:
         issuer_id: "{{.Env.MACOS_NOTARY_ISSUER_ID}}"
         key_id: "{{.Env.MACOS_NOTARY_KEY_ID}}"
@@ -42,14 +43,14 @@ notarize:
 
 archives:
   - id: archive
-    builds:
+    ids:
       - infraspec
     files:
       - LICENSE
       - README.md
     name_template: >-
       {{ .ProjectName }}-webapp-{{- .Os }}-{{ .Arch }}
-    format: tar.gz
+    formats: ["tar.gz"]
     format_overrides:
       - goos: windows
         formats:
@@ -85,6 +86,11 @@ homebrew_casks:
     homepage: "https://infraspec.sh/"
     description: "Test your cloud infrastructure in plain English, no code required."
     skip_upload: true
+    repository:
+      owner: robmorgan
+      name: homebrew-infraspec
+      branch: main
+      #token: "{{ .Env.GITHUB_PERSONAL_AUTH_TOKEN }}"
 
 announce:
   slack:
