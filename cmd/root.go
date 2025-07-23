@@ -17,6 +17,7 @@ import (
 
 var (
 	verbose bool
+	format  string
 
 	primaryStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#0099cc"))
 
@@ -62,7 +63,7 @@ var (
 			tel.TrackTestRun(featureFile)
 
 			// Run tests
-			if err := runner.New(cfg).Run(featureFile); err != nil {
+			if err := runner.New(cfg).RunWithFormat(featureFile, format); err != nil {
 				// Track test failure
 				tel.TrackTestFailed(featureFile, time.Since(startTime), err.Error())
 				log.Fatalf("Test execution failed: %v", err)
@@ -77,6 +78,7 @@ var (
 func init() {
 	// Global flags
 	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
+	RootCmd.PersistentFlags().StringVarP(&format, "format", "f", "pretty", "output format (pretty, tui, junit, cucumber)")
 
 	RootCmd.SetVersionTemplate(`{{printf "%s version %s\n" .Name .Version}}`)
 }

@@ -14,8 +14,8 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ssm v1.59.3
 	github.com/aws/aws-sdk-go-v2/service/sts v1.34.1
 	github.com/charmbracelet/lipgloss v1.1.0
-	github.com/cli/safeexec v1.0.1
 	github.com/cucumber/godog v0.15.1
+	github.com/cucumber/messages/go/v21 v21.0.1
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/jinzhu/copier v0.0.0-20190924061706-b57f9002281a
 	github.com/spf13/cobra v1.8.1
@@ -48,7 +48,6 @@ require (
 	github.com/charmbracelet/x/cellbuf v0.0.13-0.20250311204145-2c3ea96c31dd // indirect
 	github.com/charmbracelet/x/term v0.2.1 // indirect
 	github.com/cucumber/gherkin/go/v26 v26.2.0 // indirect
-	github.com/cucumber/messages/go/v21 v21.0.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gofrs/uuid v4.3.1+incompatible // indirect
 	github.com/google/uuid v1.6.0 // indirect
