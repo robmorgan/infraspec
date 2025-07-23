@@ -13,6 +13,12 @@ builds:
   - id: infraspec
     main: ./cmd/infraspec/main.go
     binary: infraspec
+    ldflags:
+      - -s -w -X github.com/robmorgan/infraspec/internal/build.Version={{.Version}}
+      - -X github.com/robmorgan/infraspec/internal/build.Commit={{.Commit}}
+      - -X github.com/robmorgan/infraspec/internal/build.Date={{.Date}}
+    env:
+      - CGO_ENABLED=0
     goos:
       - linux
       - darwin
@@ -20,12 +26,6 @@ builds:
     goarch:
       - amd64
       - arm64
-    ldflags:
-      - -s -w -X github.com/robmorgan/infraspec/internal/build.Version={{.Version}}
-      - -X github.com/robmorgan/infraspec/internal/build.Commit={{.Commit}}
-      - -X github.com/robmorgan/infraspec/internal/build.Date={{.Date}}
-    env:
-      - CGO_ENABLED=0
 
 notarize:
   macos:
@@ -33,7 +33,6 @@ notarize:
       sign:
         certificate: "{{.Env.MACOS_SIGN_P12}}"
         password: "{{.Env.MACOS_SIGN_PASSWORD}}"
-        #entitlements: ./resources/entitlements.mac.plist
       notarize:
         issuer_id: "{{.Env.MACOS_NOTARY_ISSUER_ID}}"
         key_id: "{{.Env.MACOS_NOTARY_KEY_ID}}"
@@ -48,13 +47,11 @@ archives:
     files:
       - LICENSE
       - README.md
-    name_template: >-
-      {{ .ProjectName }}-webapp-{{- .Os }}-{{ .Arch }}
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     formats: ["tar.gz"]
     format_overrides:
       - goos: windows
-        formats:
-          - zip
+        formats: ["zip"]
 
 checksum:
   name_template: "checksums.txt"
@@ -63,34 +60,12 @@ changelog:
   use: github
 
 homebrew_casks:
-  - name: infraspec
-    ids:
-      - archive
-    binary: infraspec
-    url:
-      template: "https://github.com/robmorgan/infraspec/releases/download/{{ .Tag }}/{{ .ArtifactName }}"
-      verified: "github.com/robmorgan/infraspec/"
-      using: ":homebrew_curl"
-      cookies:
-        license: "accept-backup"
-      referer: "https://infraspec.sh/download/"
-      headers:
-        - "X-Version: {{ .Version }}"
-      user_agent: "InfraSpec/{{ .Version }} ({{ .Os }}/{{ .Arch }})"
-    commit_author:
-      name: goreleaserbot
-      email: bot@goreleaser.com
-    commit_msg_template: "Brew cask update for {{ .ProjectName }} version {{ .Tag }}"
-    directory: Casks
-    caveats: "How to use this binary"
-    homepage: "https://infraspec.sh/"
-    description: "Test your cloud infrastructure in plain English, no code required."
-    skip_upload: true
-    repository:
+  - repository:
       owner: robmorgan
       name: homebrew-infraspec
-      branch: main
-      #token: "{{ .Env.GITHUB_PERSONAL_AUTH_TOKEN }}"
+    homepage: https://infraspec.sh
+    description: Test your cloud infrastructure in plain English, no code required.
+    license: Apache License 2.0
 
 announce:
   slack:
