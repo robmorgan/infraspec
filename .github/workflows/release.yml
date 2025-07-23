@@ -12,6 +12,16 @@ jobs:
   goreleaser:
     name: Create binary releases
     runs-on: ubuntu-latest
+    env:
+      MACOS_SIGN_P12: ${{ secrets.MACOS_SIGN_P12 }}
+      MACOS_SIGN_PASSWORD: ${{ secrets.MACOS_SIGN_PASSWORD }}
+      MACOS_NOTARY_KEY: ${{ secrets.MACOS_NOTARY_KEY }}
+      MACOS_NOTARY_KEY_ID: ${{ secrets.MACOS_NOTARY_KEY_ID }}
+      MACOS_NOTARY_ISSUER_ID: ${{ secrets.MACOS_NOTARY_ISSUER_ID }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # for updating brew formula in robmorgan/homebrew-infraspec
+      GITHUB_BREW_TOKEN: ${{ secrets.INFRASPEC_GITHUB_BREW_TOKEN }}
+      SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,8 +44,3 @@ jobs:
           distribution: goreleaser
           version: "~> v2"
           args: release --clean
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # for updating brew formula in robmorgan/homebrew-infraspec
-          GITHUB_BREW_TOKEN: ${{ secrets.INFRASPEC_GITHUB_BREW_TOKEN }}
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
