@@ -37,5 +37,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # for updating brew formula in robmorgan/homebrew-infraspec
-          GITHUB_BREW_TOKEN: ${{ secrets.GITHUB_BREW_TOKEN }}
+          GITHUB_BREW_TOKEN: ${{ secrets.INFRASPEC_GITHUB_BREW_TOKEN }}
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
