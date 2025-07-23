@@ -63,6 +63,7 @@ homebrew_casks:
   - repository:
       owner: robmorgan
       name: homebrew-infraspec
+      token: "{{.Env.GITHUB_BREW_TOKEN}}"
     homepage: https://infraspec.sh
     description: Test your cloud infrastructure in plain English, no code required.
     license: Apache License 2.0
