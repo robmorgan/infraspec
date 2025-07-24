@@ -2,6 +2,7 @@ import { Footer, Layout, Navbar } from 'nextra-theme-docs'
 import { Banner, Head } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 import 'nextra-theme-docs/style.css'
+import '../../styles.css';
  
 export const metadata = {
   // Define your metadata here
@@ -25,7 +26,7 @@ export const metadata = {
     'Testing Infrastructure as Code with InfraSpec',
   ],
   title: {
-    default: 'InfraSpec - Infrastructure Testing Tool',
+    default: 'InfraSpec - Simple Infrastructure Tests',
     template: '%s | InfraSpec',
   },
   openGraph: {
@@ -51,8 +52,18 @@ export const metadata = {
 const banner = <Banner storageKey="some-key">Nextra 4.0 is released 🎉</Banner>
 const navbar = (
   <Navbar
-    logo={<b>InfraSpec</b>}
-    // ... Your additional navbar options
+    logo={
+      <>
+        <img src="/infraspec_logo_512.png" width="50px" loading="lazy" />
+        <span className="mx-2 font-extrabold hidden md:inline select-none">
+          InfraSpec
+        </span>
+        <span className="text-gray-600 font-normal hidden lg:!inline whitespace-no-wrap">
+          Simple Infrastructure Tests
+        </span>
+      </>
+    }
+    projectLink="https://github.com/robmorgan/infraspec"
   />
 )
 const footer = <Footer>{new Date().getFullYear()} © Rob Morgan.</Footer>
