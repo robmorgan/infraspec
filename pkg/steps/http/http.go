@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"path/filepath"
-	"strconv"
-	"strings"
 
 	"github.com/cucumber/godog"
 
@@ -24,27 +22,27 @@ func registerHTTPSteps(sc *godog.ScenarioContext) {
 	// Basic HTTP requests
 	sc.Step(`^I make a ([A-Z]+) request to "([^"]*)"$`, newHTTPRequestStep)
 	sc.Step(`^I make a ([A-Z]+) request to "([^"]*)" with body "([^"]*)"$`, newHTTPRequestWithBodyStep)
-	
+
 	// Response status assertions
 	sc.Step(`^the HTTP response status should be (\d+)$`, newHTTPResponseStatusStep)
 	sc.Step(`^the ([A-Z]+) request to "([^"]*)" should return status (\d+)$`, newHTTPRequestStatusStep)
-	
+
 	// Response content assertions
 	sc.Step(`^the HTTP response should contain "([^"]*)"$`, newHTTPResponseContainsStep)
 	sc.Step(`^the ([A-Z]+) response from "([^"]*)" should contain "([^"]*)"$`, newHTTPRequestContainsStep)
-	
+
 	// JSON response assertions
 	sc.Step(`^the HTTP response should be valid JSON$`, newHTTPResponseJSONStep)
 	sc.Step(`^the ([A-Z]+) response from "([^"]*)" should be valid JSON$`, newHTTPRequestJSONStep)
-	
+
 	// Header assertions
 	sc.Step(`^the HTTP response header "([^"]*)" should be "([^"]*)"$`, newHTTPResponseHeaderStep)
 	sc.Step(`^the ([A-Z]+) response from "([^"]*)" should have header "([^"]*)" with value "([^"]*)"$`, newHTTPRequestHeaderStep)
-	
+
 	// File upload
 	sc.Step(`^I upload file "([^"]*)" to "([^"]*)" as field "([^"]*)"$`, newHTTPFileUploadStep)
 	sc.Step(`^I upload file "([^"]*)" to "([^"]*)" as field "([^"]*)" with form data:$`, newHTTPFileUploadWithDataStep)
-	
+
 	// Request with headers
 	sc.Step(`^I make a ([A-Z]+) request to "([^"]*)" with headers:$`, newHTTPRequestWithHeadersStep)
 	sc.Step(`^I make a ([A-Z]+) request to "([^"]*)" with body "([^"]*)" and headers:$`, newHTTPRequestWithBodyAndHeadersStep)

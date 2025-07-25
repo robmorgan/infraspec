@@ -12,8 +12,8 @@ import (
 
 // MockHTTPServer provides a configurable mock HTTP server for testing
 type MockHTTPServer struct {
-	server   *httptest.Server
-	routes   map[string]http.HandlerFunc
+	server    *httptest.Server
+	routes    map[string]http.HandlerFunc
 	responses map[string]MockResponse
 }
 
@@ -151,7 +151,7 @@ func (m *MockHTTPServer) handleRequest(w http.ResponseWriter, r *http.Request) {
 // handleEcho returns request details as JSON
 func (m *MockHTTPServer) handleEcho(w http.ResponseWriter, r *http.Request) {
 	body, _ := io.ReadAll(r.Body)
-	
+
 	response := map[string]interface{}{
 		"method":  r.Method,
 		"url":     r.URL.String(),
@@ -160,7 +160,7 @@ func (m *MockHTTPServer) handleEcho(w http.ResponseWriter, r *http.Request) {
 	}
 
 	jsonResponse, _ := json.Marshal(response)
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
 	w.Write(jsonResponse)
@@ -203,7 +203,7 @@ func (m *MockHTTPServer) handleUpload(w http.ResponseWriter, r *http.Request) {
 	}
 
 	jsonResponse, _ := json.Marshal(response)
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
 	w.Write(jsonResponse)
@@ -216,7 +216,7 @@ func (m *MockHTTPServer) handleHeaders(w http.ResponseWriter, r *http.Request) {
 	}
 
 	jsonResponse, _ := json.Marshal(response)
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
 	w.Write(jsonResponse)

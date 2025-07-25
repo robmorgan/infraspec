@@ -1,7 +1,6 @@
 package integration
 
 import (
-	"context"
 	"os"
 	"path/filepath"
 	"testing"
@@ -78,7 +77,7 @@ func TestHTTPAssertions(t *testing.T) {
 			"Authorization": "Bearer test-token",
 			"X-Custom":      "test-value",
 		}
-		
+
 		err := httpAsserter.AssertResponseStatus("GET", mockServer.URL()+"/headers", 200, headers)
 		assert.NoError(t, err)
 	})
@@ -88,7 +87,7 @@ func TestHTTPAssertions(t *testing.T) {
 		tempDir := t.TempDir()
 		testFile := filepath.Join(tempDir, "test.txt")
 		content := "Hello, World!"
-		err := os.WriteFile(testFile, []byte(content), 0644)
+		err := os.WriteFile(testFile, []byte(content), 0o644)
 		require.NoError(t, err)
 
 		// Set base directory
@@ -99,7 +98,7 @@ func TestHTTPAssertions(t *testing.T) {
 			"uuid": "test-uuid",
 			"type": "document",
 		}
-		
+
 		err = httpAsserter.UploadFile(mockServer.URL()+"/upload", "file", "test.txt", nil, formData)
 		assert.NoError(t, err)
 	})
@@ -126,7 +125,7 @@ func TestHTTPAssertions(t *testing.T) {
 func TestHTTPAsserterImplementsInterface(t *testing.T) {
 	// Ensure HTTPAsserter implements the base Asserter interface
 	var _ assertions.Asserter = (*http.HTTPAsserter)(nil)
-	
+
 	// Ensure HTTPAsserter implements the HTTPAssertions interface
 	var _ http.HTTPAssertions = (*http.HTTPAsserter)(nil)
 }
@@ -144,7 +143,7 @@ func TestHTTPAsserterFactory(t *testing.T) {
 
 func TestHTTPAsserterWithTimeout(t *testing.T) {
 	httpAsserter := http.NewHTTPAsserter()
-	
+
 	// Test with a non-existent endpoint (should timeout/fail)
 	err := httpAsserter.AssertResponseStatus("GET", "http://localhost:99999/nonexistent", 200, nil)
 	assert.Error(t, err)

@@ -52,7 +52,7 @@ func (h *HTTPAsserter) AssertExists(resourceType, resourceName string) error {
 	if resourceType != "http_endpoint" {
 		return fmt.Errorf("unsupported resource type for HTTP asserter: %s", resourceType)
 	}
-	
+
 	return h.AssertResponseStatus("GET", resourceName, 200, nil)
 }
 
