@@ -47,20 +47,20 @@ func registerHTTPSteps(sc *godog.ScenarioContext) {
 }
 
 // Basic HTTP request step (uses endpoint from scenario state)
-func newHTTPRequestStep(ctx context.Context, method string) error {
+func newHTTPRequestStep(ctx context.Context, method string) (context.Context, error) {
 	options := contexthelpers.GetHttpRequestOptions(ctx)
 	if options == nil || options.Endpoint == "" {
-		return fmt.Errorf("no HTTP endpoint set. Use 'Given I have a HTTP endpoint at' step first")
+		return ctx, fmt.Errorf("no HTTP endpoint set. Use 'Given I have a HTTP endpoint at' step first")
 	}
 	options.Method = method
 	client := httphelpers.NewHttpClient("")
 	resp, err := client.Do(ctx, options)
 	if err != nil {
-		return fmt.Errorf("failed to make HTTP request: %w", err)
+		return ctx, fmt.Errorf("failed to make HTTP request: %w", err)
 	}
 	// Store the response in the context for later assertions
 	ctx = context.WithValue(ctx, contexthelpers.HttpResponseCtxKey{}, resp)
-	return nil
+	return ctx, nil
 }
 
 // Response status assertion for the last request
@@ -118,12 +118,18 @@ func newHTTPResponseHeaderStep(ctx context.Context, headerName, expectedValue st
 // Setup step functions
 func newHTTPEndpointStep(ctx context.Context, url string) (context.Context, error) {
 	opts := contexthelpers.GetHttpRequestOptions(ctx)
+	if opts == nil {
+		opts = &httphelpers.HttpRequestOptions{}
+	}
 	opts.Endpoint = url
 	return context.WithValue(ctx, contexthelpers.HttpRequestOptionsCtxKey{}, opts), nil
 }
 
 func newSetHeadersStep(ctx context.Context, headersTable *godog.Table) (context.Context, error) {
 	opts := contexthelpers.GetHttpRequestOptions(ctx)
+	if opts == nil {
+		opts = &httphelpers.HttpRequestOptions{}
+	}
 	opts.Headers = make(map[string]string)
 	for _, row := range headersTable.Rows {
 		opts.Headers[row.Cells[0].Value] = row.Cells[1].Value
@@ -133,6 +139,9 @@ func newSetHeadersStep(ctx context.Context, headersTable *godog.Table) (context.
 
 func newSetFileStep(ctx context.Context, filePath, fieldName string) (context.Context, error) {
 	opts := contexthelpers.GetHttpRequestOptions(ctx)
+	if opts == nil {
+		opts = &httphelpers.HttpRequestOptions{}
+	}
 	opts.File = &httphelpers.File{
 		FieldName: fieldName,
 		FilePath:  filePath,
@@ -142,12 +151,18 @@ func newSetFileStep(ctx context.Context, filePath, fieldName string) (context.Co
 
 func newSetContentTypeStep(ctx context.Context, contentType string) (context.Context, error) {
 	opts := contexthelpers.GetHttpRequestOptions(ctx)
+	if opts == nil {
+		opts = &httphelpers.HttpRequestOptions{}
+	}
 	opts.ContentType = contentType
 	return context.WithValue(ctx, contexthelpers.HttpRequestOptionsCtxKey{}, opts), nil
 }
 
 func newSetFormDataStep(ctx context.Context, formDataTable *godog.Table) (context.Context, error) {
 	opts := contexthelpers.GetHttpRequestOptions(ctx)
+	if opts == nil {
+		opts = &httphelpers.HttpRequestOptions{}
+	}
 	opts.FormData = make(map[string]string)
 	for _, row := range formDataTable.Rows {
 		opts.FormData[row.Cells[0].Value] = row.Cells[1].Value
@@ -157,6 +172,9 @@ func newSetFormDataStep(ctx context.Context, formDataTable *godog.Table) (contex
 
 func newSetRequestBodyStep(ctx context.Context, body string) (context.Context, error) {
 	opts := contexthelpers.GetHttpRequestOptions(ctx)
+	if opts == nil {
+		opts = &httphelpers.HttpRequestOptions{}
+	}
 	opts.RequestBody = []byte(body)
 	return context.WithValue(ctx, contexthelpers.HttpRequestOptionsCtxKey{}, opts), nil
 }

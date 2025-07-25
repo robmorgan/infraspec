@@ -4,7 +4,8 @@ Feature: HTTP Requests
   So that I can validate API functionality and infrastructure
 
   Scenario: Test basic GET request
-    When I make a GET request to "https://httpbin.org/get"
+    Given I have a HTTP endpoint at "https://httpbin.org/get"
+    When I make a GET request
     Then the HTTP response status should be 200
 
   Scenario: Test GET request with JSON response
