@@ -10,18 +10,18 @@ Feature: HTTP Requests
   Scenario: Test GET request with JSON response
     Given I have a HTTP endpoint at "https://httpbin.org/json"
     When I make a GET request
-    Then the response status should be 200
+    Then the HTTP response status should be 200
     And the response should be valid JSON
 
   Scenario: Test POST request with status assertion
     Given I have a HTTP endpoint at "https://httpbin.org/json"
     When I make a POST request
-    Then the response status should be 200
+    Then the HTTP response status should be 200
 
   Scenario: Test response content validation
     Given I have a HTTP endpoint at "https://httpbin.org/user-agent"
     When I make a GET request
-    Then the response should contain "User-Agent"
+    Then the HTTP response should contain "User-Agent"
 
   Scenario: Test custom headers
     Given I have a HTTP endpoint at "https://httpbin.org/headers"
