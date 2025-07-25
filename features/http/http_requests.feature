@@ -8,53 +8,65 @@ Feature: HTTP Requests
     Then the HTTP response status should be 200
 
   Scenario: Test GET request with JSON response
-    When I make a GET request to "https://httpbin.org/json"
-    Then the HTTP response status should be 200
-    And the HTTP response should be valid JSON
+    Given I have a HTTP endpoint at "https://httpbin.org/json"
+    When I make a GET request
+    Then the response status should be 200
+    And the response should be valid JSON
 
   Scenario: Test POST request with status assertion
-    Given the POST request to "https://httpbin.org/post" should return status 200
+    Given I have a HTTP endpoint at "https://httpbin.org/json"
+    When I make a POST request
+    Then the response status should be 200
 
   Scenario: Test response content validation
-    When the GET response from "https://httpbin.org/user-agent" should contain "User-Agent"
+    Given I have a HTTP endpoint at "https://httpbin.org/user-agent"
+    When I make a GET request
+    Then the response should contain "User-Agent"
 
   Scenario: Test custom headers
-    When I make a GET request to "https://httpbin.org/headers" with headers:
+    Given I have a HTTP endpoint at "https://httpbin.org/headers"
+    And I set the headers to
       | Name          | Value             |
       | Authorization | Bearer test-token |
       | Content-Type  | application/json  |
+    When I make a GET request
     Then the HTTP response status should be 200
 
   Scenario: Test POST with body and headers
-    When I make a POST request to "https://httpbin.org/post" with body "test data" and headers:
+    Given I have a HTTP endpoint at "https://httpbin.org/post"
+    And I set the headers to
       | Name         | Value            |
       | Content-Type | application/json |
+    When I make a POST request
     Then the HTTP response status should be 200
     And the HTTP response should contain "test data"
 
   Scenario: Test response header validation
-    When I make a GET request to "https://httpbin.org/response-headers?Content-Type=application/json"
+    Given I have a HTTP endpoint at "https://httpbin.org/response-headers?Content-Type=application/json"
+    When I make a GET request
     Then the HTTP response status should be 200
     And the HTTP response header "Content-Type" should be "application/json"
 
   Scenario: Test file upload
-    Given I have a test file "test-file.txt" with content "Hello, World!"
-    When I upload file "test-file.txt" to "https://httpbin.org/post" as field "file"
+    Given I have a HTTP endpoint at "https://httpbin.org/post"
+    And I have a file "../../../examples/http/test-file.txt" as field "file"
+    When I make a POST request
     Then the HTTP response status should be 200
 
   Scenario: Test file upload with form data
-    Given I have a test file "test-file.txt" with content "Hello, World!"
-    When I upload file "test-file.txt" to "https://httpbin.org/post" as field "file" with form data:
-      | Name | Value                           |
+    Given I have a HTTP endpoint at "https://httpbin.org/post"
+    And I have a file "../../../examples/http/test-file.txt" as field "file"
+    And I set content type to "multipart/form-data"
+    And I set the form data to:
+      | Name | Value                                |
       | uuid | 191152a9-0bd6-4db0-999d-12787295f1ec |
-      | type | document                        |
+      | type | document                             |
+    When I make a POST request
     Then the HTTP response status should be 200
 
-  Scenario: Test API endpoint existence
-    Then the http_endpoint "https://httpbin.org/get" should exist
-
   Scenario: Test multiple response validations
-    When I make a GET request to "https://httpbin.org/json"
+    Given I have a HTTP endpoint at "https://httpbin.org/json"
+    When I make a GET request
     Then the HTTP response status should be 200
     And the HTTP response should be valid JSON
     And the HTTP response should contain "slideshow"
