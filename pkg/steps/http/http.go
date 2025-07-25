@@ -14,12 +14,6 @@ import (
 
 // RegisterSteps registers all HTTP step definitions
 func RegisterSteps(sc *godog.ScenarioContext) {
-	// Clear scenario state before each scenario
-	sc.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
-		clearScenarioState()
-		return ctx, nil
-	})
-
 	registerHTTPSteps(sc)
 }
 
@@ -31,9 +25,11 @@ func registerHTTPSteps(sc *godog.ScenarioContext) {
 	sc.Step(`^I have a file "([^"]*)" as field "([^"]*)"$`, newSetFileStep)
 	sc.Step(`^I set content type to "([^"]*)"$`, newSetContentTypeStep)
 	sc.Step(`^I set the form data to:$`, newSetFormDataStep)
+	sc.Step(`^I set the request body to "([^"]*)"$`, newSetRequestBodyStep)
 
 	// Basic HTTP requests
 	sc.Step(`^I make a ([A-Z]+) request$`, newHTTPRequestStep)
+	sc.Step(`^I make a ([A-Z]+) request to "([^"]*)"$`, newHTTPRequestWithURLStep)
 
 	// Response status assertions
 	sc.Step(`^the HTTP response status should be (\d+)$`, newHTTPResponseStatusStep)
@@ -44,6 +40,7 @@ func registerHTTPSteps(sc *godog.ScenarioContext) {
 
 	// JSON response assertions
 	sc.Step(`^the HTTP response should be valid JSON$`, newHTTPResponseJSONStep)
+	sc.Step(`^the response should be valid JSON$`, newHTTPResponseJSONStep)
 
 	// Header assertions
 	sc.Step(`^the HTTP response header "([^"]*)" should be "([^"]*)"$`, newHTTPResponseHeaderStep)
@@ -55,27 +52,51 @@ func registerHTTPSteps(sc *godog.ScenarioContext) {
 	sc.Step(`^I make a ([A-Z]+) request to "([^"]*)" with headers:$`, newHTTPRequestWithHeadersStep)
 }
 
-// Store the last request details in context for subsequent assertions
-type httpRequestCtxKey struct{}
-type httpEndpointCtxKey struct{}
-type httpHeadersCtxKey struct{}
-type httpFileCtxKey struct{}
-type httpContentTypeCtxKey struct{}
-type httpFormDataCtxKey struct{}
+// Basic HTTP request step (uses endpoint from scenario state)
+func newHTTPRequestStep(ctx context.Context, method string) error {
+	options := contexthelpers.GetHttpRequestOptions(ctx)
+	if options.Url == "" {
+		return fmt.Errorf("no HTTP endpoint set. Use 'Given I have a HTTP endpoint at' step first")
+	}
 
-type httpRequestDetails struct {
-	method  string
-	url     string
-	headers map[string]string
+	httpAssert, err := getHTTPAsserter(ctx)
+	if err != nil {
+		return err
+	}
+
+	// Set base directory for file uploads based on feature file location
+	uri := contexthelpers.GetUri(ctx)
+	if uri != "" {
+		httpAssert.SetBaseDirectory(filepath.Dir(uri))
+	}
+
+	// Use headers from scenario state if available
+	headers := scenarioState.headers
+	if headers == nil {
+		headers = make(map[string]string)
+	}
+
+	details := &httpRequestDetails{method: method, url: scenarioState.endpoint, headers: headers}
+
+	// Store details in global state since context doesn't persist between steps
+	globalRequestDetails = details
+
+	// Handle file upload if file is set in scenario state
+	if scenarioState.file != nil {
+		if scenarioState.contentType != "" && scenarioState.formData != nil {
+			return httpAssert.UploadFile(scenarioState.endpoint, scenarioState.file.fieldName, scenarioState.file.path, headers, scenarioState.formData)
+		} else {
+			return httpAssert.UploadFile(scenarioState.endpoint, scenarioState.file.fieldName, scenarioState.file.path, headers, nil)
+		}
+	}
+
+	// For requests without file upload, just store the details for later assertions
+	// The actual HTTP request will be made by the response assertion steps
+	return nil
 }
 
-type httpFileDetails struct {
-	path      string
-	fieldName string
-}
-
-// Basic HTTP request step
-func newHTTPRequestStep(ctx context.Context, method, url string) error {
+// HTTP request step with URL provided directly
+func newHTTPRequestWithURLStep(ctx context.Context, method, url string) error {
 	httpAssert, err := getHTTPAsserter(ctx)
 	if err != nil {
 		return err
@@ -88,16 +109,23 @@ func newHTTPRequestStep(ctx context.Context, method, url string) error {
 	}
 
 	details := &httpRequestDetails{method: method, url: url, headers: make(map[string]string)}
-	ctx = context.WithValue(ctx, httpRequestCtxKey{}, details)
+
+	// Store details in global state since context doesn't persist between steps
+	globalRequestDetails = details
 
 	return httpAssert.AssertResponseStatus(method, url, 200, nil)
 }
 
 // Response status assertion for the last request
 func newHTTPResponseStatusStep(ctx context.Context, statusCode int) error {
-	details, ok := ctx.Value(httpRequestCtxKey{}).(*httpRequestDetails)
-	if !ok {
-		return fmt.Errorf("no HTTP request found in context")
+	details := globalRequestDetails
+	if details == nil {
+		// Try to get from context as fallback
+		if ctxDetails, ok := ctx.Value(httpRequestCtxKey{}).(*httpRequestDetails); ok {
+			details = ctxDetails
+		} else {
+			return fmt.Errorf("no HTTP request found in context")
+		}
 	}
 
 	httpAssert, err := getHTTPAsserter(ctx)
@@ -105,6 +133,13 @@ func newHTTPResponseStatusStep(ctx context.Context, statusCode int) error {
 		return err
 	}
 
+	// If we have a request body, use the body-aware method
+	if scenarioState.requestBody != "" {
+		hasStoredResponse = true
+		return httpAssert.AssertResponseStatusWithBody(details.method, details.url, scenarioState.requestBody, statusCode, details.headers)
+	}
+
+	hasStoredResponse = true
 	return httpAssert.AssertResponseStatus(details.method, details.url, statusCode, details.headers)
 }
 
@@ -126,14 +161,25 @@ func newHTTPRequestStatusStep(ctx context.Context, method, url string, statusCod
 
 // Response contains assertion for the last request
 func newHTTPResponseContainsStep(ctx context.Context, expectedContent string) error {
-	details, ok := ctx.Value(httpRequestCtxKey{}).(*httpRequestDetails)
-	if !ok {
-		return fmt.Errorf("no HTTP request found in context")
-	}
-
 	httpAssert, err := getHTTPAsserter(ctx)
 	if err != nil {
 		return err
+	}
+
+	// If we have a stored response, use it
+	if hasStoredResponse {
+		return httpAssert.AssertStoredResponseContains(expectedContent)
+	}
+
+	// Otherwise fall back to making a new request
+	details := globalRequestDetails
+	if details == nil {
+		// Try to get from context as fallback
+		if ctxDetails, ok := ctx.Value(httpRequestCtxKey{}).(*httpRequestDetails); ok {
+			details = ctxDetails
+		} else {
+			return fmt.Errorf("no HTTP request found in context")
+		}
 	}
 
 	return httpAssert.AssertResponseContains(details.method, details.url, expectedContent, details.headers)
@@ -141,14 +187,25 @@ func newHTTPResponseContainsStep(ctx context.Context, expectedContent string) er
 
 // JSON response assertion for the last request
 func newHTTPResponseJSONStep(ctx context.Context) error {
-	details, ok := ctx.Value(httpRequestCtxKey{}).(*httpRequestDetails)
-	if !ok {
-		return fmt.Errorf("no HTTP request found in context")
-	}
-
 	httpAssert, err := getHTTPAsserter(ctx)
 	if err != nil {
 		return err
+	}
+
+	// If we have a stored response, use it
+	if hasStoredResponse {
+		return httpAssert.AssertStoredResponseJSON()
+	}
+
+	// Otherwise fall back to making a new request
+	details := globalRequestDetails
+	if details == nil {
+		// Try to get from context as fallback
+		if ctxDetails, ok := ctx.Value(httpRequestCtxKey{}).(*httpRequestDetails); ok {
+			details = ctxDetails
+		} else {
+			return fmt.Errorf("no HTTP request found in context")
+		}
 	}
 
 	return httpAssert.AssertResponseJSON(details.method, details.url, details.headers)
@@ -172,14 +229,25 @@ func newHTTPRequestJSONStep(ctx context.Context, method, url string) error {
 
 // Response header assertion for the last request
 func newHTTPResponseHeaderStep(ctx context.Context, headerName, expectedValue string) error {
-	details, ok := ctx.Value(httpRequestCtxKey{}).(*httpRequestDetails)
-	if !ok {
-		return fmt.Errorf("no HTTP request found in context")
-	}
-
 	httpAssert, err := getHTTPAsserter(ctx)
 	if err != nil {
 		return err
+	}
+
+	// If we have a stored response, use it
+	if hasStoredResponse {
+		return httpAssert.AssertStoredResponseHeader(headerName, expectedValue)
+	}
+
+	// Otherwise fall back to making a new request
+	details := globalRequestDetails
+	if details == nil {
+		// Try to get from context as fallback
+		if ctxDetails, ok := ctx.Value(httpRequestCtxKey{}).(*httpRequestDetails); ok {
+			details = ctxDetails
+		} else {
+			return fmt.Errorf("no HTTP request found in context")
+		}
 	}
 
 	return httpAssert.AssertResponseHeader(details.method, details.url, headerName, expectedValue, details.headers)
@@ -252,24 +320,6 @@ func newHTTPRequestWithHeadersStep(ctx context.Context, method, url string, head
 	return httpAssert.AssertResponseStatus(method, url, 200, headers)
 }
 
-// Global storage for scenario state (since godog manages context internally)
-var scenarioState struct {
-	endpoint    string
-	headers     map[string]string
-	file        *httpFileDetails
-	contentType string
-	formData    map[string]string
-}
-
-// clearScenarioState resets all scenario state between scenarios
-func clearScenarioState() {
-	scenarioState.endpoint = ""
-	scenarioState.headers = nil
-	scenarioState.file = nil
-	scenarioState.contentType = ""
-	scenarioState.formData = nil
-}
-
 // Setup step functions
 func newHTTPEndpointStep(ctx context.Context, url string) error {
 	scenarioState.endpoint = url
@@ -309,6 +359,11 @@ func newSetFormDataStep(ctx context.Context, formDataTable *godog.Table) error {
 	return nil
 }
 
+func newSetRequestBodyStep(ctx context.Context, body string) error {
+	scenarioState.requestBody = body
+	return nil
+}
+
 // Helper function to get HTTP asserter from context
 func getHTTPAsserter(ctx context.Context) (http.HTTPAssertions, error) {
 	asserter, err := contexthelpers.GetAsserter(ctx, assertions.HTTP)
@@ -320,5 +375,6 @@ func getHTTPAsserter(ctx context.Context) (http.HTTPAssertions, error) {
 	if !ok {
 		return nil, fmt.Errorf("asserter does not implement HTTPAssertions")
 	}
+
 	return httpAssert, nil
 }

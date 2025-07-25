@@ -6,28 +6,32 @@ import (
 
 	"github.com/robmorgan/infraspec/internal/config"
 	"github.com/robmorgan/infraspec/pkg/assertions"
+	"github.com/robmorgan/infraspec/pkg/http"
 	"github.com/robmorgan/infraspec/pkg/iacprovisioner"
 )
 
-// ConfigCtxKey is the key used to store the configuration in the context.Context.
+// ConfigCtxKey is the key used to store the configuration in context.Context.
 type ConfigCtxKey struct{}
 
-// TFOptionsCtxKey is the key used to store the Terraform options in the context.Context.
+// TFOptionsCtxKey is the key used to store the Terraform options in context.Context.
 type TFOptionsCtxKey struct{}
 
-// AwsRegionCtxKey is the key used to store the AWS region in the context.Context.
+// AwsRegionCtxKey is the key used to store the AWS region in context.Context.
 type AwsRegionCtxKey struct{}
 
-// RDSDBInstanceIDCtxKey is the key used to store the RDS DB instance ID in the context.Context.
+// RDSDBInstanceIDCtxKey is the key used to store the RDS DB instance ID in context.Context.
 type RDSDBInstanceIDCtxKey struct{}
 
-// TerraformHasAppliedCtxKey is the key used to store the Terraform has applied flag in the context.Context.
+// TerraformHasAppliedCtxKey is the key used to store the Terraform has applied flag in context.Context.
 type TerraformHasAppliedCtxKey struct{}
 
-// AssertionsCtxKey is the key used to store the available assertions in the context.Context.
+// HttpRequestOptionsCtxKey is the key used to the store the Http Request options in context.Context.
+type HttpRequestOptionsCtxKey struct{}
+
+// AssertionsCtxKey is the key used to store the available assertions in context.Context.
 type AssertionsCtxKey struct{}
 
-// UriCtxKey is the key used to store the scenario URI in the context.Context.
+// UriCtxKey is the key used to store the scenario URI in context.Context.
 type UriCtxKey struct{}
 
 // GetAsserter returns the asserter for the given provider.
@@ -74,6 +78,14 @@ func GetConfig(ctx context.Context) *config.Config {
 // GetIacProvisionerOptions returns the IaC provisioner options from the context.
 func GetIacProvisionerOptions(ctx context.Context) *iacprovisioner.Options {
 	opts, exists := ctx.Value(TFOptionsCtxKey{}).(*iacprovisioner.Options)
+	if !exists {
+		return nil
+	}
+	return opts
+}
+
+func GetHttpRequestOptions(ctx context.Context) *http.Options {
+	opts, exists := ctx.Value(httpOptionsCtxKey{}).(*http.Options)
 	if !exists {
 		return nil
 	}
