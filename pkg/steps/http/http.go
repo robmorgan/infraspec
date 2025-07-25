@@ -59,36 +59,7 @@ func newHTTPRequestStep(ctx context.Context, method string) error {
 		return fmt.Errorf("no HTTP endpoint set. Use 'Given I have a HTTP endpoint at' step first")
 	}
 
-	httpAssert, err := getHTTPAsserter(ctx)
-	if err != nil {
-		return err
-	}
-
-	// Set base directory for file uploads based on feature file location
-	uri := contexthelpers.GetUri(ctx)
-	if uri != "" {
-		httpAssert.SetBaseDirectory(filepath.Dir(uri))
-	}
-
-	// Use headers from scenario state if available
-	headers := scenarioState.headers
-	if headers == nil {
-		headers = make(map[string]string)
-	}
-
-	details := &httpRequestDetails{method: method, url: scenarioState.endpoint, headers: headers}
-
-	// Store details in global state since context doesn't persist between steps
-	globalRequestDetails = details
-
-	// Handle file upload if file is set in scenario state
-	if scenarioState.file != nil {
-		if scenarioState.contentType != "" && scenarioState.formData != nil {
-			return httpAssert.UploadFile(scenarioState.endpoint, scenarioState.file.fieldName, scenarioState.file.path, headers, scenarioState.formData)
-		} else {
-			return httpAssert.UploadFile(scenarioState.endpoint, scenarioState.file.fieldName, scenarioState.file.path, headers, nil)
-		}
-	}
+	resp, out := httphelpers.DoHttpRequest(ctx, options)
 
 	// For requests without file upload, just store the details for later assertions
 	// The actual HTTP request will be made by the response assertion steps
@@ -373,7 +344,7 @@ func getHTTPAsserter(ctx context.Context) (http.HTTPAssertions, error) {
 
 	httpAssert, ok := asserter.(http.HTTPAssertions)
 	if !ok {
-		return nil, fmt.Errorf("asserter does not implement HTTPAssertions")
+		return nil, fmt.Errorf("asserter does not implement HTTPAsserter")
 	}
 
 	return httpAssert, nil
