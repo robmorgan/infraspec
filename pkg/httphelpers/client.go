@@ -20,6 +20,7 @@ type HttpRequestOptions struct {
 	FormData    map[string]string
 	BaseDir     string // BaseDir for file uploads based on feature file location
 	File        *File
+	RequestBody []byte
 }
 
 type File struct {
@@ -77,6 +78,12 @@ func (h *HttpClient) Do(ctx context.Context, opts *HttpRequestOptions) (*HttpRes
 		}
 	}
 
+	// Set request body
+	if opts.RequestBody != nil {
+		req.Body = io.NopCloser(bytes.NewReader(opts.RequestBody))
+	}
+
+	// Send request
 	resp, err := h.client.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("HTTP request failed: %w", err)
