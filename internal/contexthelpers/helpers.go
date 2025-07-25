@@ -6,7 +6,7 @@ import (
 
 	"github.com/robmorgan/infraspec/internal/config"
 	"github.com/robmorgan/infraspec/pkg/assertions"
-	"github.com/robmorgan/infraspec/pkg/http"
+	"github.com/robmorgan/infraspec/pkg/httphelpers"
 	"github.com/robmorgan/infraspec/pkg/iacprovisioner"
 )
 
@@ -27,6 +27,9 @@ type TerraformHasAppliedCtxKey struct{}
 
 // HttpRequestOptionsCtxKey is the key used to the store the Http Request options in context.Context.
 type HttpRequestOptionsCtxKey struct{}
+
+// HttpResponseCtxKey is the key used to store the HTTP response in context.Context.
+type HttpResponseCtxKey struct{}
 
 // AssertionsCtxKey is the key used to store the available assertions in context.Context.
 type AssertionsCtxKey struct{}
@@ -84,12 +87,20 @@ func GetIacProvisionerOptions(ctx context.Context) *iacprovisioner.Options {
 	return opts
 }
 
-func GetHttpRequestOptions(ctx context.Context) *http.Options {
-	opts, exists := ctx.Value(httpOptionsCtxKey{}).(*http.Options)
+func GetHttpRequestOptions(ctx context.Context) *httphelpers.HttpRequestOptions {
+	opts, exists := ctx.Value(HttpRequestOptionsCtxKey{}).(*httphelpers.HttpRequestOptions)
 	if !exists {
 		return nil
 	}
 	return opts
+}
+
+func GetHttpResponse(ctx context.Context) *httphelpers.HttpResponse {
+	resp, exists := ctx.Value(HttpResponseCtxKey{}).(*httphelpers.HttpResponse)
+	if !exists {
+		return nil
+	}
+	return resp
 }
 
 // SetAwsRegion sets the AWS region in the context.
