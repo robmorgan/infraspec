@@ -61,7 +61,7 @@ func (h *HttpClient) Do(ctx context.Context, opts *HttpRequestOptions) (*HttpRes
 	var buf bytes.Buffer
 
 	// Create request
-	req, err := http.NewRequestWithContext(ctx, opts.Method, opts.Url, &buf)
+	req, err := http.NewRequestWithContext(ctx, opts.Method, opts.Endpoint, &buf)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
 	}
@@ -108,10 +108,10 @@ func (h *HttpClient) Do(ctx context.Context, opts *HttpRequestOptions) (*HttpRes
 func (h *HttpClient) UploadFile(ctx context.Context, opts *HttpRequestOptions) (*HttpResponse, error) {
 	// Resolve file path relative to base directory if needed
 	var fullPath string
-	if req.File != nil {
-		fullPath = req.File.FilePath
-		if !filepath.IsAbs(req.File.FilePath) && h.baseDir != "" {
-			fullPath = filepath.Join(h.baseDir, req.File.FilePath)
+	if opts.File != nil {
+		fullPath = opts.File.FilePath
+		if !filepath.IsAbs(opts.File.FilePath) && h.baseDir != "" {
+			fullPath = filepath.Join(h.baseDir, opts.File.FilePath)
 		}
 	} else {
 		return nil, fmt.Errorf("no file specified for upload")
@@ -129,11 +129,11 @@ func (h *HttpClient) UploadFile(ctx context.Context, opts *HttpRequestOptions) (
 	writer := multipart.NewWriter(&buf)
 
 	// Add file field
-	fieldName := req.File.FieldName
+	fieldName := opts.File.FieldName
 	if fieldName == "" {
 		fieldName = "file"
 	}
-	fileWriter, err := writer.CreateFormFile(fieldName, filepath.Base(req.File.FilePath))
+	fileWriter, err := writer.CreateFormFile(fieldName, filepath.Base(opts.File.FilePath))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create form file: %w", err)
 	}
@@ -144,8 +144,8 @@ func (h *HttpClient) UploadFile(ctx context.Context, opts *HttpRequestOptions) (
 	}
 
 	// Add other form fields
-	if req.FormData != nil {
-		for key, value := range req.FormData {
+	if opts.FormData != nil {
+		for key, value := range opts.FormData {
 			err = writer.WriteField(key, value)
 			if err != nil {
 				return nil, fmt.Errorf("failed to write form field %s: %w", key, err)
@@ -159,7 +159,7 @@ func (h *HttpClient) UploadFile(ctx context.Context, opts *HttpRequestOptions) (
 	}
 
 	// Create request
-	req, err := http.NewRequestWithContext(ctx, "POST", opts.Url, &buf)
+	req, err := http.NewRequestWithContext(ctx, "POST", opts.Endpoint, &buf)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
 	}
@@ -195,6 +195,7 @@ func (h *HttpClient) UploadFile(ctx context.Context, opts *HttpRequestOptions) (
 	return &HttpResponse{
 		Status:     resp.Status,
 		StatusCode: resp.StatusCode,
+		Headers:    resp.Header,
 		Body:       responseBody,
 	}, nil
 }

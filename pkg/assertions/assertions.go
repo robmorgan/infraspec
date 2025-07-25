@@ -14,12 +14,10 @@ const (
 	HTTP = "http"
 )
 
-// Asserter defines the interface for all cloud resource assertions
+// Asserter defines the interface for all provider assertions
 // Provider-specific assertions must be implemented by concrete types
 type Asserter interface {
-	// Common assertions
-	AssertExists(resourceType, resourceName string) error
-	AssertTags(resourceType, resourceName string, tags map[string]string) error
+	GetName() string
 }
 
 // Factory function to create new asserters

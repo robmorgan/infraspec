@@ -24,10 +24,15 @@ func NewHTTPAsserter() *httpAsserter {
 	return &httpAsserter{}
 }
 
+// GetName returns the name of the asserter
+func (h *httpAsserter) GetName() string {
+	return "http"
+}
+
 // AssertResponseStatus checks if an HTTP request returns the expected status code
 func (h *httpAsserter) AssertResponseStatus(resp *httphelpers.HttpResponse, expectedStatus int) error {
 	if resp.StatusCode != expectedStatus {
-		return fmt.Errorf("expected status %d, got %d for %s %s", expectedStatus, resp.StatusCode, method, url)
+		return fmt.Errorf("expected status %d, got %d", expectedStatus, resp.StatusCode)
 	}
 	return nil
 }
