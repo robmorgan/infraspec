@@ -30,7 +30,7 @@ func registerHTTPSteps(sc *godog.ScenarioContext) {
 	sc.Step(`^I set the request body to "([^"]*)"$`, newSetRequestBodyStep)
 
 	// Basic HTTP requests
-	sc.Step(`^I make a ([A-Z]+) request$`, newHTTPRequestStep)
+	sc.Step(`^I (send|make) a ([A-Z]+) request$`, newHTTPRequestStep)
 
 	// Response status assertions
 	sc.Step(`^the HTTP response status should be (\d+)$`, newHTTPResponseStatusStep)

@@ -3,9 +3,6 @@ Feature: API Testing Example
   I want to test my API endpoints
   So that I can ensure they are working correctly after deployment
 
-  Background:
-    Given I have deployed my API to a test environment
-
   Scenario: Test health endpoint
     Given I have a HTTP endpoint at "https://api.example.com/health"
     When I send a GET request
