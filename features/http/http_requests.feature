@@ -14,14 +14,14 @@ Feature: HTTP Requests
     And the response should be valid JSON
 
   Scenario: Test POST request with status assertion
-    Given I have a HTTP endpoint at "https://httpbin.org/json"
+    Given I have a HTTP endpoint at "https://httpbin.org/post"
     When I make a POST request
     Then the HTTP response status should be 200
 
   Scenario: Test response content validation
     Given I have a HTTP endpoint at "https://httpbin.org/user-agent"
     When I make a GET request
-    Then the HTTP response should contain "User-Agent"
+    Then the HTTP response should contain "user-agent"
 
   Scenario: Test custom headers
     Given I have a HTTP endpoint at "https://httpbin.org/headers"
@@ -37,6 +37,7 @@ Feature: HTTP Requests
     And I set the headers to
       | Name         | Value            |
       | Content-Type | application/json |
+    And I set the request body to "test data"
     When I make a POST request
     Then the HTTP response status should be 200
     And the HTTP response should contain "test data"
@@ -49,13 +50,13 @@ Feature: HTTP Requests
 
   Scenario: Test file upload
     Given I have a HTTP endpoint at "https://httpbin.org/post"
-    And I have a file "../../../examples/http/test-file.txt" as field "file"
+    And I have a file "../../examples/http/test-file.txt" as field "file"
     When I make a POST request
     Then the HTTP response status should be 200
 
   Scenario: Test file upload with form data
     Given I have a HTTP endpoint at "https://httpbin.org/post"
-    And I have a file "../../../examples/http/test-file.txt" as field "file"
+    And I have a file "../../examples/http/test-file.txt" as field "file"
     And I set content type to "multipart/form-data"
     And I set the form data to:
       | Name | Value                                |
