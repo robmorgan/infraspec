@@ -1,7 +1,6 @@
 package test
 
 import (
-	"os"
 	"path/filepath"
 	"testing"
 
@@ -13,7 +12,7 @@ import (
 
 func TestHttpRequestsFeature(t *testing.T) {
 	cfg := testhelpers.SetupAWSTestsAndConfig()
-	featurePath := filepath.Join("..", string(os.PathSeparator), "features", "http", "http_requests.feature")
+	featurePath := filepath.Join("..", "features", "http", "http_requests.feature")
 
 	err := runner.New(cfg).Run(featurePath)
 	require.NoError(t, err)
@@ -21,7 +20,7 @@ func TestHttpRequestsFeature(t *testing.T) {
 
 func TestApiTestsFeature(t *testing.T) {
 	cfg := testhelpers.SetupAWSTestsAndConfig()
-	featurePath := filepath.Join("..", string(os.PathSeparator), "features", "http", "api_tests.feature")
+	featurePath := filepath.Join("..", "features", "http", "api_tests.feature")
 
 	err := runner.New(cfg).Run(featurePath)
 	require.NoError(t, err)

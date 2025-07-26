@@ -21,6 +21,12 @@ type HttpRequestOptions struct {
 	BaseDir     string // BaseDir for file uploads based on feature file location
 	File        *File
 	RequestBody []byte
+	BasicAuth   *BasicAuth
+}
+
+type BasicAuth struct {
+	Username string
+	Password string
 }
 
 type File struct {
@@ -37,15 +43,13 @@ type HttpResponse struct {
 
 // HttpClient handles HTTP requests and file uploads
 type HttpClient struct {
-	client  *http.Client
-	baseDir string
+	client *http.Client
 }
 
 // NewHttpClient creates a new HttpClient instance
-func NewHttpClient(baseDir string) *HttpClient {
+func NewHttpClient() *HttpClient {
 	return &HttpClient{
-		client:  &http.Client{},
-		baseDir: baseDir,
+		client: &http.Client{},
 	}
 }
 
@@ -72,15 +76,9 @@ func (h *HttpClient) Do(ctx context.Context, opts *HttpRequestOptions) (*HttpRes
 
 		// Handle file upload if specified
 		if opts.File != nil {
-			// Resolve file path relative to base directory if needed
-			fullPath := opts.File.FilePath
-			if !filepath.IsAbs(opts.File.FilePath) && h.baseDir != "" {
-				fullPath = filepath.Join(h.baseDir, opts.File.FilePath)
-			}
-
-			file, err := os.Open(fullPath)
+			file, err := os.Open(opts.File.FilePath)
 			if err != nil {
-				return nil, fmt.Errorf("failed to open file %s: %w", fullPath, err)
+				return nil, fmt.Errorf("failed to open file %s: %w", opts.File.FilePath, err)
 			}
 			defer file.Close()
 
@@ -148,6 +146,11 @@ func (h *HttpClient) Do(ctx context.Context, opts *HttpRequestOptions) (*HttpRes
 				req.Header.Set(key, value)
 			}
 		}
+	}
+
+	// Set basic auth credentials if specified
+	if opts.BasicAuth != nil {
+		req.SetBasicAuth(opts.BasicAuth.Username, opts.BasicAuth.Password)
 	}
 
 	// Send request

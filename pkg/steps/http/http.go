@@ -3,8 +3,7 @@ package http
 import (
 	"context"
 	"fmt"
-
-	// "path/filepath" // Not needed for now
+	"path/filepath"
 
 	"github.com/cucumber/godog"
 
@@ -28,6 +27,7 @@ func registerHTTPSteps(sc *godog.ScenarioContext) {
 	sc.Step(`^I set content type to "([^"]*)"$`, newSetContentTypeStep)
 	sc.Step(`^I set the form data to:$`, newSetFormDataStep)
 	sc.Step(`^I set the request body to "([^"]*)"$`, newSetRequestBodyStep)
+	sc.Step(`^I set basic auth credentials with username "([^"]*)" and password "([^"]*)"$`, newSetBasicAuthCredentialsStep)
 
 	// Basic HTTP requests
 	sc.Step(`^I send a ([A-Z]+) request$`, newHTTPRequestStep)
@@ -54,7 +54,18 @@ func newHTTPRequestStep(ctx context.Context, method string) (context.Context, er
 		return ctx, fmt.Errorf("no HTTP endpoint set. Use 'Given I have a HTTP endpoint at' step first")
 	}
 	options.Method = method
-	client := httphelpers.NewHttpClient("")
+
+	// If the user is uploading a file, we resolve the filepath relative to the feature file location
+	if options.File != nil {
+		base := filepath.Dir(contexthelpers.GetUri(ctx))
+		absPath, err := filepath.Abs(filepath.Join(base, options.File.FilePath))
+		if err != nil {
+			return ctx, fmt.Errorf("failed to get absolute path for %s: %w", options.File.FilePath, err)
+		}
+		options.File.FilePath = absPath
+	}
+
+	client := httphelpers.NewHttpClient()
 	resp, err := client.Do(ctx, options)
 	if err != nil {
 		return ctx, fmt.Errorf("failed to make HTTP request: %w", err)
@@ -177,6 +188,15 @@ func newSetRequestBodyStep(ctx context.Context, body string) (context.Context, e
 		opts = &httphelpers.HttpRequestOptions{}
 	}
 	opts.RequestBody = []byte(body)
+	return context.WithValue(ctx, contexthelpers.HttpRequestOptionsCtxKey{}, opts), nil
+}
+
+func newSetBasicAuthCredentialsStep(ctx context.Context, username, password string) (context.Context, error) {
+	opts := contexthelpers.GetHttpRequestOptions(ctx)
+	if opts == nil {
+		opts = &httphelpers.HttpRequestOptions{}
+	}
+	opts.BasicAuth = &httphelpers.BasicAuth{Username: username, Password: password}
 	return context.WithValue(ctx, contexthelpers.HttpRequestOptionsCtxKey{}, opts), nil
 }
 

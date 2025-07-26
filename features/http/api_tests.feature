@@ -3,16 +3,12 @@ Feature: API Testing Example
   I want to test my API endpoints
   So that I can ensure they are working correctly after deployment
 
-
   Scenario: Test authentication endpoint
     Given I have a HTTP endpoint at "http://localhost:8000/basic-auth/testuser/testpass"
     And I set the headers to
       | Name         | Value            |
       | Content-Type | application/json |
-    And I set the form data to:
-      | Name     | Value    |
-      | username | testuser |
-      | password | testpass |
+    And I set basic auth credentials with username "testuser" and password "testpass"
     When I send a GET request
     Then the HTTP response status should be 200
     And the HTTP response should be valid JSON
