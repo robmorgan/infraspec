@@ -15,3 +15,11 @@ services:
     volumes:
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
+
+  httpbin:
+    container_name: "${HTTPBIN_DOCKER_NAME:-httpbin-infraspec}"
+    image: kennethreitz/httpbin:latest
+    ports:
+      - "127.0.0.1:8000:80"              # HTTP endpoint
+    environment:
+      - DEBUG=${DEBUG:-0}

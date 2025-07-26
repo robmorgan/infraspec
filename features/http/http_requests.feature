@@ -4,28 +4,28 @@ Feature: HTTP Requests
   So that I can validate API functionality and infrastructure
 
   Scenario: Test basic GET request
-    Given I have a HTTP endpoint at "https://httpbin.org/get"
+    Given I have a HTTP endpoint at "http://localhost:8000/get"
     When I make a GET request
     Then the HTTP response status should be 200
 
   Scenario: Test GET request with JSON response
-    Given I have a HTTP endpoint at "https://httpbin.org/json"
+    Given I have a HTTP endpoint at "http://localhost:8000/json"
     When I make a GET request
     Then the HTTP response status should be 200
     And the response should be valid JSON
 
   Scenario: Test POST request with status assertion
-    Given I have a HTTP endpoint at "https://httpbin.org/post"
+    Given I have a HTTP endpoint at "http://localhost:8000/post"
     When I make a POST request
     Then the HTTP response status should be 200
 
   Scenario: Test response content validation
-    Given I have a HTTP endpoint at "https://httpbin.org/user-agent"
+    Given I have a HTTP endpoint at "http://localhost:8000/user-agent"
     When I make a GET request
     Then the HTTP response should contain "user-agent"
 
   Scenario: Test custom headers
-    Given I have a HTTP endpoint at "https://httpbin.org/headers"
+    Given I have a HTTP endpoint at "http://localhost:8000/headers"
     And I set the headers to
       | Name          | Value             |
       | Authorization | Bearer test-token |
@@ -34,7 +34,7 @@ Feature: HTTP Requests
     Then the HTTP response status should be 200
 
   Scenario: Test POST with body and headers
-    Given I have a HTTP endpoint at "https://httpbin.org/post"
+    Given I have a HTTP endpoint at "http://localhost:8000/post"
     And I set the headers to
       | Name         | Value            |
       | Content-Type | application/json |
@@ -44,19 +44,19 @@ Feature: HTTP Requests
     And the HTTP response should contain "test data"
 
   Scenario: Test response header validation
-    Given I have a HTTP endpoint at "https://httpbin.org/response-headers?Content-Type=application/json"
+    Given I have a HTTP endpoint at "http://localhost:8000/response-headers?Content-Type=application/json"
     When I make a GET request
     Then the HTTP response status should be 200
     And the HTTP response header "Content-Type" should be "application/json"
 
   Scenario: Test file upload
-    Given I have a HTTP endpoint at "https://httpbin.org/post"
+    Given I have a HTTP endpoint at "http://localhost:8000/post"
     And I have a file "../../examples/http/test-file.txt" as field "file"
     When I make a POST request
     Then the HTTP response status should be 200
 
   Scenario: Test file upload with form data
-    Given I have a HTTP endpoint at "https://httpbin.org/post"
+    Given I have a HTTP endpoint at "http://localhost:8000/post"
     And I have a file "../../examples/http/test-file.txt" as field "file"
     And I set content type to "multipart/form-data"
     And I set the form data to:
@@ -67,7 +67,7 @@ Feature: HTTP Requests
     Then the HTTP response status should be 200
 
   Scenario: Test multiple response validations
-    Given I have a HTTP endpoint at "https://httpbin.org/json"
+    Given I have a HTTP endpoint at "http://localhost:8000/json"
     When I make a GET request
     Then the HTTP response status should be 200
     And the HTTP response should be valid JSON

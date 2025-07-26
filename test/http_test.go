@@ -18,3 +18,11 @@ func TestHttpRequestsFeature(t *testing.T) {
 	err := runner.New(cfg).Run(featurePath)
 	require.NoError(t, err)
 }
+
+func TestApiTestsFeature(t *testing.T) {
+	cfg := testhelpers.SetupAWSTestsAndConfig()
+	featurePath := filepath.Join("..", string(os.PathSeparator), "features", "http", "api_tests.feature")
+
+	err := runner.New(cfg).Run(featurePath)
+	require.NoError(t, err)
+}

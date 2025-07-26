@@ -49,7 +49,7 @@ func NewHttpClient(baseDir string) *HttpClient {
 	}
 }
 
-// Do performs a HTTP request.
+// Do performs an HTTP request.
 //
 // If the request has a body, it will be sent as a multipart/form-data request.
 // If the request has a file, it will be uploaded as a file.
@@ -59,15 +59,87 @@ func NewHttpClient(baseDir string) *HttpClient {
 // If the request has a method, it will be set as the method of the request.
 func (h *HttpClient) Do(ctx context.Context, opts *HttpRequestOptions) (*HttpResponse, error) {
 	var buf bytes.Buffer
+	var writer *multipart.Writer
+	var req *http.Request
+	var err error
 
-	// Create request
-	req, err := http.NewRequestWithContext(ctx, opts.Method, opts.Endpoint, &buf)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	// Determine if we need multipart form data
+	needsMultipart := opts.File != nil || opts.FormData != nil
+
+	if needsMultipart {
+		// Create multipart writer for form data and/or file uploads
+		writer = multipart.NewWriter(&buf)
+
+		// Handle file upload if specified
+		if opts.File != nil {
+			// Resolve file path relative to base directory if needed
+			fullPath := opts.File.FilePath
+			if !filepath.IsAbs(opts.File.FilePath) && h.baseDir != "" {
+				fullPath = filepath.Join(h.baseDir, opts.File.FilePath)
+			}
+
+			file, err := os.Open(fullPath)
+			if err != nil {
+				return nil, fmt.Errorf("failed to open file %s: %w", fullPath, err)
+			}
+			defer file.Close()
+
+			// Add file field
+			fieldName := opts.File.FieldName
+			if fieldName == "" {
+				fieldName = "file"
+			}
+			fileWriter, err := writer.CreateFormFile(fieldName, filepath.Base(opts.File.FilePath))
+			if err != nil {
+				return nil, fmt.Errorf("failed to create form file: %w", err)
+			}
+
+			_, err = io.Copy(fileWriter, file)
+			if err != nil {
+				return nil, fmt.Errorf("failed to copy file content: %w", err)
+			}
+		}
+
+		// Add form data fields
+		if opts.FormData != nil {
+			for key, value := range opts.FormData {
+				err = writer.WriteField(key, value)
+				if err != nil {
+					return nil, fmt.Errorf("failed to write form field %s: %w", key, err)
+				}
+			}
+		}
+
+		// Close the multipart writer
+		err = writer.Close()
+		if err != nil {
+			return nil, fmt.Errorf("failed to close multipart writer: %w", err)
+		}
+
+		// Create request with multipart body
+		req, err = http.NewRequestWithContext(ctx, opts.Method, opts.Endpoint, &buf)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+		}
+
+		// Set multipart content type
+		req.Header.Set("Content-Type", writer.FormDataContentType())
+	} else {
+		// Create request with regular body or no body
+		var body io.Reader
+		if opts.RequestBody != nil {
+			body = bytes.NewReader(opts.RequestBody)
+		}
+		req, err = http.NewRequestWithContext(ctx, opts.Method, opts.Endpoint, body)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+		}
+
+		// Set content type if specified
+		if opts.ContentType != "" {
+			req.Header.Set("Content-Type", opts.ContentType)
+		}
 	}
-
-	// Set content type
-	req.Header.Set("Content-Type", opts.ContentType)
 
 	// Set additional headers
 	if opts.Headers != nil {
@@ -76,11 +148,6 @@ func (h *HttpClient) Do(ctx context.Context, opts *HttpRequestOptions) (*HttpRes
 				req.Header.Set(key, value)
 			}
 		}
-	}
-
-	// Set request body
-	if opts.RequestBody != nil {
-		req.Body = io.NopCloser(bytes.NewReader(opts.RequestBody))
 	}
 
 	// Send request
@@ -94,102 +161,6 @@ func (h *HttpClient) Do(ctx context.Context, opts *HttpRequestOptions) (*HttpRes
 	responseBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read response body: %w", err)
-	}
-
-	return &HttpResponse{
-		Status:     resp.Status,
-		StatusCode: resp.StatusCode,
-		Headers:    resp.Header,
-		Body:       responseBody,
-	}, nil
-}
-
-// UploadFile uploads a file using multipart/form-data
-func (h *HttpClient) UploadFile(ctx context.Context, opts *HttpRequestOptions) (*HttpResponse, error) {
-	// Resolve file path relative to base directory if needed
-	var fullPath string
-	if opts.File != nil {
-		fullPath = opts.File.FilePath
-		if !filepath.IsAbs(opts.File.FilePath) && h.baseDir != "" {
-			fullPath = filepath.Join(h.baseDir, opts.File.FilePath)
-		}
-	} else {
-		return nil, fmt.Errorf("no file specified for upload")
-	}
-
-	// TODO - only upload a file if one was specified
-	file, err := os.Open(fullPath)
-	if err != nil {
-		return nil, fmt.Errorf("failed to open file %s: %w", fullPath, err)
-	}
-	defer file.Close()
-
-	// Create multipart form
-	var buf bytes.Buffer
-	writer := multipart.NewWriter(&buf)
-
-	// Add file field
-	fieldName := opts.File.FieldName
-	if fieldName == "" {
-		fieldName = "file"
-	}
-	fileWriter, err := writer.CreateFormFile(fieldName, filepath.Base(opts.File.FilePath))
-	if err != nil {
-		return nil, fmt.Errorf("failed to create form file: %w", err)
-	}
-
-	_, err = io.Copy(fileWriter, file)
-	if err != nil {
-		return nil, fmt.Errorf("failed to copy file content: %w", err)
-	}
-
-	// Add other form fields
-	if opts.FormData != nil {
-		for key, value := range opts.FormData {
-			err = writer.WriteField(key, value)
-			if err != nil {
-				return nil, fmt.Errorf("failed to write form field %s: %w", key, err)
-			}
-		}
-	}
-
-	err = writer.Close()
-	if err != nil {
-		return nil, fmt.Errorf("failed to close multipart writer: %w", err)
-	}
-
-	// Create request
-	req, err := http.NewRequestWithContext(ctx, "POST", opts.Endpoint, &buf)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
-	}
-
-	// Set content type
-	req.Header.Set("Content-Type", writer.FormDataContentType())
-
-	// Set additional headers
-	if opts.Headers != nil {
-		for key, value := range opts.Headers {
-			if strings.ToLower(key) != "content-type" {
-				req.Header.Set(key, value)
-			}
-		}
-	}
-
-	resp, err := h.client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("HTTP file upload failed: %w", err)
-	}
-	defer resp.Body.Close()
-
-	// Read response body
-	responseBody, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %w", err)
-	}
-
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return nil, fmt.Errorf("file upload failed with status %d: %s", resp.StatusCode, string(responseBody))
 	}
 
 	return &HttpResponse{
