@@ -12,6 +12,7 @@ linters:
     - containedctx
     - contextcheck
     - cyclop
+    - depguard
     - dupl
     - durationcheck
     - errorlint
@@ -50,9 +51,22 @@ linters:
     - usestdlibvars
     - wastedassign
     - whitespace
+
   settings:
     cyclop:
       max-complexity: 11
+    depguard:
+      rules:
+        main:
+          deny:
+            - pkg: "math/rand$"
+              desc: use crypto/rand instead
+            - pkg: "github.com/sirupsen/logrus"
+              desc: not allowed
+            - pkg: "github.com/hashicorp/go-multierror"
+              desc: Should be replaced by standard lib errors package
+            - pkg: "github.com/pkg/errors"
+              desc: Should be replaced by standard lib errors package
     dupl:
       threshold: 100
     errcheck:
