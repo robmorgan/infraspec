@@ -21,7 +21,7 @@ func TestHTTPAssertions(t *testing.T) {
 
 	// Create HTTP asserter
 	httpAsserter := http.NewHTTPAsserter()
-	client := httphelpers.NewHttpClient("")
+	client := httphelpers.NewHttpClient()
 	ctx := context.Background()
 
 	t.Run("AssertResponseStatus", func(t *testing.T) {
@@ -145,7 +145,7 @@ func TestHTTPAsserterFactory(t *testing.T) {
 
 func TestHTTPAsserterWithTimeout(t *testing.T) {
 	httpAsserter := http.NewHTTPAsserter()
-	client := httphelpers.NewHttpClient("")
+	client := httphelpers.NewHttpClient()
 	ctx := context.Background()
 	// Test with a non-existent endpoint (should timeout/fail)
 	resp, err := client.Do(ctx, &httphelpers.HttpRequestOptions{
