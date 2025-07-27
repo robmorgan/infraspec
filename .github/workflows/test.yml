@@ -19,6 +19,12 @@ jobs:
         env:
           LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
 
+      - name: Start httpbin
+        run: |
+          docker run -d --name httpbin -p 8000:80 kennethreitz/httpbin
+          # Wait for httpbin to be ready
+          timeout 30 bash -c 'until curl -f http://localhost:8000/status/200; do sleep 1; done'
+
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -36,3 +42,9 @@ jobs:
           go test -v ./...
         env:
           INFRASPEC_TELEMETRY_DISABLED: "1"
+
+      - name: Cleanup httpbin
+        if: always()
+        run: |
+          docker stop httpbin || true
+          docker rm httpbin || true

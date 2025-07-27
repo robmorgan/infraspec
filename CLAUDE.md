@@ -113,6 +113,10 @@ Use these scopes when relevant:
 
 ## Architecture Guidelines
 
+## Adding New Assertion Functions
+1. Create provider specific assertion functions below `pkg/assertions`. (e.g Create AWS service-specific assertion functions in `pkg/assertions/aws`).
+2. All assertion function names should begin with `Assert`.
+
 ### Adding New AWS Cloud Services
 1. Create AWS service-specific assertion functions in `pkg/assertions/aws/`
 2. Add corresponding step definitions in `pkg/steps/aws/`
