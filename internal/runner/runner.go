@@ -3,14 +3,17 @@ package runner
 import (
 	"context"
 	"fmt"
+	"io"
 	"os"
 	"time"
 
 	"github.com/cucumber/godog"
+	"github.com/cucumber/godog/formatters"
 	"go.uber.org/zap"
 
 	"github.com/robmorgan/infraspec/internal/config"
 	"github.com/robmorgan/infraspec/internal/contexthelpers"
+	"github.com/robmorgan/infraspec/internal/formatter"
 	"github.com/robmorgan/infraspec/pkg/steps"
 	"github.com/robmorgan/infraspec/pkg/steps/terraform"
 )
@@ -28,6 +31,11 @@ func New(cfg *config.Config) *Runner {
 
 // Run executes the specified feature file
 func (r *Runner) Run(featurePath string) error {
+	return r.RunWithFormat(featurePath, "pretty")
+}
+
+// RunWithFormat executes the specified feature file with a custom formatter
+func (r *Runner) RunWithFormat(featurePath, format string) error {
 	defer config.Logging.Logger.Sync() //nolint:errcheck // flushes buffer, if any
 
 	// Validate feature file exists
@@ -37,13 +45,20 @@ func (r *Runner) Run(featurePath string) error {
 
 	config.Logging.Logger.Infof("Starting test execution using: %s", featurePath)
 
+	options := &godog.Options{
+		Format:   format,
+		Paths:    []string{featurePath},
+		TestingT: nil,
+	}
+
+	// Register custom InfraSpec formatter
+	formatters.Format("default", "InfraSpec formatter", func(suite string, out io.Writer) formatters.Formatter {
+		return formatter.New(suite, out)
+	})
+
 	suite := &godog.TestSuite{
 		ScenarioInitializer: r.initializeScenario,
-		Options: &godog.Options{
-			Format:   "pretty",
-			Paths:    []string{featurePath},
-			TestingT: nil,
-		},
+		Options:             options,
 	}
 
 	start := time.Now()

@@ -5,7 +5,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
 
@@ -17,8 +16,7 @@ import (
 
 var (
 	verbose bool
-
-	primaryStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#0099cc"))
+	format  string
 
 	RootCmd = &cobra.Command{
 		Use:     "infraspec [features...]",
@@ -28,9 +26,6 @@ var (
 		Args:    cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			startTime := time.Now()
-
-			s := primaryStyle.Render("InfraSpec") + " By Rob Morgan"
-			fmt.Println(s)
 
 			cfg, err := config.DefaultConfig()
 			if err != nil {
@@ -62,7 +57,7 @@ var (
 			tel.TrackTestRun(featureFile)
 
 			// Run tests
-			if err := runner.New(cfg).Run(featureFile); err != nil {
+			if err := runner.New(cfg).RunWithFormat(featureFile, format); err != nil {
 				// Track test failure
 				tel.TrackTestFailed(featureFile, time.Since(startTime), err.Error())
 				log.Fatalf("Test execution failed: %v", err)
@@ -77,6 +72,7 @@ var (
 func init() {
 	// Global flags
 	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
+	RootCmd.PersistentFlags().StringVarP(&format, "format", "f", "default", "output format (default, pretty, junit, cucumber)")
 
 	RootCmd.SetVersionTemplate(`{{printf "%s version %s\n" .Name .Version}}`)
 }

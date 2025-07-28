@@ -1,0 +1,25 @@
+name: Lint Gherkin Files
+
+on:
+  pull_request:
+    paths:
+      - "features/**/*.feature"
+  push:
+    paths:
+      - "features/**/*.feature"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Lint Gherkin files
+        run: npm run lint:gherkin

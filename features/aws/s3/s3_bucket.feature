@@ -3,7 +3,7 @@ Feature: S3 Bucket Creation
   I want to create an S3 bucket with guardrails
   So that I can store my data securely
 
- Background:
+  Background:
     Given I have the necessary IAM permissions to describe S3 buckets
 
   Scenario: Create an S3 bucket with a name
