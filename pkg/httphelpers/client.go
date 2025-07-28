@@ -22,6 +22,7 @@ type HttpRequestOptions struct {
 	File        *File
 	RequestBody []byte
 	BasicAuth   *BasicAuth
+	BearerToken string
 }
 
 type BasicAuth struct {
@@ -151,6 +152,11 @@ func (h *HttpClient) Do(ctx context.Context, opts *HttpRequestOptions) (*HttpRes
 	// Set basic auth credentials if specified
 	if opts.BasicAuth != nil {
 		req.SetBasicAuth(opts.BasicAuth.Username, opts.BasicAuth.Password)
+	}
+
+	// Set Bearer token if specified
+	if opts.BearerToken != "" {
+		req.Header.Set("Authorization", "Bearer "+opts.BearerToken)
 	}
 
 	// Send request
