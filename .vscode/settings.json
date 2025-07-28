@@ -15,6 +15,7 @@
     "testhelpers",
     "retryable",
     "rollouts",
+    "httphelpers",
 
     // Brightfame
     "InfraSpec",
@@ -26,5 +27,9 @@
 
     // Cucumber
     "godog"
-  ]
+  ],
+  "[gherkin]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  }
 }
