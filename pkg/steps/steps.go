@@ -4,6 +4,7 @@ import (
 	"github.com/cucumber/godog"
 
 	"github.com/robmorgan/infraspec/pkg/steps/aws"
+	"github.com/robmorgan/infraspec/pkg/steps/http"
 	"github.com/robmorgan/infraspec/pkg/steps/terraform"
 )
 
@@ -14,4 +15,5 @@ func RegisterSteps(sc *godog.ScenarioContext) {
 
 	// Register provider-specific steps
 	aws.RegisterSteps(sc)
+	http.RegisterSteps(sc)
 }

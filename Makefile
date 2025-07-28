@@ -25,6 +25,10 @@ fmt: tidy ## tidy, format and imports
 	goimports -w `find . -type f -name '*.go' -not -path "./vendor/*"`
 	gci write --skip-generated -s standard -s default -s "prefix(github.com/robmorgan/infraspec)" .
 
+.PHONY: test
+test: ## run tests
+	go test -v ./...
+
 .PHONY: go-test-cover
 go-test-cover: ## run test & generate coverage
 	@printf $(COLOR) "Running test with coverage..."
