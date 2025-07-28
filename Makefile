@@ -21,7 +21,7 @@ lint: ## lint
 
 .PHONY: feature-lint
 feature-lint: ## feature-lint
-	@[ ! -e .gherkin-lintrc ] || npx gherkin-lint ./features
+	npm run lint:gherkin
 
 .PHONY: fmt
 fmt: tidy ## tidy, format and imports
