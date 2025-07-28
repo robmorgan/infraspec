@@ -51,12 +51,10 @@ func (r *Runner) RunWithFormat(featurePath, format string) error {
 		TestingT: nil,
 	}
 
-	// Register custom TUI formatter if requested
-	if format == "tui" {
-		formatters.Format("tui", "Claude Code-style TUI formatter", func(suite string, out io.Writer) formatters.Formatter {
-			return formatter.NewTUIFormatter(suite, out)
-		})
-	}
+	// Register custom InfraSpec formatter
+	formatters.Format("default", "InfraSpec formatter", func(suite string, out io.Writer) formatters.Formatter {
+		return formatter.New(suite, out)
+	})
 
 	suite := &godog.TestSuite{
 		ScenarioInitializer: r.initializeScenario,
