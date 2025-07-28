@@ -2,6 +2,7 @@ package integration
 
 import (
 	"context"
+	"os"
 	"reflect"
 	"testing"
 
@@ -117,6 +118,36 @@ func TestHTTPAssertions(t *testing.T) {
 		})
 		require.NoError(t, err)
 		err = httpAsserter.AssertResponseStatus(resp, 200)
+		assert.NoError(t, err)
+	})
+
+	t.Run("BearerTokenAuthentication", func(t *testing.T) {
+		// Set environment variable for testing
+		originalToken := os.Getenv("INFRASPEC_BEARER_TOKEN")
+		defer os.Setenv("INFRASPEC_BEARER_TOKEN", originalToken)
+		os.Setenv("INFRASPEC_BEARER_TOKEN", "my-secret-token")
+
+		// Test Bearer token authentication
+		resp, err := client.Do(ctx, &httphelpers.HttpRequestOptions{
+			Method:      "GET",
+			Endpoint:    mockServer.URL() + "/bearer",
+			BearerToken: "my-secret-token",
+		})
+		require.NoError(t, err)
+		err = httpAsserter.AssertResponseStatus(resp, 200)
+		assert.NoError(t, err)
+		err = httpAsserter.AssertResponseContains(resp, "authenticated")
+		assert.NoError(t, err)
+		err = httpAsserter.AssertResponseContains(resp, "my-secret-token")
+		assert.NoError(t, err)
+
+		// Test without Bearer token (should fail)
+		resp, err = client.Do(ctx, &httphelpers.HttpRequestOptions{
+			Method:   "GET",
+			Endpoint: mockServer.URL() + "/bearer",
+		})
+		require.NoError(t, err)
+		err = httpAsserter.AssertResponseStatus(resp, 401)
 		assert.NoError(t, err)
 	})
 }

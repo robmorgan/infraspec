@@ -104,6 +104,13 @@ func (m *MockHTTPServer) setupDefaultRoutes() {
 		Body:       "", // Will be filled dynamically
 		Headers:    map[string]string{"Content-Type": "application/json"},
 	})
+
+	// Bearer token authentication endpoint
+	m.AddResponse("GET", "/bearer", MockResponse{
+		StatusCode: 200,
+		Body:       "", // Will be filled dynamically
+		Headers:    map[string]string{"Content-Type": "application/json"},
+	})
 }
 
 // handleRequest handles all incoming requests to the mock server
@@ -121,6 +128,9 @@ func (m *MockHTTPServer) handleRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	case path == "/headers" && method == "GET":
 		m.handleHeaders(w, r)
+		return
+	case path == "/bearer" && method == "GET":
+		m.handleBearer(w, r)
 		return
 	case strings.HasPrefix(path, "/status/"):
 		m.handleStatus(w, r)
@@ -213,6 +223,41 @@ func (m *MockHTTPServer) handleUpload(w http.ResponseWriter, r *http.Request) {
 func (m *MockHTTPServer) handleHeaders(w http.ResponseWriter, r *http.Request) {
 	response := map[string]interface{}{
 		"headers": r.Header,
+	}
+
+	jsonResponse, _ := json.Marshal(response)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+	w.Write(jsonResponse)
+}
+
+// handleBearer handles Bearer token authentication
+func (m *MockHTTPServer) handleBearer(w http.ResponseWriter, r *http.Request) {
+	authHeader := r.Header.Get("Authorization")
+
+	if authHeader == "" {
+		http.Error(w, "Missing Authorization header", http.StatusUnauthorized)
+		return
+	}
+
+	if !strings.HasPrefix(authHeader, "Bearer ") {
+		http.Error(w, "Invalid Authorization header format", http.StatusUnauthorized)
+		return
+	}
+
+	token := strings.TrimPrefix(authHeader, "Bearer ")
+
+	// For testing purposes, accept any non-empty token
+	if token == "" {
+		http.Error(w, "Empty Bearer token", http.StatusUnauthorized)
+		return
+	}
+
+	response := map[string]interface{}{
+		"authenticated": true,
+		"token":         token,
+		"message":       "Bearer token authentication successful",
 	}
 
 	jsonResponse, _ := json.Marshal(response)

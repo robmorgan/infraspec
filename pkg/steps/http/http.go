@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"fmt"
+	"os"
 	"path/filepath"
 
 	"github.com/cucumber/godog"
@@ -28,6 +29,7 @@ func registerHTTPSteps(sc *godog.ScenarioContext) {
 	sc.Step(`^I set the form data to:$`, newSetFormDataStep)
 	sc.Step(`^I set the request body to "([^"]*)"$`, newSetRequestBodyStep)
 	sc.Step(`^I set basic auth credentials with username "([^"]*)" and password "([^"]*)"$`, newSetBasicAuthCredentialsStep)
+	sc.Step(`^I am authenticated with a valid bearer token$`, newSetBearerTokenFromEnvStep)
 
 	// Basic HTTP requests
 	sc.Step(`^I send a ([A-Z]+) request$`, newHTTPRequestStep)
@@ -197,6 +199,26 @@ func newSetBasicAuthCredentialsStep(ctx context.Context, username, password stri
 		opts = &httphelpers.HttpRequestOptions{}
 	}
 	opts.BasicAuth = &httphelpers.BasicAuth{Username: username, Password: password}
+	return context.WithValue(ctx, contexthelpers.HttpRequestOptionsCtxKey{}, opts), nil
+}
+
+func newSetBearerTokenFromEnvStep(ctx context.Context) (context.Context, error) {
+	return NewSetBearerTokenFromEnvStep(ctx)
+}
+
+// NewSetBearerTokenFromEnvStep sets the Bearer token from the BEARER_TOKEN environment variable
+func NewSetBearerTokenFromEnvStep(ctx context.Context) (context.Context, error) {
+	// Check for environment variable containing the Bearer token
+	token := os.Getenv("INFRASPEC_BEARER_TOKEN")
+	if token == "" {
+		return ctx, fmt.Errorf("INFRASPEC_BEARER_TOKEN environment variable is not set. Please set it before running this scenario")
+	}
+
+	opts := contexthelpers.GetHttpRequestOptions(ctx)
+	if opts == nil {
+		opts = &httphelpers.HttpRequestOptions{}
+	}
+	opts.BearerToken = token
 	return context.WithValue(ctx, contexthelpers.HttpRequestOptionsCtxKey{}, opts), nil
 }
 

@@ -24,6 +24,14 @@ Feature: API Testing Example
     And the HTTP response should be valid JSON
     And the HTTP response should contain "token"
 
+  Scenario: Test Bearer token authentication
+    Given I have a HTTP endpoint at "http://localhost:8000/bearer"
+    And I am authenticated with a valid bearer token
+    When I send a GET request
+    Then the HTTP response status should be 200
+    And the HTTP response should be valid JSON
+    And the HTTP response should contain "authenticated"
+
   Scenario: Test file upload endpoint
     Given I have a HTTP endpoint at "http://localhost:8000/post"
     And I have a file "../../examples/http/test-file.txt" as field "file"
