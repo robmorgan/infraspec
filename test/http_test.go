@@ -25,3 +25,11 @@ func TestApiTestsFeature(t *testing.T) {
 	err := runner.New(cfg).Run(featurePath)
 	require.NoError(t, err)
 }
+
+func TestRetryApiTestsFeature(t *testing.T) {
+	cfg := testhelpers.SetupAWSTestsAndConfig()
+	featurePath := filepath.Join("..", "features", "http", "retry_api_tests.feature")
+
+	err := runner.New(cfg).Run(featurePath)
+	require.NoError(t, err)
+}
