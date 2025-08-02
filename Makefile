@@ -19,11 +19,19 @@ lint: ## lint
 	@[ ! -e .golangci.yml ] || golangci-lint run
 	@[ ! -e "$(REPO_ROOT)/.golangci.yml" ] || { printf $(COLOR) "Using root .golangci.yml" ; golangci-lint run -c "$(REPO_ROOT)/.golangci.yml"; }
 
+.PHONY: feature-lint
+feature-lint: ## feature-lint
+	npm run lint:gherkin
+
 .PHONY: fmt
 fmt: tidy ## tidy, format and imports
 	gofumpt -w `find . -type f -name '*.go' -not -path "./vendor/*"`
 	goimports -w `find . -type f -name '*.go' -not -path "./vendor/*"`
 	gci write --skip-generated -s standard -s default -s "prefix(github.com/robmorgan/infraspec)" .
+
+.PHONY: test
+test: ## run tests
+	go test -v ./...
 
 .PHONY: go-test-cover
 go-test-cover: ## run test & generate coverage

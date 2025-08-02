@@ -1,0 +1,6 @@
+This is a test file for HTTP upload testing.
+It contains sample content to verify file upload functionality.
+
+UUID: 191152a9-0bd6-4db0-999d-12787295f1ec
+Type: document
+Status: test

@@ -8,14 +8,7 @@ func NewAWSAsserter() *AWSAsserter {
 	return &AWSAsserter{}
 }
 
-// AssertExists checks if a resource exists
-func (a *AWSAsserter) AssertExists(resourceType, resourceName string) error {
-	// Implement AWS-specific logic to check resource existence
-	return nil
-}
-
-// AssertTags checks if a resource has the expected tags
-func (a *AWSAsserter) AssertTags(resourceType, resourceName string, tags map[string]string) error {
-	// Implement AWS-specific logic to check resource tags
-	return nil
+// GetName returns the name of the asserter
+func (a *AWSAsserter) GetName() string {
+	return "aws"
 }

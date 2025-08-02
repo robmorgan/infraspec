@@ -66,6 +66,12 @@ InfraSpec automatically translates your natural language specifications into exe
 - RDS DB instances
 - S3 bucket configurations
 
+🌐 HTTP
+
+- HTTP(s) Endpoints
+- Form Data
+- File Uploads
+
 🐳 Docker (Coming Soon)
 
 - Image security and vulnerabilities
