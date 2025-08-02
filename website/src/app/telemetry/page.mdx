@@ -1,0 +1,33 @@
+---
+asIndexPage: true
+sidebarTitle: Telemetry
+---
+
+# Telemetry
+
+InfraSpec collects anonymous usage data to help improve the tool. This data helps us understand how the tool is being
+used and identify areas for improvement.
+
+## What data is collected?
+
+- Command usage patterns (e.g. which InfraSpec commands or options are used)
+- Feature file execution statistics (e.g. how many scenarios, average runtime)
+- Error events (non-sensitive information about failures)
+- Basic system info (OS type, CPU architecture)
+- Performance metrics (execution durations, number of steps)
+
+## What data is NOT collected?
+
+InfraSpec **does not** collect any of your actual infrastructure code or confidential details. For example:
+
+- No file contents or names of your infrastructure files
+- No details about your cloud resources (IDs, configurations, etc.)
+- No personal identifying information
+- No sensitive environment variables or secrets
+
+## How to disable telemetry
+
+You may opt out of telemetry by setting any of the following environment variables:
+
+- `INFRASPEC_TELEMETRY_DISABLED=1`
+- `DO_NOT_TRACK=1` (Learn more about [Console Do Not Track (DNT)](https://consoledonottrack.com/))

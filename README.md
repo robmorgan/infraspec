@@ -4,15 +4,14 @@
   <br>InfraSpec
 </h1>
   <p align="center">
-    <strong>✅ Test your cloud infrastructure in plain English, no code required.</strong>
+    <strong>✅ Test your Terraform AWS infrastructure in plain English, no code required.</strong>
   </p>
 </p>
 
 ## About
 
-Write infrastructure tests for Terraform, Docker, and Kubernetes in plain English, without writing a single line of
-code. InfraSpec pairs a vast library of common testing patterns with a domain-specific language for testing
-infrastructure.
+Write tests for Terraform AWS infrastructure in plain English, without writing a single line of code. InfraSpec
+combines a vast library of common testing patterns with a domain-specific language for testing infrastructure.
 
 Tests are written using easy to learn [Gherkin](https://cucumber.io/docs/gherkin/) syntax, which is suitable for both
 technical and non-technical team members.
@@ -47,7 +46,7 @@ InfraSpec automatically translates your natural language specifications into exe
 
 - 🗣️ **Plain English syntax** - Write tests that read like documentation.
 - 👥 **Team-friendly** - Non-technical stakeholders can contribute and review.
-- 🚀 **Zero setup** - Works with your existing Terraform, Docker, and Kubernetes configurations.
+- 🚀 **Zero setup** - Works with your existing Terraform AWS configurations.
 - 📚 **Rich test library** - Hundreds of pre-built testing patterns for common scenarios.
 - ⚡ **Fast feedback** - Catch infrastructure issues before they reach production.
 
@@ -72,35 +71,7 @@ InfraSpec automatically translates your natural language specifications into exe
 - Form Data
 - File Uploads
 
-🐳 Docker (Coming Soon)
-
-- Image security and vulnerabilities
-- Container resource limits
-- Network configurations
-- Build optimization
-
-☸️ Kubernetes (Coming Soon)
-
-- Deployment strategies and rollouts
-- Resource quotas and limits
-- Network policies and security contexts
-- Service mesh configurations
-
-## Roadmap & Status
-
-At the moment, only a subset of AWS infrastructure is supported, but over time we hope to support other clouds and
-tooling.
-
-| **Product**   | **Description**     | **Status**   |
-| ------------- | ------------------- | ------------ |
-| API Gateway   | Not Implemented     |       ⏳     |
-| DynamoDB      | Partially Supported |       ✅     |
-| ElastiCache   | Not Implemented     |       ⏳     |
-| RDS           | Partially Supported |       ✅     |
-| RDS Aurora    | Not Implemented     |       ⏳     |
-| S3            | Partially Supported |       ✅     |
-
-## Getting Started
+## 🛠️ Getting Started
 
 1. Install InfraSpec using Homebrew:
 
@@ -137,7 +108,23 @@ infraspec features/dynamodb.feature
 > If your using VS Code, we recommend installing the [Cucumber (Gherkin) Full Support](https://marketplace.visualstudio.com/items?itemName=alexkrechik.cucumberautocomplete)
 extension for syntax highlighting.
 
-## Contributions
+## 🎯 Roadmap & Status
+
+At the moment, only a subset of AWS infrastructure is supported, but over time we hope to support more products and
+services.
+
+| **Product**   | **Description**     | **Status**   |
+| ------------- | ------------------- | ------------ |
+| API Gateway   | Not Implemented     |       ⏳     |
+| DynamoDB      | Partially Supported |       ✅     |
+| ElastiCache   | Not Implemented     |       ⏳     |
+| RDS           | Partially Supported |       ✅     |
+| RDS Aurora    | Not Implemented     |       ⏳     |
+| S3            | Partially Supported |       ✅     |
+
+You can view the [full roadmap here](https://github.com/users/robmorgan/projects/1).
+
+## 📦 Contributions
 
 Contributions are welcome! Please open an issue or submit a pull request. Please note, that this project is still in
 it's infancy and many internal APIs are likely to change.
@@ -145,6 +132,6 @@ it's infancy and many internal APIs are likely to change.
 **Note:** Our tests use [LocalStack](https://github.com/localstack/localstack), which emulates the AWS APIs, in order to
 save both time and money.
 
-## License
+## 📄 License
 
 [Apache License 2.0](https://github.com/robmorgan/infraspec/blob/main/LICENSE.md)
