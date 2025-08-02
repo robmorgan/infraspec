@@ -26,7 +26,7 @@ export const metadata = {
     'Testing Infrastructure as Code with InfraSpec',
   ],
   title: {
-    default: 'InfraSpec - Simple Infrastructure Tests',
+    default: 'InfraSpec - Test Cloud Infrastructure',
     template: '%s | InfraSpec',
   },
   openGraph: {
@@ -59,7 +59,7 @@ const navbar = (
           InfraSpec
         </span>
         <span className="text-gray-600 font-normal hidden lg:!inline whitespace-no-wrap">
-          Simple Infrastructure Tests
+          Test Cloud Infrastructure
         </span>
       </>
     }
