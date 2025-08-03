@@ -50,7 +50,7 @@ InfraSpec automatically translates your natural language specifications into exe
 - 📚 **Rich test library** - Hundreds of pre-built testing patterns for common scenarios.
 - ⚡ **Fast feedback** - Catch infrastructure issues before they reach production.
 
-## What can you test?
+## 🔍 What can you test?
 
 🏗️ Terraform
 
