@@ -1,0 +1,13 @@
+# How InfraSpec Compares
+
+InfraSpec's plain-English approach contrasts sharply with existing tools like Terratest and Kitchen-Terraform, which
+require significant programming expertise. Terratest is essentially a Go library for testing infrastructure that
+developers embed in Go test files, making it challenging for many infrastructure engineers who aren't comfortable
+writing Go. Similarly, Kitchen-Terraform combines Ruby, InSpec, and Test Kitchen, creating a steep learning curve that
+limits testing to those familiar with the Ruby ecosystem.
+
+On the other hand, InfraSpec is a higher-level CLI tool where you write Gherkin feature files instead of code—this BDD
+style is dramatically more accessible. It lowers the skill barrier for creating infrastructure tests. While Terratest
+and Kitchen-Terraform require you to write test logic and assertions manually, InfraSpec automatically translates your
+plain-language specifications into real infrastructure actions and validations, giving you similar benefits (like
+validating Terraform deployments) without writing any code.
