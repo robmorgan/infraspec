@@ -9,7 +9,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/credentials v1.18.16
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.48.0
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.254.1
-	github.com/aws/aws-sdk-go-v2/service/rds v1.107.0
+	github.com/aws/aws-sdk-go-v2/service/rds v1.108.2
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.87.0
 	github.com/aws/aws-sdk-go-v2/service/ssm v1.64.4
 	github.com/aws/aws-sdk-go-v2/service/sts v1.38.6
