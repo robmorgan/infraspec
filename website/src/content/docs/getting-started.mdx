@@ -1,0 +1,80 @@
+import { Callout, Tabs, Tab, Steps } from "nextra/components";
+import Image from "next/image";
+
+# Getting Started
+
+InfraSpec automatically generates executable test code from your plain English specifications, eliminating the need to
+write traditional test code yourself. When you describe your infrastructure requirements using Gherkin syntax,
+InfraSpec's intelligent step definitions translate your natural language into real infrastructure actions and
+validations.
+
+For example, when you write a simple assertion like:
+
+```gherkin
+Then the S3 bucket "my-bucket" should have an encryption configuration
+```
+
+InfraSpec automatically:
+
+- Generates the underlying test code to connect to AWS
+- Parses the S3 bucket configuration
+- Validates encryption settings against AWS APIs
+- Provides clear, actionable error messages if validation fails
+
+This means you can focus on **what** to test rather than **how** to test it. The tool handles all the complexity of API
+calls, retries, error handling, and result formatting automatically. You write the specifications, and InfraSpec
+generates the executable tests that run against your infrastructure.
+
+## Getting started
+
+<Steps>
+### Install InfraSpec
+
+Choose how you want to install InfraSpec:
+
+<Tabs items={["Homebrew", "Prebuilt Binaries"]}>
+  {/* prettier-ignore */}
+  <Tabs.Tab>
+    ```bash
+    brew tap robmorgan/infraspec
+    brew install infraspec
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>[Download from GitHub](https://github.com/robmorgan/infraspec/releases)</Tabs.Tab>
+</Tabs>
+
+### Initialize a Repo
+
+Initialize a Git repo containing your infrastructure code:
+
+```sh
+infraspec init # This will create a ./features directory if it doesn't already exist
+```
+
+### Create a Simple Terraform Example
+
+Copy and paste the following into a Terraform configuration:
+
+```hcl filename="main.tf" copy
+provider "aws" {
+  region = "us-east-1"
+}
+```
+
+### Create Your First Test
+
+Create your first infrastructure test:
+
+```sh
+infraspec new dynamodb.feature
+```
+
+### Run it!
+
+```sh
+infraspec features/dynamodb.feature
+```
+
+You should see some output.
+
+</Steps>

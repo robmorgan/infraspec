@@ -1,24 +1,52 @@
+---
+asIndexPage: true
+title: Test your AWS infrastructure in plain English
+sidebar: false
+---
+
 import Image from "next/image";
+import { Callout } from "nextra/components";
 
-<Image
-  src="/infraspec_logo_512.png"
-  alt="InfraSpec Logo"
-  width={128}
-  height={128}
-/>
+<div className="flex justify-center">
+  <Image src="/infraspec_logo_512.png" alt="InfraSpec Logo" width={128} height={128} />
+</div>
 
-# Welcome to InfraSpec
+{<h1 className="text-center font-extrabold md:text-5xl mt-2">InfraSpec</h1>}
 
-🚀 Coming soon! In the mean time check out: https://github.com/robmorgan/infraspec or the quick start below.
+<div className="mx-auto max-w-full w-[880px] text-center px-4 mt-4 mb-10">
+  {<p className="text-lg mb-2 text-gray-600 md:!text-2xl">Test your AWS infrastructure in plain English</p>}
+</div>
+
+InfraSpec is a CLI tool for testing your Terraform AWS infrastructure in plain English, without writing a single line of
+code. It combines a rich library of testing patterns with a domain-specific language for testing cloud infrastructure.
+
+Tests are written using easy-to-learn [Gherkin](https://cucumber.io/docs/gherkin/) syntax, which is suitable for both
+technical and non-technical team members. This approach constrasts sharply with existing tools which require significant
+programming expertise.
+
+## Features
+
+- 🗣️ **Plain English syntax.** Write tests that read like sentences, not code. InfraSpec uses easy-to-learn Gherkin
+  syntax for defining test steps
+- 👥 **Team-friendly.** Non-technical stakeholders can read and even author tests, improving collaboration on
+  infrastructure requirements
+- 🚀 **Minimal setup.** No complex frameworks to integrate. InfraSpec works with your existing Terraform configurations
+  and AWS resources.
+- 📚 **Rich Grammar Library.** Comes with hundreds of built-in test steps (patterns) for common scenarios (e.g. resource
+  existence, security settings, networking rules) so you don't have to write low-level assertions
+- ⚡️ **Fast feedback.** Catch infrastructure issues early, before they reach production, by running these tests in
+  CI/CD or locally as part of your workflow.
 
 ## Quick start
 
-You can test the early development versions of InfraSpec using [Homebrew](https://brew.sh/).
+InfaSpec can be installed using [Homebrew](https://brew.sh) (preferred), downloaded as a pre-built binary, or built from
+source.
 
-> [!WARNING]
->
-> InfraSpec is still under active development and is likely to change significantly in the near future. Some features
-> may not be implemented yet or work as expected. Thank you for your early participation and feedback!
+<Callout emoji="⚠️">
+  InfraSpec is in active development and is likely to change significantly. Thank you for your early feedback!
+</Callout>
+
+#### Homebrew
 
 1. Install InfraSpec using Homebrew:
 
@@ -45,7 +73,51 @@ infraspec new dynamodb.feature
 infraspec features/dynamodb.feature
 ```
 
-> [!TIP]
->
-> If your using VS Code, we recommend installing the [Cucumber (Gherkin) Full Support](https://marketplace.visualstudio.com/items?itemName=alexkrechik.cucumberautocomplete)
-> extension for syntax highlighting.
+<Callout type="info">
+  If your using VS Code or Cursor, we recommend installing the [Cucumber (Gherkin) Full
+  Support](https://marketplace.visualstudio.com/items?itemName=alexkrechik.cucumberautocomplete) extension for syntax
+  highlighting.
+</Callout>
+
+#### Download prebuilt binaries
+
+Currently, the following binaries are provided:
+
+- Mac (Apple Silicon)
+- Mac (x64)
+- Linux (x86_64)
+- Linux (aarch64)
+- Windows (win32-x64)
+- Windows (ia32)
+
+You can download them directly from the [GitHub releases page](https://github.com/robmorgan/infraspec/releases).
+
+#### Building from Source
+
+InfraSpec requires at least [Go 1.24.4](https://go.dev) to build from source.
+
+To directly install, use:
+
+```sh
+go install github.com/robmorgan/infraspec@latest
+```
+
+Otherwise:
+
+```sh
+git clone https://github.com/robmorgan/infraspec.git
+go build ./cmd/infraspec
+```
+
+## Community
+
+<div className="space-y-3 mt-2">
+  <div className="flex h-6">
+    <img alt="stars" src="https://badgen.net/github/stars/robmorgan/infraspec" className="inline-block mr-2" />
+  </div>
+</div>
+
+InfraSpec was created by [Rob Morgan](https://github.com/robmorgan). Follow [`@_rjm_`](https://twitter.com/_rjm_) on
+Twitter for future project updates.
+
+Feel free to join the [discussions on GitHub](https://github.com/robmorgan/infraspec/discussions)!
