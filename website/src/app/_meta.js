@@ -8,4 +8,13 @@ export default {
     title: "Docs",
     type: "page",
   },
+  support: {
+    title: "Support",
+    type: "page",
+  },
+  contact: {
+    title: "Contact",
+    type: "page",
+    display: "hidden",
+  },
 };

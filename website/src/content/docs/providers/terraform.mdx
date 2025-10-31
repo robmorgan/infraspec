@@ -1,0 +1,51 @@
+---
+asIndexPage: true
+sidebarTitle: Terraform
+---
+
+# Terraform Provider Overview
+
+InfraSpec's Terraform provider enables you to provision infrastructure using Terraform and test it with natural language
+scenarios. You can run `terraform apply`, validate outputs, and combine Terraform with provider-specific assertions for
+comprehensive infrastructure testing.
+
+## Capabilities
+
+- **Provision Infrastructure**: Execute `terraform init` and `terraform apply` automatically
+- **Variable Management**: Set variables using multiple formats (strings, numbers, booleans, maps)
+- **Output Validation**: Verify Terraform outputs with exact or partial matching
+- **Provider Agnostic**: Works with any Terraform configuration regardless of cloud provider
+- **Automatic Cleanup**: Resources are automatically destroyed after tests complete
+- **Integration**: Seamlessly combines with AWS, HTTP, and other provider assertions
+
+## How It Works
+
+InfraSpec integrates Terraform operations directly into your Gherkin scenarios. When you write a step like:
+
+```gherkin
+When I run Terraform apply
+```
+
+InfraSpec automatically:
+
+1. Runs `terraform init` to initialize the configuration
+2. Executes `terraform apply` with your provided variables
+3. Parses Terraform outputs for validation
+4. Tracks applied resources for cleanup
+5. Destroys resources after the scenario completes
+
+All Terraform commands are executed in isolated working directories, ensuring test isolation.
+
+## Configuration
+
+No special configuration is required for Terraform support. Simply ensure:
+
+- Terraform is installed and available in your `PATH`
+- Your Terraform configurations are valid
+- Required provider credentials are configured (e.g., AWS credentials for AWS resources)
+
+## Next Steps
+
+- [Terraform Testing Guide](../guides/terraform) - Comprehensive examples and grammar reference
+- [AWS Provider Overview](./aws/overview) - Combine Terraform with AWS-specific assertions
+- [Getting Started](../getting-started) - Learn the basics of InfraSpec testing

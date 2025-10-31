@@ -1,0 +1,35 @@
+---
+asIndexPage: true
+sidebarTitle: AWS
+---
+
+# AWS Provider Overview
+
+InfraSpec's AWS provider allows you to validate AWS cloud resources easily using natural language scenarios written in
+Gherkin syntax. You can test your infrastructure directly in AWS or as part of Terraform-managed deployments.
+
+## Supported Services
+
+The AWS provider currently supports testing for three core AWS services:
+
+- **S3** - Simple Storage Service buckets
+- **RDS** - Relational Database Service instances
+- **DynamoDB** - NoSQL database tables
+
+Each service provides comprehensive assertions for existence, configuration, security settings, and compliance checks.
+
+## Configuring AWS Credentials
+
+InfraSpec uses the AWS SDK's standard credential chain. Credentials can be configured through:
+
+- Environment variables (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`)
+- AWS credentials file (`~/.aws/credentials`)
+- AWS profiles (`AWS_PROFILE`)
+- IAM role assumption (`INFRASPEC_IAM_ROLE`)
+- Container/IAM roles when running on EC2 or ECS
+
+## Next Steps
+
+- [AWS Testing Guide](../guides/aws) - Comprehensive examples and detailed credential configuration
+- [Getting Started](../../getting-started) - Learn the basics of InfraSpec testing
+- [Terraform Provider](../terraform) - Combine AWS with Terraform provisioning

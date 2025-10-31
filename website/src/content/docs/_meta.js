@@ -1,4 +1,8 @@
 export default {
+  "intro": "What is InfraSpec?",
   "getting-started": "Getting Started",
-  "comparison": "How InfraSpec Compares",
-};
+  "guides": "Guides",
+  "providers": "Providers",
+  "roadmap": "Roadmap",
+  "telemetry": "Telemetry"
+}

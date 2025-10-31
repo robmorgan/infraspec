@@ -1,0 +1,134 @@
+---
+asIndexPage: true
+sidebarTitle: What is InfraSpec?
+---
+
+# What is InfraSpec?
+
+InfraSpec is a CLI tool for testing your Terraform AWS infrastructure in plain English, without writing a single line of
+code. It combines a rich library of testing patterns with a domain-specific language for testing cloud infrastructure.
+
+Tests are written using easy-to-learn [Gherkin](https://cucumber.io/docs/gherkin/) syntax, which is suitable for both
+technical and non-technical team members. This approach contrasts sharply with existing tools like Terratest and
+Kitchen-Terraform, which require significant programming expertise.
+
+## The Problem
+
+Traditional infrastructure testing tools require you to write code in programming languages like Go (Terratest) or Ruby
+(Kitchen-Terraform). This creates a barrier for infrastructure engineers who want to test their infrastructure but
+aren't comfortable with these languages. Writing test code also means maintaining boilerplate, handling API calls,
+retries, and error handling yourself.
+
+## The Solution
+
+InfraSpec lets you write tests in plain English using Gherkin syntax. You describe what you want to test, and InfraSpec
+automatically translates your specifications into executable infrastructure tests. You focus on **what** to test, not
+**how** to test it.
+
+Here's an example of testing a Terraform S3 bucket configuration:
+
+```gherkin
+Feature: S3 Bucket Creation
+  As a DevOps Engineer
+  I want to create an S3 bucket with guardrails
+  So that I can store my data securely
+
+  Scenario: Create an S3 bucket with a name
+    Given I have a Terraform configuration in "./s3-bucket"
+    And I set variable "bucket_name" to "my-bucket"
+    When I run Terraform apply
+    Then the S3 bucket "my-bucket" should exist
+    And the S3 bucket "my-bucket" should have a versioning configuration
+    And the S3 bucket "my-bucket" should have a public access block
+    And the S3 bucket "my-bucket" should have a server access logging configuration
+    And the S3 bucket "my-bucket" should have an encryption configuration
+```
+
+InfraSpec automatically handles:
+
+- Connecting to AWS APIs
+- Parsing Terraform configurations
+- Executing Terraform commands
+- Validating resource states and configurations
+- Error handling and retries
+- Cleanup of test resources
+
+## Key Benefits
+
+### Plain English Syntax
+
+Write tests that read like documentation. The Gherkin syntax is intuitive and requires no programming knowledge. Tests
+are self-documenting and serve as living specifications.
+
+### Team-Friendly
+
+Non-technical stakeholders can read and even author tests. This improves collaboration between developers, DevOps
+engineers, product managers, and compliance teams. Everyone can understand and contribute to infrastructure quality
+standards.
+
+### Minimal Setup
+
+No complex frameworks to integrate. InfraSpec works with your existing Terraform configurations and AWS resources.
+Simply initialize a repository and start writing tests.
+
+### Rich Grammar Library
+
+InfraSpec comes with hundreds of built-in test steps (patterns) for common scenarios. You don't need to write low-level
+assertions for:
+
+- Resource existence and configuration
+- Security settings and compliance checks
+- Networking rules and connectivity
+- Cost optimization patterns
+
+### Fast Feedback
+
+Catch infrastructure issues early, before they reach production. Run these tests locally during development or integrate
+them into your CI/CD pipeline for automated validation.
+
+## What Can You Test?
+
+InfraSpec supports testing:
+
+**🏗️ Terraform Infrastructure**
+
+- Resource configurations and relationships
+- Security policies and compliance
+- Cost optimization rules
+- Multi-environment consistency
+
+**☁️ AWS Services**
+
+- DynamoDB tables
+- RDS DB instances
+- S3 bucket configurations
+- More services coming soon
+
+**🌐 HTTP Endpoints**
+
+- HTTP(s) endpoints
+- Form data handling
+- File uploads
+
+## How It Works
+
+InfraSpec uses Behavior-Driven Development (BDD) principles. Your Gherkin feature files are parsed and matched against
+step definitions that execute real infrastructure actions. When you write a step like:
+
+```gherkin
+Then the S3 bucket "my-bucket" should have an encryption configuration
+```
+
+InfraSpec:
+
+1. Generates the code to connect to AWS
+2. Retrieves the bucket configuration
+3. Validates the encryption settings
+4. Reports clear, actionable results
+
+All of this happens automatically—no code required on your part.
+
+## Getting Started
+
+Ready to try InfraSpec? Check out the [Getting Started guide](/docs/getting-started) to install InfraSpec and write your
+first test.

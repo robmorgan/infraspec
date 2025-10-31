@@ -1,0 +1,416 @@
+---
+sidebarTitle: AWS Testing Guide
+---
+
+# AWS Testing Guide
+
+InfraSpec provides comprehensive support for testing AWS infrastructure resources using plain English specifications.
+This guide covers all supported AWS grammars and provides practical examples for each service.
+
+## Overview
+
+InfraSpec supports three AWS services:
+
+- **S3** - Simple Storage Service buckets
+- **RDS** - Relational Database Service instances
+- **DynamoDB** - NoSQL database tables
+
+Each service has specific grammars (step definitions) that allow you to test various attributes and configurations of
+your infrastructure.
+
+---
+
+## S3 Bucket Testing
+
+### Supported Assertions
+
+InfraSpec supports the following S3 bucket assertions:
+
+#### `the S3 bucket "BUCKET_NAME" should exist`
+
+Verifies that an S3 bucket exists in your AWS account.
+
+#### `the S3 bucket "BUCKET_NAME" should have a versioning configuration`
+
+Validates that versioning is enabled on the bucket.
+
+#### `the S3 bucket "BUCKET_NAME" should have a public access block`
+
+Checks that the bucket has a public access block configuration enabled for security.
+
+#### `the S3 bucket "BUCKET_NAME" should have a server access logging configuration`
+
+Ensures the bucket has server access logging configured.
+
+#### `the S3 bucket "BUCKET_NAME" should have an encryption configuration`
+
+Verifies that the bucket has server-side encryption enabled.
+
+### Example Test
+
+```gherkin filename="features/aws/s3/s3_bucket.feature"
+Feature: S3 Bucket Creation
+  As a DevOps Engineer
+  I want to create an S3 bucket with guardrails
+  So that I can store my data securely
+
+  Background:
+    Given I have the necessary IAM permissions to describe S3 buckets
+
+  Scenario: Create an S3 bucket with a name
+    Given I have a Terraform configuration in "../../../examples/aws/s3/s3-bucket"
+    And I set the variable "region" to a random stable AWS region
+    And I set variable "bucket_name" to "my-bucket"
+    And I set the variable "tags" to
+      | Key         | Value     |
+      | Environment | test      |
+      | Project     | infratest |
+    When I run Terraform apply
+    Then the S3 bucket "my-bucket" should exist
+    And the S3 bucket "my-bucket" should have a versioning configuration
+    And the S3 bucket "my-bucket" should have a public access block
+    And the S3 bucket "my-bucket" should have a server access logging configuration
+    And the S3 bucket "my-bucket" should have an encryption configuration
+```
+
+### Terraform Example
+
+```hcl filename="main.tf"
+resource "aws_s3_bucket" "main" {
+  bucket = var.bucket_name
+  tags   = var.tags
+}
+
+resource "aws_s3_bucket_versioning" "main" {
+  bucket = aws_s3_bucket.main.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "main" {
+  bucket = aws_s3_bucket.main.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+    bucket_key_enabled = true
+  }
+}
+
+resource "aws_s3_bucket_public_access_block" "main" {
+  bucket = aws_s3_bucket.main.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_logging" "main" {
+  bucket = aws_s3_bucket.main.id
+
+  target_bucket = aws_s3_bucket.logging.id
+  target_prefix = "access-logs/"
+}
+```
+
+---
+
+## RDS Instance Testing
+
+### Supported Assertions
+
+InfraSpec supports comprehensive RDS instance testing:
+
+#### `I have the necessary IAM permissions to describe RDS instances`
+
+Verifies IAM permissions before running RDS tests (Background step).
+
+#### `the RDS instance "INSTANCE_ID" should exist`
+
+Checks that an RDS instance exists with the given identifier.
+
+#### `the RDS instance "INSTANCE_ID" status should be "STATUS"`
+
+Validates the instance status (e.g., "available", "creating", "deleting").
+
+#### `the RDS instance "INSTANCE_ID" instance class should be "CLASS"`
+
+Verifies the instance type (e.g., "db.t4g.micro", "db.r5.large").
+
+#### `the RDS instance "INSTANCE_ID" engine should be "ENGINE"`
+
+Confirms the database engine (e.g., "postgres", "mysql", "aurora-postgresql").
+
+#### `the RDS instance "INSTANCE_ID" allocated storage should be SIZE`
+
+Checks the allocated storage in GB.
+
+#### `the RDS instance "INSTANCE_ID" MultiAZ should be "true|false"`
+
+Validates Multi-AZ deployment setting.
+
+#### `the RDS instance "INSTANCE_ID" encryption should be "true|false"`
+
+Verifies storage encryption status.
+
+#### `the RDS instance "INSTANCE_ID" should not be publicly accessible`
+
+Ensures the instance is not publicly accessible (security best practice).
+
+#### `the RDS instance "INSTANCE_ID" should have the tags`
+
+Validates resource tags using a table format.
+
+### Example Test
+
+```gherkin filename="features/aws/rds/rds_db_instance.feature"
+Feature: RDS Instance Creation
+  As a DevOps engineer
+  I want to create an RDS instance with specific settings
+  So that I can ensure it meets our application requirements
+
+  Background:
+    Given I have the necessary IAM permissions to describe RDS instances
+
+  Scenario: Create a PostgreSQL RDS instance with basic configuration
+    Given I have a Terraform configuration in "../../../examples/aws/rds/postgres"
+    And I set the variable "region" to a random stable AWS region
+    And I set the variable "name" to "test-postgres-db"
+    And I set the variable "engine" to "postgres"
+    And I set the variable "engine_version" to "17.5"
+    And I set the variable "instance_class" to "db.t4g.micro"
+    And I set the variable "allocated_storage" to "20"
+    And I set the variable "multi_az" to "false"
+    And I set the variable "storage_encrypted" to "true"
+    And I set the variable "tags" to
+      | Key         | Value     |
+      | Environment | test      |
+      | Project     | infratest |
+    When I run Terraform apply
+    Then the output "db_instance_arn" should contain "test-postgres-db"
+    And the RDS instance "test-postgres-db" should exist
+    And the RDS instance "test-postgres-db" instance class should be "db.t4g.micro"
+    And the RDS instance "test-postgres-db" engine should be "postgres"
+    And the RDS instance "test-postgres-db" allocated storage should be 20
+    And the RDS instance "test-postgres-db" MultiAZ should be "false"
+    And the RDS instance "test-postgres-db" encryption should be "true"
+    And the RDS instance "test-postgres-db" status should be "available"
+    And the RDS instance "test-postgres-db" should not be publicly accessible
+    And the RDS instance "test-postgres-db" should have the tags
+      | Key         | Value            |
+      | Name        | test-postgres-db |
+      | Environment | test             |
+      | Project     | infratest        |
+```
+
+### Terraform Example
+
+```hcl filename="main.tf"
+resource "aws_db_instance" "default" {
+  identifier          = var.name
+  engine              = var.engine
+  engine_version      = var.engine_version
+  instance_class      = var.instance_class
+  allocated_storage   = var.allocated_storage
+  multi_az            = var.multi_az
+  storage_encrypted   = var.storage_encrypted
+  username            = "dbadmin"
+  password            = "Password123!"
+  skip_final_snapshot = true
+  publicly_accessible = false
+
+  tags = merge(
+    var.tags,
+    {
+      Name = var.name
+    }
+  )
+}
+```
+
+---
+
+## DynamoDB Table Testing
+
+### Supported Assertions
+
+InfraSpec supports DynamoDB table testing:
+
+#### `the DynamoDB table "TABLE_NAME" should exist`
+
+Verifies that a DynamoDB table exists.
+
+#### `the DynamoDB table "TABLE_NAME" should have billing mode "MODE"`
+
+Validates the billing mode (e.g., "PROVISIONED", "PAY_PER_REQUEST").
+
+#### `the DynamoDB table "TABLE_NAME" should have read capacity CAPACITY`
+
+Checks the read capacity units for provisioned tables.
+
+#### `the DynamoDB table "TABLE_NAME" should have write capacity CAPACITY`
+
+Verifies the write capacity units for provisioned tables.
+
+#### `the DynamoDB table "TABLE_NAME" should have tags`
+
+Validates resource tags using a table format.
+
+### Example Test
+
+```gherkin filename="features/aws/dynamodb/dynamodb_table.feature"
+Feature: DynamoDB Table Creation
+  As a DevOps engineer
+  I want to create a DynamoDB table with specific settings
+  So that I can ensure it meets our application requirements
+
+  Scenario: Create DynamoDB table with basic configuration
+    Given I have a Terraform configuration in "../../../examples/aws/dynamodb/dynamodb-table-with-autoscaling"
+    And I set the variable "name" to "test-xyzg23"
+    And I set the variable "hash_key" to "id"
+    And I set the variable "billing_mode" to "PROVISIONED"
+    And I set the variable "tags" to
+      | Key         | Value     |
+      | Environment | test      |
+      | Project     | infratest |
+    When I run Terraform apply
+    Then the output "table_arn" should contain "test-xyzg23"
+    And the AWS resource "aws_dynamodb_table.main" should exist
+    And the DynamoDB table "test-xyzg23" should have billing mode "PROVISIONED"
+    And the DynamoDB table "test-xyzg23" should have read capacity 5
+    And the DynamoDB table "test-xyzg23" should have write capacity 5
+    And the DynamoDB table "test-xyzg23" should have tags
+      | Key         | Value       |
+      | Name        | test-xyzg23 |
+      | Environment | test        |
+      | Project     | infratest   |
+```
+
+### Terraform Example
+
+```hcl filename="main.tf"
+module "dynamodb" {
+  source  = "terraform-aws-modules/dynamodb-table/aws"
+  version = "4.2.0"
+
+  name           = var.name
+  hash_key       = var.hash_key
+  billing_mode   = var.billing_mode
+  read_capacity  = 5
+  write_capacity = 5
+
+  attributes = [
+    {
+      name = "id"
+      type = "S"
+    }
+  ]
+
+  tags = var.tags
+}
+```
+
+---
+
+## Common Patterns
+
+### Using Tables for Tags
+
+InfraSpec uses Gherkin tables to specify tags:
+
+```gherkin
+And I set the variable "tags" to
+  | Key         | Value     |
+  | Environment | production|
+  | Project     | myproject |
+```
+
+And to validate tags:
+
+```gherkin
+Then the RDS instance "my-instance" should have the tags
+  | Key         | Value     |
+  | Environment | production|
+  | Project     | myproject |
+```
+
+### Background Steps
+
+Use Background steps to set up prerequisites:
+
+```gherkin
+Background:
+  Given I have the necessary IAM permissions to describe RDS instances
+```
+
+### Random Stable Regions
+
+InfraSpec can select a random stable AWS region for testing:
+
+```gherkin
+And I set the variable "region" to a random stable AWS region
+```
+
+This helps distribute your tests across different regions and ensures regional compatibility.
+
+---
+
+## Best Practices
+
+### 1. Tag Everything
+
+Always test that your resources have the correct tags for cost allocation and compliance:
+
+```gherkin
+And the DynamoDB table "my-table" should have tags
+  | Key         | Value      |
+  | Environment | production |
+  | Owner       | team-alpha |
+  | Project     | platform   |
+```
+
+### 2. Security First
+
+Always verify security settings:
+
+- **Encryption**: `encryption should be "true"`
+- **Public Access**: `should not be publicly accessible`
+- **Public Access Block**: `should have a public access block` (for S3)
+
+### 3. Capacity Planning
+
+For DynamoDB, test both read and write capacity:
+
+```gherkin
+And the DynamoDB table "my-table" should have read capacity 100
+And the DynamoDB table "my-table" should have write capacity 50
+```
+
+### 4. Status Verification
+
+For RDS and other resources that change state, verify the status:
+
+```gherkin
+And the RDS instance "my-db" status should be "available"
+```
+
+### 5. Versioning and Logging
+
+For S3 buckets, enable comprehensive logging and versioning:
+
+```gherkin
+And the S3 bucket "my-bucket" should have a versioning configuration
+And the S3 bucket "my-bucket" should have a server access logging configuration
+```
+
+---
+
+## Next Steps
+
+- Learn about [configuring AWS credentials](/docs/providers/aws/configure)
+- Explore [other testing patterns](/docs/guides/testing-patterns)
+- Check out [other providers](/docs/providers) supported by InfraSpec

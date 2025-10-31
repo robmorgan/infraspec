@@ -1,0 +1,395 @@
+---
+sidebarTitle: Terraform Testing Guide
+---
+
+# Terraform Testing Guide
+
+InfraSpec provides comprehensive support for testing Terraform infrastructure using plain English specifications. This guide covers all supported Terraform grammars and provides practical examples.
+
+## Overview
+
+InfraSpec's Terraform support enables you to:
+
+- **Provision infrastructure** with `terraform apply`
+- **Set variables** using multiple formats
+- **Validate outputs** with exact or partial matching
+- **Work with any Terraform configuration** regardless of provider
+
+The Terraform steps in InfraSpec work seamlessly with AWS, HTTP, and other provider-specific assertions, allowing you to build comprehensive infrastructure tests.
+
+---
+
+## Terraform Grammars
+
+### Configuration Setup
+
+#### `I have a Terraform configuration in "PATH"`
+Loads a Terraform configuration from the specified path (relative to the feature file).
+
+```gherkin
+Given I have a Terraform configuration in "../../examples/aws/s3/s3-bucket"
+```
+
+#### `the Terraform module at "PATH"`
+Alternative syntax for loading a Terraform configuration.
+
+```gherkin
+Given the Terraform module at "./terraform-config"
+```
+
+---
+
+### Applying Infrastructure
+
+#### `I run Terraform apply`
+Executes `terraform init` and `terraform apply` in the configured directory.
+
+```gherkin
+When I run Terraform apply
+```
+
+InfraSpec handles Terraform initialization automatically and provides clear error messages if the apply fails.
+
+---
+
+### Setting Variables
+
+#### `I set the variable "NAME" to "VALUE"`
+Sets a simple string variable for your Terraform configuration.
+
+```gherkin
+And I set the variable "bucket_name" to "my-bucket"
+And I set the variable "region" to "us-east-1"
+And I set the variable "instance_class" to "db.t4g.micro"
+```
+
+#### `I set the variable "NAME" to`
+Sets a map variable using a Gherkin table.
+
+```gherkin
+And I set the variable "tags" to
+  | Key         | Value     |
+  | Environment | production|
+  | Project     | myproject |
+```
+
+#### `I set the variable "NAME" to a random stable AWS region`
+Dynamically selects a random stable AWS region (useful for testing across regions).
+
+```gherkin
+And I set the variable "region" to a random stable AWS region
+```
+
+---
+
+### Validating Outputs
+
+#### `the "OUTPUT_NAME" output is "EXPECTED_VALUE"`
+Checks that a Terraform output exactly matches the expected value.
+
+```gherkin
+Then the "hello_world" output is "Hello, World!"
+```
+
+#### `the output "OUTPUT_NAME" should equal "EXPECTED_VALUE"`
+Alternative syntax for exact output matching.
+
+```gherkin
+Then the output "bucket_name" should equal "my-bucket"
+```
+
+#### `the output "OUTPUT_NAME" should contain "EXPECTED_VALUE"`
+Checks that a Terraform output contains a substring (useful for ARNs, IDs, or other dynamic values).
+
+```gherkin
+Then the output "table_arn" should contain "test-xyzg23"
+Then the output "db_instance_arn" should contain "test-postgres-db"
+```
+
+---
+
+## Basic Examples
+
+### Simple Output Validation
+
+```gherkin filename="features/terraform/hello_world.feature"
+Feature: Terraform Hello World
+
+  Scenario: Run a simple test
+    Given the Terraform module at "./../../examples/terraform/hello-world"
+    When I run Terraform apply
+    Then the "hello_world" output is "Hello, World!"
+```
+
+**Terraform Configuration:**
+
+```hcl filename="outputs.tf"
+output "hello_world" {
+  description = "Hello World"
+  value       = "Hello, World!"
+}
+```
+
+---
+
+### Infrastructure with Variables
+
+```gherkin
+Feature: S3 Bucket with Variables
+
+  Scenario: Create a bucket with custom name
+    Given I have a Terraform configuration in "../../examples/aws/s3/s3-bucket"
+    And I set the variable "region" to "us-east-1"
+    And I set variable "bucket_name" to "my-custom-bucket"
+    And I set the variable "tags" to
+      | Key         | Value     |
+      | Environment | test      |
+      | Project     | infratest |
+    When I run Terraform apply
+    Then the output "bucket_name" should equal "my-custom-bucket"
+    And the S3 bucket "my-custom-bucket" should exist
+```
+
+**Terraform Configuration:**
+
+```hcl filename="main.tf"
+variable "bucket_name" {
+  description = "Name of the S3 bucket"
+  type        = string
+}
+
+variable "region" {
+  description = "AWS region"
+  type        = string
+}
+
+variable "tags" {
+  description = "Resource tags"
+  type        = map(string)
+  default     = {}
+}
+
+resource "aws_s3_bucket" "main" {
+  bucket = var.bucket_name
+  tags   = var.tags
+}
+```
+
+---
+
+### Complex Multi-Resource Scenario
+
+```gherkin
+Feature: DynamoDB Table with Autoscaling
+
+  Scenario: Create DynamoDB table with tags
+    Given I have a Terraform configuration in "../../examples/aws/dynamodb/dynamodb-table-with-autoscaling"
+    And I set the variable "name" to "test-xyzg23"
+    And I set the variable "hash_key" to "id"
+    And I set the variable "billing_mode" to "PROVISIONED"
+    And I set the variable "tags" to
+      | Key         | Value     |
+      | Environment | test      |
+      | Project     | infratest |
+    When I run Terraform apply
+    Then the output "table_arn" should contain "test-xyzg23"
+    And the AWS resource "aws_dynamodb_table.main" should exist
+    And the DynamoDB table "test-xyzg23" should have billing mode "PROVISIONED"
+    And the DynamoDB table "test-xyzg23" should have read capacity 5
+    And the DynamoDB table "test-xyzg23" should have write capacity 5
+    And the DynamoDB table "test-xyzg23" should have tags
+      | Key         | Value       |
+      | Name        | test-xyzg23 |
+      | Environment | test        |
+      | Project     | infratest   |
+```
+
+---
+
+## Common Patterns
+
+### Testing Across Multiple Regions
+
+Use the `random stable AWS region` feature to distribute tests across regions:
+
+```gherkin
+Given I have a Terraform configuration in "../../examples/aws/rds/postgres"
+And I set the variable "region" to a random stable AWS region
+And I set the variable "name" to "test-postgres-db"
+# ... more configuration
+When I run Terraform apply
+Then the RDS instance "test-postgres-db" should exist
+And the RDS instance "test-postgres-db" status should be "available"
+```
+
+### Working with Complex Variable Types
+
+For map variables, use tables:
+
+```gherkin
+And I set the variable "tags" to
+  | Key           | Value              |
+  | Name          | my-resource        |
+  | Environment   | production         |
+  | Owner         | platform-team      |
+  | CostCenter    | engineering        |
+  | ManagedBy     | terraform          |
+```
+
+For nested structures in Terraform, map variables work with `map(string)` type:
+
+```hcl
+variable "tags" {
+  type = map(string)
+}
+```
+
+### Testing Dynamic Outputs
+
+Use `should contain` for outputs with dynamic components like ARNs, IDs, or timestamps:
+
+```gherkin
+Then the output "db_instance_arn" should contain "test-postgres-db"
+Then the output "table_id" should contain "arn:aws:dynamodb"
+```
+
+Use `should equal` for exact matches:
+
+```gherkin
+Then the output "bucket_name" should equal "my-bucket"
+Then the output "hello_world" output is "Hello, World!"
+```
+
+### Combining with Provider-Specific Tests
+
+The real power of InfraSpec comes from combining Terraform steps with provider-specific assertions:
+
+```gherkin
+Scenario: Comprehensive infrastructure test
+  # Terraform configuration and apply
+  Given I have a Terraform configuration in "../../examples/aws/rds/postgres"
+  And I set the variable "region" to "us-east-1"
+  And I set the variable "name" to "my-database"
+  And I set the variable "engine" to "postgres"
+  When I run Terraform apply
+  
+  # Terraform output validation
+  Then the output "db_instance_arn" should contain "my-database"
+  
+  # AWS-specific infrastructure validation
+  And the RDS instance "my-database" should exist
+  And the RDS instance "my-database" engine should be "postgres"
+  And the RDS instance "my-database" encryption should be "true"
+  And the RDS instance "my-database" should not be publicly accessible
+  And the RDS instance "my-database" status should be "available"
+```
+
+---
+
+## Best Practices
+
+### 1. Organize Your Tests by Feature
+
+Keep feature files focused on specific infrastructure components:
+
+```
+features/
+  ├── aws/
+  │   ├── s3_bucket.feature
+  │   ├── dynamodb_table.feature
+  │   └── rds_instance.feature
+  └── terraform/
+      └── hello_world.feature
+```
+
+### 2. Use Relative Paths
+
+Always use relative paths from your feature file to your Terraform configurations:
+
+```gherkin
+Given I have a Terraform configuration in "../../examples/aws/s3/s3-bucket"
+```
+
+### 3. Test Both Infrastructure and Outputs
+
+Validate both Terraform outputs and actual infrastructure state:
+
+```gherkin
+When I run Terraform apply
+Then the output "bucket_name" should equal "my-bucket"  # Terraform output
+And the S3 bucket "my-bucket" should exist               # AWS reality check
+```
+
+### 4. Leverage Background Steps
+
+Use Background steps for common setup:
+
+```gherkin
+Background:
+  Given I have the necessary IAM permissions to describe S3 buckets
+```
+
+### 5. Handle Dynamic Values
+
+Use `should contain` for dynamic values like ARNs, IDs, and resource names:
+
+```gherkin
+Then the output "instance_arn" should contain "arn:aws:rds"
+Then the output "table_id" should contain "dynamodb-table"
+```
+
+### 6. Clean Up After Tests
+
+InfraSpec automatically cleans up resources after tests complete, but you can also use explicit destroy steps if needed:
+
+```gherkin
+Scenario: Test with cleanup
+  Given I have a Terraform configuration in "../../examples/test-config"
+  When I run Terraform apply
+  # ... assertions ...
+  # Cleanup happens automatically
+```
+
+---
+
+## Advanced Topics
+
+### Variable Handling
+
+InfraSpec supports all Terraform variable types:
+
+- **String**: `I set the variable "name" to "value"`
+- **Number**: `I set the variable "count" to "5"` (passed as string, Terraform converts)
+- **Boolean**: `I set the variable "enabled" to "true"`
+- **Map**: `I set the variable "tags" to` with a table
+- **List**: Pass comma-separated values or use Terraform's `-var` format
+
+### Working with Modules
+
+Terraform modules work seamlessly with InfraSpec:
+
+```gherkin
+Given I have a Terraform configuration in "../../examples/aws/dynamodb/dynamodb-table-with-autoscaling"
+# This configuration uses a module
+When I run Terraform apply
+# InfraSpec applies the full configuration including modules
+```
+
+### Error Handling
+
+InfraSpec provides clear error messages when Terraform operations fail:
+
+```
+Error: there was an error running terraform apply: [Terraform error output]
+```
+
+Always check that your Terraform configuration is valid before running tests.
+
+---
+
+## Next Steps
+
+- Learn about [AWS-specific testing grammars](/docs/guides/aws)
+- Explore [testing patterns](/docs/guides/testing-patterns)
+- Check out [getting started](/docs/getting-started) with InfraSpec
+

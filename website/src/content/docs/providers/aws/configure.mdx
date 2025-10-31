@@ -1,0 +1,227 @@
+---
+sidebarTitle: Configuring AWS Credentials
+---
+
+# Configuring AWS Credentials
+
+InfraSpec uses the AWS SDK for Go v2, which follows the standard AWS credential chain. This means InfraSpec
+automatically discovers credentials from multiple sources in a specific order.
+
+## Credential Discovery Order
+
+The AWS SDK checks for credentials in the following order:
+
+1. **Environment Variables** - `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`
+2. **Shared Credentials File** - `~/.aws/credentials` (Linux/Mac) or `%USERPROFILE%\.aws\credentials` (Windows)
+3. **AWS Profile** - `AWS_PROFILE` environment variable
+4. **Container/IAM Roles** - EC2 instance profile, ECS task role, or Lambda execution role
+5. **IAM Role Assumption** - `INFRASPEC_IAM_ROLE` environment variable
+
+The SDK will use the first set of valid credentials it finds.
+
+## Configuration Methods
+
+### Environment Variables
+
+The simplest method for CI/CD pipelines or temporary access:
+
+```bash
+export AWS_ACCESS_KEY_ID="your-access-key-id"
+export AWS_SECRET_ACCESS_KEY="your-secret-access-key"
+export AWS_REGION="us-east-1"
+```
+
+You can also set the region globally or per-command:
+
+```bash
+export AWS_REGION="us-east-1"
+# Or use AWS_DEFAULT_REGION
+export AWS_DEFAULT_REGION="us-east-1"
+```
+
+### AWS Credentials File
+
+For local development, create a credentials file:
+
+```bash
+mkdir -p ~/.aws
+```
+
+```ini filename="~/.aws/credentials"
+[default]
+aws_access_key_id = YOUR_ACCESS_KEY_ID
+aws_secret_access_key = YOUR_SECRET_ACCESS_KEY
+
+[dev]
+aws_access_key_id = DEV_ACCESS_KEY_ID
+aws_secret_access_key = DEV_SECRET_ACCESS_KEY
+```
+
+### AWS Profile
+
+Use a specific named profile from your credentials file:
+
+```bash
+export AWS_PROFILE="dev"
+```
+
+Or with the AWS CLI:
+
+```bash
+aws configure --profile dev
+```
+
+### IAM Role Assumption
+
+For cross-account access or enhanced security, InfraSpec supports automatic IAM role assumption:
+
+```bash
+export INFRASPEC_IAM_ROLE="arn:aws:iam::123456789012:role/InfraSpecTestRole"
+```
+
+When this environment variable is set, InfraSpec will:
+
+1. First authenticate using your default credentials
+2. Then assume the specified IAM role
+3. Use the assumed role credentials for all AWS API calls
+
+This is useful for:
+
+- Testing in multiple AWS accounts
+- Isolating permissions with a dedicated test role
+- Enforcing least-privilege access
+
+**Prerequisites:** Your base credentials must have permission to assume the target role (with `sts:AssumeRole`).
+
+### IAM Instance/Container Roles
+
+When running on AWS infrastructure, credentials are automatically provided:
+
+- **EC2**: Uses the instance profile IAM role
+- **ECS**: Uses the task role
+- **Lambda**: Uses the execution role
+
+No additional configuration needed!
+
+## Region Configuration
+
+Set the default region in several ways:
+
+### Environment Variable
+
+```bash
+export AWS_REGION="us-east-1"
+# or
+export AWS_DEFAULT_REGION="us-east-1"
+```
+
+### AWS Config File
+
+```ini filename="~/.aws/config"
+[default]
+region = us-east-1
+
+[profile dev]
+region = us-west-2
+```
+
+### Command Line Override
+
+InfraSpec also supports a custom environment variable for forcing a specific region:
+
+```bash
+export INFRASPEC_REGION="us-west-2"
+```
+
+This is particularly useful when testing across multiple regions.
+
+## Required IAM Permissions
+
+InfraSpec requires various permissions depending on which AWS services you're testing. At minimum, your credentials
+need:
+
+### Common Permissions
+
+- `ec2:DescribeRegions` - To list available regions
+
+### S3 Testing
+
+- `s3:GetBucketVersioning`
+- `s3:GetBucketEncryption`
+- `s3:GetBucketPublicAccessBlock`
+- `s3:GetBucketLogging`
+- `s3:HeadBucket`
+
+### RDS Testing
+
+- `rds:DescribeDBInstances`
+- `rds:ListTagsForResource`
+
+### DynamoDB Testing
+
+- `dynamodb:ListTables`
+- `dynamodb:DescribeTable`
+- `dynamodb:ListTagsOfResource`
+
+### Terraform Provider
+
+When testing Terraform-provisioned resources, your Terraform configuration needs appropriate permissions to
+create/modify/destroy resources.
+
+## Troubleshooting
+
+### "Error finding AWS credentials"
+
+This error means the SDK couldn't find valid credentials in any of the expected locations.
+
+**Solutions:**
+
+1. Check that `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` are set (if using environment variables)
+2. Verify `~/.aws/credentials` exists and contains valid keys
+3. Ensure `AWS_PROFILE` points to an existing profile (if using profiles)
+4. When assuming a role, verify your base credentials are valid
+
+### "Access Denied" or Permission Errors
+
+Your credentials don't have sufficient permissions for the operation.
+
+**Solutions:**
+
+1. Review the required permissions above
+2. Check IAM policies attached to your user/role
+3. For role assumption, ensure your base credentials have `sts:AssumeRole` permission
+4. Verify the assumed role has the necessary service permissions
+
+### "Invalid Region"
+
+The specified region doesn't exist or isn't enabled in your AWS account.
+
+**Solutions:**
+
+1. Verify the region name is correct (e.g., `us-east-1`, not `us-east`)
+2. Check that the region is enabled in your account
+3. Use `aws ec2 describe-regions` to list available regions
+
+## Best Practices
+
+### Security
+
+- Never commit credentials to version control
+- Use IAM roles instead of access keys when possible
+- Rotate access keys regularly
+- Use separate credentials for different environments
+- Implement least-privilege permissions
+
+### CI/CD
+
+- Store credentials as secrets in your CI/CD platform
+- Use OIDC/web identity federation for GitHub Actions, GitLab CI, etc.
+- Set expiration times on temporary credentials
+- Never print credentials in logs
+
+### Local Development
+
+- Use named profiles for different AWS accounts
+- Consider using AWS SSO for temporary credentials
+- Use `aws vault` or similar tools for credential management
+- Avoid storing production credentials locally
