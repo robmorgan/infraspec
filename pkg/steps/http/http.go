@@ -33,8 +33,10 @@ func registerHTTPSteps(sc *godog.ScenarioContext) {
 	sc.Step(`^I set the request body to "([^"]*)"$`, newSetRequestBodyStep)
 	sc.Step(`^I set basic auth credentials with username "([^"]*)" and password "([^"]*)"$`, newSetBasicAuthCredentialsStep)
 	sc.Step(`^I am authenticated with a valid bearer token$`, newSetBearerTokenFromEnvStep)
+	sc.Step(`^I want to retry the HTTP request until the response contains "([^"]*)"$`, newRetryHTTPRequestUntilContainsWithDefaultsStep)
+	sc.Step(`^I want to retry the HTTP request until the response contains "([^"]*)" with max (\d+) retries and a (\d+) second timeout$`, newRetryHTTPRequestUntilContainsStep)
 
-	// Basic HTTP requests
+	// Fire the request and store the response in the context
 	sc.Step(`^I send a ([A-Z]+) request$`, newHTTPRequestStep)
 	sc.Step(`^I make a ([A-Z]+) request$`, newHTTPRequestStep)
 
@@ -44,10 +46,6 @@ func registerHTTPSteps(sc *godog.ScenarioContext) {
 	// Response content assertions
 	sc.Step(`^the HTTP response should contain "([^"]*)"$`, newHTTPResponseContainsStep)
 
-	// Retry HTTP requests until response contains content
-	sc.Step(`^I retry the HTTP request until the response contains "([^"]*)" with max (\d+) retries and a (\d+) second timeout$`, newRetryHTTPRequestUntilContainsStep)
-	sc.Step(`^I retry the HTTP request until the response contains "([^"]*)"$`, newRetryHTTPRequestUntilContainsWithDefaultsStep)
-
 	// JSON response assertions
 	sc.Step(`^the HTTP response should be valid JSON$`, newHTTPResponseJSONStep)
 	sc.Step(`^the response should be valid JSON$`, newHTTPResponseJSONStep)
@@ -56,7 +54,7 @@ func registerHTTPSteps(sc *godog.ScenarioContext) {
 	sc.Step(`^the HTTP response header "([^"]*)" should be "([^"]*)"$`, newHTTPResponseHeaderStep)
 }
 
-// Basic HTTP request step (uses endpoint from scenario state)
+// newHTTPRequestStep actually fires the request and stores the response in the context.
 func newHTTPRequestStep(ctx context.Context, method string) (context.Context, error) {
 	options := contexthelpers.GetHttpRequestOptions(ctx)
 	if options == nil || options.Endpoint == "" {
@@ -209,12 +207,8 @@ func newSetBasicAuthCredentialsStep(ctx context.Context, username, password stri
 	return context.WithValue(ctx, contexthelpers.HttpRequestOptionsCtxKey{}, opts), nil
 }
 
+// newSetBearerTokenFromEnvStep sets the Bearer token from the INFRASPEC_BEARER_TOKEN environment variable.
 func newSetBearerTokenFromEnvStep(ctx context.Context) (context.Context, error) {
-	return NewSetBearerTokenFromEnvStep(ctx)
-}
-
-// NewSetBearerTokenFromEnvStep sets the Bearer token from the BEARER_TOKEN environment variable
-func NewSetBearerTokenFromEnvStep(ctx context.Context) (context.Context, error) {
 	// Check for environment variable containing the Bearer token
 	token := os.Getenv("INFRASPEC_BEARER_TOKEN")
 	if token == "" {
@@ -231,6 +225,38 @@ func NewSetBearerTokenFromEnvStep(ctx context.Context) (context.Context, error) 
 
 // Retry HTTP request until response contains specified content
 func newRetryHTTPRequestUntilContainsStep(ctx context.Context, expectedContent string, maxRetries, timeoutSeconds int) (context.Context, error) {
+	opts := contexthelpers.GetHttpRequestOptions(ctx)
+	if opts == nil {
+		opts = &httphelpers.HttpRequestOptions{}
+	}
+
+	// set up the retry config
+	retryConfig := &httphelpers.RetryConfig{
+		MaxRetries:       maxRetries,
+		InitialDelay:     1 * time.Second,
+		MaxDelay:         10 * time.Second,
+		BackoffFactor:    1.5,
+		TargetStatusCode: 200,
+		TargetBody:       expectedContent,
+	}
+	opts.RetryConfig = retryConfig
+
+	return context.WithValue(ctx, contexthelpers.HttpRequestOptionsCtxKey{}, opts), nil
+
+	options := contexthelpers.GetHttpRequestOptions(ctx)
+	if options == nil || options.Endpoint == "" {
+		return ctx, fmt.Errorf("no HTTP endpoint set. Use 'Given I have a HTTP endpoint at' step first")
+	}
+
+	// We hardcode the expected status to 200 for now. We might support other status codes in the future.
+	expectedStatusCode := 200
+
+	resp, err := httphelpers.DoWithRetry(ctx, opts, expectedStatusCode, expectedBody, maxRetries, sleepBetweenRetries)
+	if err != nil {
+		return nil, err
+	}
+	return resp.(*HttpResponse), nil
+
 	options := contexthelpers.GetHttpRequestOptions(ctx)
 	if options == nil || options.Endpoint == "" {
 		return ctx, fmt.Errorf("no HTTP endpoint set. Use 'Given I have a HTTP endpoint at' step first")

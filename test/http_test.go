@@ -33,3 +33,11 @@ func TestRetryApiTestsFeature(t *testing.T) {
 	err := runner.New(cfg).Run(featurePath)
 	require.NoError(t, err)
 }
+
+func TestHttpImporterFeature(t *testing.T) {
+	cfg := testhelpers.SetupAWSTestsAndConfig()
+	featurePath := filepath.Join("..", "features", "http", "importer.feature")
+
+	err := runner.New(cfg).Run(featurePath)
+	require.NoError(t, err)
+}

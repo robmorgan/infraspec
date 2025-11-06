@@ -5,6 +5,7 @@ Feature: HTTP Retry Testing
 
   Scenario: Basic HTTP request test
     Given I have a HTTP endpoint at "http://localhost:8000/json"
+    And I want to retry the HTTP request until the response contains "completed" with max 5 retries and 10 second timeout
     When I retry the HTTP request until the response contains "completed" with max 5 retries and 10 second timeout
     Then the HTTP response status should be 200
     And the HTTP response should contain "Hello, World!"

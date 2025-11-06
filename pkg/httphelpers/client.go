@@ -10,19 +10,33 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
+
+	"github.com/robmorgan/infraspec/pkg/retry"
 )
 
+// HttpRequestOptions holds the options for an HTTP request
 type HttpRequestOptions struct {
 	Endpoint    string
 	Method      string
 	Headers     map[string]string
 	ContentType string
 	FormData    map[string]string
-	BaseDir     string // BaseDir for file uploads based on feature file location
 	File        *File
 	RequestBody []byte
 	BasicAuth   *BasicAuth
 	BearerToken string
+	RetryConfig *RetryConfig
+}
+
+// RetryConfig holds configuration for the retry mechanism
+type RetryConfig struct {
+	MaxRetries       int
+	InitialDelay     time.Duration
+	MaxDelay         time.Duration
+	BackoffFactor    float64
+	TargetStatusCode int
+	TargetBody       string
 }
 
 type BasicAuth struct {
@@ -54,6 +68,34 @@ func NewHttpClient() *HttpClient {
 	}
 }
 
+// DoWithRetry performs an HTTP request with retry logic.
+//
+// It uses the same logic as Do but wraps it with retry functionality.
+// The retry behavior is controlled by maxRetries and sleepBetweenRetries parameters.
+func (h *HttpClient) DoWithRetry(ctx context.Context, opts *HttpRequestOptions, expectedStatusCode int, expectedBody string, maxRetries int, sleepBetweenRetries time.Duration) (*HttpResponse, error) {
+	description := fmt.Sprintf("HTTP %s request to %s", opts.Method, opts.Endpoint)
+
+	resp, err := retry.DoWithRetryInterface(description, maxRetries, sleepBetweenRetries, func() (interface{}, error) {
+		resp, err := h.Do(ctx, opts)
+		if err != nil {
+			return nil, err
+		}
+		if resp.StatusCode != expectedStatusCode {
+			return nil, fmt.Errorf("expected status code %d but got %d", expectedStatusCode, resp.StatusCode)
+		}
+		if expectedBody != "" && !strings.Contains(string(resp.Body), expectedBody) {
+			return nil, fmt.Errorf("expected body %s but got %s", expectedBody, string(resp.Body))
+		}
+		return resp, nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
+
 // Do performs an HTTP request.
 //
 // If the request has a body, it will be sent as a multipart/form-data request.
@@ -63,8 +105,17 @@ func NewHttpClient() *HttpClient {
 // If the request has a content type, it will be set as the content type of the request.
 // If the request has a method, it will be set as the method of the request.
 func (h *HttpClient) Do(ctx context.Context, opts *HttpRequestOptions) (*HttpResponse, error) {
+	req, err := h.createRequest(ctx, opts)
+	if err != nil {
+		return nil, err
+	}
+
+	return h.executeRequest(req)
+}
+
+// createRequest creates an HTTP request based on the provided options
+func (h *HttpClient) createRequest(ctx context.Context, opts *HttpRequestOptions) (*http.Request, error) {
 	var buf bytes.Buffer
-	var writer *multipart.Writer
 	var req *http.Request
 	var err error
 
@@ -72,75 +123,118 @@ func (h *HttpClient) Do(ctx context.Context, opts *HttpRequestOptions) (*HttpRes
 	needsMultipart := opts.File != nil || opts.FormData != nil
 
 	if needsMultipart {
-		// Create multipart writer for form data and/or file uploads
-		writer = multipart.NewWriter(&buf)
-
-		// Handle file upload if specified
-		if opts.File != nil {
-			file, err := os.Open(opts.File.FilePath)
-			if err != nil {
-				return nil, fmt.Errorf("failed to open file %s: %w", opts.File.FilePath, err)
-			}
-			defer file.Close()
-
-			// Add file field
-			fieldName := opts.File.FieldName
-			if fieldName == "" {
-				fieldName = "file"
-			}
-			fileWriter, err := writer.CreateFormFile(fieldName, filepath.Base(opts.File.FilePath))
-			if err != nil {
-				return nil, fmt.Errorf("failed to create form file: %w", err)
-			}
-
-			_, err = io.Copy(fileWriter, file)
-			if err != nil {
-				return nil, fmt.Errorf("failed to copy file content: %w", err)
-			}
-		}
-
-		// Add form data fields
-		if opts.FormData != nil {
-			for key, value := range opts.FormData {
-				err = writer.WriteField(key, value)
-				if err != nil {
-					return nil, fmt.Errorf("failed to write form field %s: %w", key, err)
-				}
-			}
-		}
-
-		// Close the multipart writer
-		err = writer.Close()
-		if err != nil {
-			return nil, fmt.Errorf("failed to close multipart writer: %w", err)
-		}
-
-		// Create request with multipart body
-		req, err = http.NewRequestWithContext(ctx, opts.Method, opts.Endpoint, &buf)
-		if err != nil {
-			return nil, fmt.Errorf("failed to create HTTP request: %w", err)
-		}
-
-		// Set multipart content type
-		req.Header.Set("Content-Type", writer.FormDataContentType())
+		req, err = h.createMultipartRequest(ctx, opts, &buf)
 	} else {
-		// Create request with regular body or no body
-		var body io.Reader
-		if opts.RequestBody != nil {
-			body = bytes.NewReader(opts.RequestBody)
-		}
-		req, err = http.NewRequestWithContext(ctx, opts.Method, opts.Endpoint, body)
-		if err != nil {
-			return nil, fmt.Errorf("failed to create HTTP request: %w", err)
-		}
+		req, err = h.createRegularRequest(ctx, opts)
+	}
 
-		// Set content type if specified
-		if opts.ContentType != "" {
-			req.Header.Set("Content-Type", opts.ContentType)
-		}
+	if err != nil {
+		return nil, err
 	}
 
 	// Set additional headers
+	h.setHeaders(req, opts)
+
+	// Set authentication
+	h.setAuthentication(req, opts)
+
+	return req, nil
+}
+
+// createMultipartRequest creates a multipart form data request
+func (h *HttpClient) createMultipartRequest(ctx context.Context, opts *HttpRequestOptions, buf *bytes.Buffer) (*http.Request, error) {
+	writer := multipart.NewWriter(buf)
+
+	// Handle file upload if specified
+	if opts.File != nil {
+		if err := h.addFileToRequest(writer, opts.File); err != nil {
+			return nil, err
+		}
+	}
+
+	// Add form data fields
+	if opts.FormData != nil {
+		if err := h.addFormDataToRequest(writer, opts.FormData); err != nil {
+			return nil, err
+		}
+	}
+
+	// Close the multipart writer
+	if err := writer.Close(); err != nil {
+		return nil, fmt.Errorf("failed to close multipart writer: %w", err)
+	}
+
+	// Create request with multipart body
+	req, err := http.NewRequestWithContext(ctx, opts.Method, opts.Endpoint, buf)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	// Set multipart content type
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+
+	return req, nil
+}
+
+// createRegularRequest creates a regular HTTP request
+func (h *HttpClient) createRegularRequest(ctx context.Context, opts *HttpRequestOptions) (*http.Request, error) {
+	var body io.Reader
+	if opts.RequestBody != nil {
+		body = bytes.NewReader(opts.RequestBody)
+	}
+
+	req, err := http.NewRequestWithContext(ctx, opts.Method, opts.Endpoint, body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
+	}
+
+	// Set content type if specified
+	if opts.ContentType != "" {
+		req.Header.Set("Content-Type", opts.ContentType)
+	}
+
+	return req, nil
+}
+
+// addFileToRequest adds a file to the multipart request
+func (h *HttpClient) addFileToRequest(writer *multipart.Writer, file *File) error {
+	fileHandle, err := os.Open(file.FilePath)
+	if err != nil {
+		return fmt.Errorf("failed to open file %s: %w", file.FilePath, err)
+	}
+	defer fileHandle.Close()
+
+	// Add file field
+	fieldName := file.FieldName
+	if fieldName == "" {
+		fieldName = "file"
+	}
+	fileWriter, err := writer.CreateFormFile(fieldName, filepath.Base(file.FilePath))
+	if err != nil {
+		return fmt.Errorf("failed to create form file: %w", err)
+	}
+
+	_, err = io.Copy(fileWriter, fileHandle)
+	if err != nil {
+		return fmt.Errorf("failed to copy file content: %w", err)
+	}
+
+	return nil
+}
+
+// addFormDataToRequest adds form data fields to the multipart request
+func (h *HttpClient) addFormDataToRequest(writer *multipart.Writer, formData map[string]string) error {
+	for key, value := range formData {
+		err := writer.WriteField(key, value)
+		if err != nil {
+			return fmt.Errorf("failed to write form field %s: %w", key, err)
+		}
+	}
+	return nil
+}
+
+// setHeaders sets additional headers on the request
+func (h *HttpClient) setHeaders(req *http.Request, opts *HttpRequestOptions) {
 	if opts.Headers != nil {
 		for key, value := range opts.Headers {
 			if strings.ToLower(key) != "content-type" {
@@ -148,7 +242,10 @@ func (h *HttpClient) Do(ctx context.Context, opts *HttpRequestOptions) (*HttpRes
 			}
 		}
 	}
+}
 
+// setAuthentication sets authentication on the request
+func (h *HttpClient) setAuthentication(req *http.Request, opts *HttpRequestOptions) {
 	// Set basic auth credentials if specified
 	if opts.BasicAuth != nil {
 		req.SetBasicAuth(opts.BasicAuth.Username, opts.BasicAuth.Password)
@@ -158,7 +255,10 @@ func (h *HttpClient) Do(ctx context.Context, opts *HttpRequestOptions) (*HttpRes
 	if opts.BearerToken != "" {
 		req.Header.Set("Authorization", "Bearer "+opts.BearerToken)
 	}
+}
 
+// executeRequest executes the HTTP request and returns the response
+func (h *HttpClient) executeRequest(req *http.Request) (*HttpResponse, error) {
 	// Send request
 	resp, err := h.client.Do(req)
 	if err != nil {
