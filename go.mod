@@ -11,7 +11,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.254.1
 	github.com/aws/aws-sdk-go-v2/service/rds v1.108.5
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.89.2
-	github.com/aws/aws-sdk-go-v2/service/ssm v1.66.2
+	github.com/aws/aws-sdk-go-v2/service/ssm v1.66.4
 	github.com/aws/aws-sdk-go-v2/service/sts v1.39.0
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/cucumber/godog v0.15.1
