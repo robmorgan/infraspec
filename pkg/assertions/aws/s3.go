@@ -5,9 +5,10 @@ import (
 	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
+
+	"github.com/robmorgan/infraspec/pkg/awshelpers"
 )
 
 // Ensure the `AWSAsserter` struct implements the `S3Asserter` interface.
@@ -129,10 +130,10 @@ func (a *AWSAsserter) AssertBucketServerAccessLogging(bucketName string) error {
 
 // Helper method to create an S3 client
 func (a *AWSAsserter) createS3Client() (*s3.Client, error) {
-	cfg, err := config.LoadDefaultConfig(context.TODO())
+	cfg, err := awshelpers.NewAuthenticatedSessionWithDefaultRegion()
 	if err != nil {
-		return nil, fmt.Errorf("failed to load AWS config: %w", err)
+		return nil, fmt.Errorf("failed to create AWS session: %w", err)
 	}
 
-	return s3.NewFromConfig(cfg), nil
+	return s3.NewFromConfig(*cfg), nil
 }

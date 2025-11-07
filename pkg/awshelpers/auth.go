@@ -6,29 +6,81 @@ import (
 	"os"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
+	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
+
+	"github.com/robmorgan/infraspec/internal/config"
 )
 
 const (
 	AuthAssumeRoleEnvVar = "INFRASPEC_IAM_ROLE" // OS environment variable name through which Assume Role ARN may be passed for authentication
+	// InfraspecCloudAccessKeyID is the access key ID used when authenticating with an InfraSpec Cloud token
+	InfraspecCloudAccessKeyID        = "infraspec-test"
+	InfraspecCloudDefaultEndpointURL = "http://api.infraspec.sh:8000"
 )
 
 // NewAuthenticatedSession creates an AWS Config following to standard AWS authentication workflow.
-// If AuthAssumeIamRoleEnvVar environment variable is set, assumes IAM role specified in it.
+// If an InfraSpec Cloud token is configured, it uses that token as the secret access key with "infraspec-test" as the access key ID.
+// If `INFRASPEC_IAM_ROLE` environment variable is set, it assumes IAM role specified in it.
+// Otherwise, uses default credentials.
 func NewAuthenticatedSession(region string) (*aws.Config, error) {
+	if config.UseInfraspecVirtualCloud() {
+		config.Logging.Logger.Info("Using InfraSpec Virtual Cloud")
+
+		cloudToken, err := config.GetInfraspecCloudToken()
+		if err != nil {
+			return nil, fmt.Errorf("failed to get InfraSpec Cloud token: %w", err)
+		}
+
+		if cloudToken != "" {
+			return NewAuthenticatedSessionFromInfraspecCloudToken(region, cloudToken)
+		}
+	}
+
+	// Fall back to existing behavior
 	if assumeRoleArn, ok := os.LookupEnv(AuthAssumeRoleEnvVar); ok {
 		return NewAuthenticatedSessionFromRole(region, assumeRoleArn)
-	} else {
-		return NewAuthenticatedSessionFromDefaultCredentials(region)
 	}
+
+	return NewAuthenticatedSessionFromDefaultCredentials(region)
+}
+
+// NewAuthenticatedSessionWithDefaultRegion creates an AWS Config with the default region.
+func NewAuthenticatedSessionWithDefaultRegion() (*aws.Config, error) {
+	region := os.Getenv("AWS_DEFAULT_REGION")
+	if region == "" {
+		region = os.Getenv("AWS_REGION")
+	}
+	if region == "" {
+		region = defaultRegion
+	}
+	return NewAuthenticatedSession(region)
+}
+
+// NewAuthenticatedSessionFromInfraspecCloudToken creates an AWS Config using the InfraSpec Cloud token as the secret access key.
+func NewAuthenticatedSessionFromInfraspecCloudToken(region, token string) (*aws.Config, error) {
+	cfg, err := awsconfig.LoadDefaultConfig(
+		context.Background(),
+		awsconfig.WithRegion(region),
+		awsconfig.WithCredentialsProvider(credentials.StaticCredentialsProvider{
+			Value: aws.Credentials{
+				AccessKeyID:     InfraspecCloudAccessKeyID,
+				SecretAccessKey: token,
+			},
+		}),
+	)
+	if err != nil {
+		return nil, CredentialsError{UnderlyingErr: err}
+	}
+
+	return &cfg, nil
 }
 
 // NewAuthenticatedSessionFromDefaultCredentials gets an AWS Config, checking that the user has credentials properly configured in their environment.
 func NewAuthenticatedSessionFromDefaultCredentials(region string) (*aws.Config, error) {
-	cfg, err := config.LoadDefaultConfig(context.Background(), config.WithRegion(region))
+	cfg, err := awsconfig.LoadDefaultConfig(context.Background(), awsconfig.WithRegion(region))
 	if err != nil {
 		return nil, CredentialsError{UnderlyingErr: err}
 	}
