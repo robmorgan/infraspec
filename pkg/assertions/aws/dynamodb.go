@@ -165,7 +165,14 @@ func (a *AWSAsserter) createDynamoDBClient() (*dynamodb.Client, error) {
 		return nil, fmt.Errorf("failed to create AWS session: %w", err)
 	}
 
-	return dynamodb.NewFromConfig(*cfg), nil
+	opts := make([]func(*dynamodb.Options), 0, 1)
+	if endpoint, ok := awshelpers.GetVirtualCloudEndpoint("dynamodb"); ok {
+		opts = append(opts, func(o *dynamodb.Options) {
+			o.EndpointResolver = dynamodb.EndpointResolverFromURL(endpoint)
+		})
+	}
+
+	return dynamodb.NewFromConfig(*cfg, opts...), nil
 }
 
 // Helper method to get the billing mode of a DynamoDB table

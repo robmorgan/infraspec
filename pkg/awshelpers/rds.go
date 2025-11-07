@@ -9,7 +9,14 @@ func NewRdsClient(region string) (*rds.Client, error) {
 		return nil, err
 	}
 
-	return rds.NewFromConfig(*s), nil
+	opts := make([]func(*rds.Options), 0, 1)
+	if endpoint, ok := GetVirtualCloudEndpoint("rds"); ok {
+		opts = append(opts, func(o *rds.Options) {
+			o.EndpointResolver = rds.EndpointResolverFromURL(endpoint)
+		})
+	}
+
+	return rds.NewFromConfig(*s, opts...), nil
 }
 
 // NewRdsClientWithDefaultRegion creates an RDS client with the default region.

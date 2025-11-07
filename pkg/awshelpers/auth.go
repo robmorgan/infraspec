@@ -60,6 +60,7 @@ func NewAuthenticatedSessionWithDefaultRegion() (*aws.Config, error) {
 }
 
 // NewAuthenticatedSessionFromInfraspecCloudToken creates an AWS Config using the InfraSpec Cloud token as the secret access key.
+
 func NewAuthenticatedSessionFromInfraspecCloudToken(region, token string) (*aws.Config, error) {
 	cfg, err := awsconfig.LoadDefaultConfig(
 		context.Background(),

@@ -135,5 +135,12 @@ func (a *AWSAsserter) createS3Client() (*s3.Client, error) {
 		return nil, fmt.Errorf("failed to create AWS session: %w", err)
 	}
 
-	return s3.NewFromConfig(*cfg), nil
+	opts := make([]func(*s3.Options), 0, 1)
+	if endpoint, ok := awshelpers.GetVirtualCloudEndpoint("s3"); ok {
+		opts = append(opts, func(o *s3.Options) {
+			o.EndpointResolver = s3.EndpointResolverFromURL(endpoint)
+		})
+	}
+
+	return s3.NewFromConfig(*cfg, opts...), nil
 }
