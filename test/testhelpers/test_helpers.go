@@ -10,7 +10,7 @@ var envVarsToCleanup []string
 
 // GetTestConfig returns a config suitable for testing
 func GetTestConfig() *config.Config {
-	cfg, err := config.DefaultConfig()
+	cfg, err := config.LoadConfig("", false)
 	if err != nil {
 		panic(err)
 	}

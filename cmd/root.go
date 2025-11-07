@@ -28,7 +28,7 @@ var (
 		Run: func(cmd *cobra.Command, args []string) {
 			startTime := time.Now()
 
-			cfg, err := config.DefaultConfig()
+			cfg, err := config.LoadConfig("", virtualCloud)
 			if err != nil {
 				fmt.Printf("Failed to load config: %v\n", err)
 				return

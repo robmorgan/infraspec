@@ -108,10 +108,15 @@ func GetInfraspecCloudToken() (string, error) {
 
 // UseInfraspecVirtualCloud returns true if InfraSpec Virtual Cloud is enabled.
 func UseInfraspecVirtualCloud() bool {
-	enabled, err := strconv.ParseBool(os.Getenv(UseInfraspecVirtualCloudEnvVar))
-	if err != nil {
-		return false
+	if env := os.Getenv(UseInfraspecVirtualCloudEnvVar); env != "" {
+		if enabled, err := strconv.ParseBool(env); err == nil {
+			return enabled
+		}
 	}
 
-	return enabled
+	if currentConfig != nil {
+		return currentConfig.VirtualCloud
+	}
+
+	return false
 }
