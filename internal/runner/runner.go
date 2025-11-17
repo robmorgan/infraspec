@@ -55,6 +55,9 @@ func (r *Runner) RunWithFormat(featurePath, format string) error {
 	formatters.Format("default", "InfraSpec formatter", func(suite string, out io.Writer) formatters.Formatter {
 		return formatter.New(suite, out)
 	})
+	formatters.Format("text", "InfraSpec plain text formatter", func(suite string, out io.Writer) formatters.Formatter {
+		return formatter.NewTextFormatter(suite, out)
+	})
 
 	suite := &godog.TestSuite{
 		ScenarioInitializer: r.initializeScenario,

@@ -73,7 +73,7 @@ var (
 func init() {
 	// Global flags
 	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
-	RootCmd.PersistentFlags().StringVarP(&format, "format", "f", "default", "output format (default, pretty, junit, cucumber)")
+	RootCmd.PersistentFlags().StringVarP(&format, "format", "f", "default", "output format (default, text, pretty, junit, cucumber)")
 	RootCmd.PersistentFlags().BoolVar(&virtualCloud, "virtual-cloud", false, "use InfraSpec Virtual Cloud to emulate AWS-compatible APIs")
 	RootCmd.PersistentFlags().BoolVar(&virtualCloud, "vc", false, "Alias for --virtual-cloud")
 
