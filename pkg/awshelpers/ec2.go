@@ -3,7 +3,7 @@ package awshelpers
 import "github.com/aws/aws-sdk-go-v2/service/ec2"
 
 // NewEc2Client creates an EC2 client.
-func NewEc2Client(region string) (*ec2.Client, error) {
+func NewEc2Client(region string) (EC2API, error) {
 	sess, err := NewAuthenticatedSession(region)
 	if err != nil {
 		return nil, err
