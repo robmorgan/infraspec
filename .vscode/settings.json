@@ -39,5 +39,6 @@
     "editor.formatOnSave": true,
     "editor.wordWrapColumn": 120,
     "editor.rulers": [120]
-  }
+  },
+  "go.testTimeout": "30m"
 }
