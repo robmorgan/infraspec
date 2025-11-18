@@ -10,6 +10,8 @@
 .terraform.lock.hcl
 terraform.tfstate
 terraform.tfstate.backup
+providers.tf
+providers_override.tf
 
 # docker-compose
 test/volume

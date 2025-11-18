@@ -3,6 +3,7 @@ package terraform
 import (
 	"context"
 	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -41,6 +42,11 @@ func newTerraformConfigStep(ctx context.Context, path string) (context.Context, 
 		}
 	}
 
+	// Generate providers.tf for testing if AWS_ENDPOINT_URL is set
+	if err := generateTestProvidersFile(absPath); err != nil {
+		return nil, fmt.Errorf("failed to generate test providers file: %w", err)
+	}
+
 	options, err := iacprovisioner.WithDefaultRetryableErrors(&iacprovisioner.Options{
 		WorkingDir: absPath,
 		Vars:       make(map[string]interface{}),
@@ -50,6 +56,52 @@ func newTerraformConfigStep(ctx context.Context, path string) (context.Context, 
 	}
 
 	return context.WithValue(ctx, contexthelpers.TFOptionsCtxKey{}, options), nil
+}
+
+// generateTestProvidersFile creates a providers_override.tf file in the given directory
+// if AWS_ENDPOINT_URL is set, indicating we're running in test mode.
+// Using _override.tf ensures it merges with existing provider configurations.
+func generateTestProvidersFile(workingDir string) error {
+	endpointURL := os.Getenv("AWS_ENDPOINT_URL")
+	// Only generate if we're in test mode (AWS_ENDPOINT_URL is set)
+	if endpointURL == "" {
+		return nil
+	}
+
+	// Use providers_override.tf to merge with existing provider blocks
+	providersPath := filepath.Join(workingDir, "providers_override.tf")
+	_ = os.Remove(providersPath) // Remove existing override file
+
+	// Get region from environment or default to us-east-1
+	region := os.Getenv("AWS_DEFAULT_REGION")
+	if region == "" {
+		region = os.Getenv("AWS_REGION")
+	}
+	if region == "" {
+		region = "us-east-1"
+	}
+
+	providersContent := fmt.Sprintf(`# Auto-generated file for testing - DO NOT COMMIT
+# This file is generated automatically when running tests with InfraSpec API
+# It merges/overrides existing AWS provider configuration for testing
+
+provider "aws" {
+  region = %q
+
+  skip_credentials_validation = true
+  skip_requesting_account_id  = true
+  skip_metadata_api_check     = true
+
+  endpoints {
+    dynamodb = %q
+    sts      = %q
+    s3       = %q
+    rds      = %q
+  }
+}
+`, region, endpointURL, endpointURL, endpointURL, endpointURL)
+
+	return os.WriteFile(providersPath, []byte(providersContent), 0644)
 }
 
 func newTerraformApplyStep(ctx context.Context) (context.Context, error) {
