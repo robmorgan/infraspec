@@ -33,6 +33,7 @@ func (e *ErrWithCmdOutput) Error() string {
 // Add this near the top of the file
 var allowedCommands = map[string]bool{
 	"terraform": true,
+	"tofu":      true,
 	"aws":       true,
 	"kubectl":   true,
 	"docker":    true,
@@ -84,6 +85,10 @@ func runCommand(command Command) (*output, error) {
 
 	err = cmd.Start()
 	if err != nil {
+		// Check if the error is because the executable wasn't found
+		if execErr, ok := err.(*exec.Error); ok && execErr.Err == exec.ErrNotFound {
+			return nil, fmt.Errorf("executable '%s' not found in PATH. Please install %s to continue", command.Name, getInstallationInstructions(command.Name))
+		}
 		return nil, err
 	}
 
@@ -168,4 +173,24 @@ func formatEnvVars(command Command) []string {
 		env = append(env, fmt.Sprintf("%s=%s", key, value))
 	}
 	return env
+}
+
+// getInstallationInstructions returns helpful installation instructions for common commands
+func getInstallationInstructions(commandName string) string {
+	switch commandName {
+	case "terraform":
+		return "Terraform (https://www.terraform.io/downloads)"
+	case "tofu":
+		return "OpenTofu (https://opentofu.org/docs/intro/install/)"
+	case "aws":
+		return "AWS CLI (https://aws.amazon.com/cli/)"
+	case "kubectl":
+		return "kubectl (https://kubernetes.io/docs/tasks/tools/)"
+	case "docker":
+		return "Docker (https://docs.docker.com/get-docker/)"
+	case "git":
+		return "Git (https://git-scm.com/downloads)"
+	default:
+		return commandName
+	}
 }

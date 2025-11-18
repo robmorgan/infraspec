@@ -56,7 +56,11 @@ func newTerraformApplyStep(ctx context.Context) (context.Context, error) {
 	options := contexthelpers.GetIacProvisionerOptions(ctx)
 	out, err := iacprovisioner.InitAndApply(options)
 	if err != nil {
-		return ctx, fmt.Errorf("there was an error running terraform apply: %s", out)
+		// Include both the error message and output for better debugging
+		if out != "" {
+			return ctx, fmt.Errorf("there was an error running terraform apply: %s\n%s", err.Error(), out)
+		}
+		return ctx, fmt.Errorf("there was an error running terraform apply: %s", err.Error())
 	}
 	return contexthelpers.SetTerraformHasApplied(ctx, true), nil
 }
