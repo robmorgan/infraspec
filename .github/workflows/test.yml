@@ -10,32 +10,42 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Start LocalStack
-        uses: LocalStack/setup-localstack@v0.2.4
+      - name: Checkout infraspec
+        uses: actions/checkout@v5
+
+      - name: Checkout infraspec-api
+        uses: actions/checkout@v5
         with:
-          image-tag: "4.6.0"
-          install-awslocal: "true"
-          use-pro: "true"
-        env:
-          LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
-
-      - name: Start httpbin
-        run: |
-          docker run -d --name httpbin -p 8000:80 kennethreitz/httpbin
-          # Wait for httpbin to be ready
-          timeout 30 bash -c 'until curl -f http://localhost:8000/status/200; do sleep 1; done'
-
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: "1.0.11"
-
-      - uses: actions/checkout@v5
+          repository: robmorgan/infraspec-api
+          path: infraspec-api
 
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
+
+      - name: Build InfraSpec API
+        run: |
+          cd infraspec-api
+          go build -o bin/emulator cmd/emulator/main.go
+
+      - name: Start InfraSpec API
+        run: |
+          cd infraspec-api
+          ./bin/emulator &
+          # Wait for InfraSpec API to be ready
+          timeout 30 bash -c 'until curl -f http://localhost:8000/health; do sleep 1; done'
+
+      - name: Start httpbin
+        run: |
+          docker run -d --name httpbin -p 9000:80 kennethreitz/httpbin
+          # Wait for httpbin to be ready
+          timeout 30 bash -c 'until curl -f http://localhost:9000/status/200; do sleep 1; done'
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.0.11"
 
       - name: Run Tests
         run: |
