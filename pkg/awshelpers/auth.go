@@ -18,7 +18,7 @@ const (
 	AuthAssumeRoleEnvVar = "INFRASPEC_IAM_ROLE" // OS environment variable name through which Assume Role ARN may be passed for authentication
 	// InfraspecCloudAccessKeyID is the access key ID used when authenticating with an InfraSpec Cloud token
 	InfraspecCloudAccessKeyID        = "infraspec-test"
-	InfraspecCloudDefaultEndpointURL = "http://api.infraspec.sh:8000"
+	InfraspecCloudDefaultEndpointURL = "https://api.infraspec.sh"
 )
 
 // NewAuthenticatedSession creates an AWS Config following to standard AWS authentication workflow.

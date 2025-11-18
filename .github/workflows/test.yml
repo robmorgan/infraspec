@@ -13,28 +13,15 @@ jobs:
       - name: Checkout infraspec
         uses: actions/checkout@v5
 
-      - name: Checkout infraspec-api
-        uses: actions/checkout@v5
-        with:
-          repository: robmorgan/infraspec-api
-          path: infraspec-api
-
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
 
-      - name: Build InfraSpec API
+      - name: Verify InfraSpec Cloud API is accessible
         run: |
-          cd infraspec-api
-          go build -o bin/emulator cmd/emulator/main.go
-
-      - name: Start InfraSpec API
-        run: |
-          cd infraspec-api
-          ./bin/emulator &
-          # Wait for InfraSpec API to be ready
-          timeout 30 bash -c 'until curl -f http://localhost:8000/health; do sleep 1; done'
+          # Wait for InfraSpec Cloud API to be ready
+          timeout 30 bash -c 'until curl -f https://api.infraspec.sh/health; do sleep 1; done'
 
       - name: Start httpbin
         run: |
@@ -52,6 +39,8 @@ jobs:
           go test -v ./...
         env:
           INFRASPEC_TELEMETRY_DISABLED: "1"
+          USE_INFRASPEC_VIRTUAL_CLOUD: "1"
+          INFRASPEC_CLOUD_TOKEN: ${{ secrets.INFRASPEC_CLOUD_TOKEN }}
 
       - name: Cleanup httpbin
         if: always()
