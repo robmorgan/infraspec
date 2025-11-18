@@ -25,10 +25,10 @@ func GetTestConfig() *config.Config {
 func SetupAwsTestEnvironment() {
 	// Only set if not already present (allows external override)
 	envVars := map[string]string{
-		"AWS_ACCESS_KEY_ID":      "test",
-		"AWS_SECRET_ACCESS_KEY":  "test",
+		"AWS_ACCESS_KEY_ID":      "infraspec-test",
+		"AWS_SECRET_ACCESS_KEY":  "securetoken",
 		"AWS_DEFAULT_REGION":     "us-east-1",
-		"AWS_ENDPOINT_URL":       "http://localhost:4566",
+		"AWS_ENDPOINT_URL":       "http://localhost:8000",
 		"INFRASPEC_BEARER_TOKEN": "test-token",
 	}
 
