@@ -1,22 +1,58 @@
 # Tests
 
-This folder contains automated tests for InfraSpec. All of the tests are written in [Go](https://golang.org/).
-Most of these are "integration tests" that deploy real infrastructure using Terraform and verify that infrastructure 
-works as expected. This allows InfraSpec to effectively test itself.
+This folder contains test helpers and utilities for InfraSpec.
 
-We use [InfraSpec API](https://github.com/robmorgan/infraspec-api) so we can run the tests both cheaply and quickly without creating real
-AWS infrastructure. However, tests need to be executed in a real AWS account when they are merged into the main branch.
-This is currently a manual process.
+## Test Structure
 
-You can run the tests locally by first starting an InfraSpec API instance and then using Go:
+### Unit Tests
+Unit tests are located alongside the code they test (e.g., `pkg/awshelpers/region_test.go`). These tests verify individual functions and packages in isolation.
 
+Run unit tests with:
 ```sh
-docker-compose up
-go test -v ./...
+make test
 ```
 
-Or using [Act](https://github.com/nektos/act):
+Or directly:
+```sh
+go test -v $(go list ./... | grep -v '/test$')
+```
+
+### Integration Tests
+Integration tests are run in CI by executing the `infraspec` CLI against all feature files in the `features/` directory.
+
+On GitHub Actions, the workflow:
+1. Builds the `infraspec` binary
+2. Runs each feature file using `infraspec <feature-file> --virtual-cloud`
+3. Uses the InfraSpec Cloud API at `https://api.infraspec.sh`
+
+## Running Integration Tests Locally
+
+### Using InfraSpec Cloud API
+Build the binary and run features with the `--virtual-cloud` flag:
 
 ```sh
-act -W .github/workflows/test.yml
+go build -o ./infraspec ./cmd/infraspec
+INFRASPEC_CLOUD_TOKEN=<your-token> ./infraspec features/aws/s3/s3_bucket.feature --virtual-cloud
 ```
+
+### Using Local InfraSpec API
+First, start the local InfraSpec API and httpbin:
+```sh
+docker-compose up -d
+```
+
+Then run features without the virtual cloud flag:
+```sh
+go build -o ./infraspec ./cmd/infraspec
+source ./test/set-env-vars.sh
+./infraspec features/aws/s3/s3_bucket.feature
+```
+
+## Test Helpers
+
+This directory contains:
+- `testhelpers/` - Common test utilities and setup functions
+- `httpserver/` - Mock HTTP server for testing HTTP assertions
+- `integration/` - Unit tests for HTTP assertion functions
+- `docker-compose.yml` - Local test environment setup
+- `set-env-vars.sh` - Environment variable setup for local testing

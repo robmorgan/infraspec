@@ -28,8 +28,13 @@ func SetupAwsTestEnvironment() {
 		"AWS_ACCESS_KEY_ID":      "infraspec-test",
 		"AWS_SECRET_ACCESS_KEY":  "securetoken",
 		"AWS_DEFAULT_REGION":     "us-east-1",
-		"AWS_ENDPOINT_URL":       "http://localhost:8000",
 		"INFRASPEC_BEARER_TOKEN": "test-token",
+	}
+
+	// Only set AWS_ENDPOINT_URL to localhost if Virtual Cloud mode is NOT enabled
+	// When Virtual Cloud is enabled, we want to use the InfraSpec Cloud API
+	if os.Getenv("USE_INFRASPEC_VIRTUAL_CLOUD") != "1" {
+		envVars["AWS_ENDPOINT_URL"] = "http://localhost:8000"
 	}
 
 	for key, value := range envVars {

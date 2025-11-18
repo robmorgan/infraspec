@@ -34,12 +34,39 @@ jobs:
         with:
           terraform_version: "1.0.11"
 
-      - name: Run Tests
+      - name: Run Unit Tests
         run: |
-          go test -v ./...
+          # Run all unit tests (excluding integration tests in test/ directory)
+          go test -v $(go list ./... | grep -v '/test$')
         env:
           INFRASPEC_TELEMETRY_DISABLED: "1"
-          USE_INFRASPEC_VIRTUAL_CLOUD: "1"
+
+      - name: Build InfraSpec Binary
+        run: |
+          go build -o ./infraspec ./cmd/infraspec
+
+      - name: Run Integration Tests
+        run: |
+          # Run each feature file using infraspec CLI with Virtual Cloud
+          echo "Running DynamoDB feature..."
+          ./infraspec features/aws/dynamodb/dynamodb_table.feature --virtual-cloud
+
+          echo "Running S3 feature..."
+          ./infraspec features/aws/s3/s3_bucket.feature --virtual-cloud
+
+          echo "Running RDS feature..."
+          ./infraspec features/aws/rds/rds_db_instance.feature --virtual-cloud
+
+          echo "Running Terraform hello world feature..."
+          ./infraspec features/terraform/hello_world.feature --virtual-cloud
+
+          echo "Running HTTP requests feature..."
+          ./infraspec features/http/http_requests.feature
+
+          echo "Running HTTP API tests feature..."
+          ./infraspec features/http/api_tests.feature
+        env:
+          INFRASPEC_TELEMETRY_DISABLED: "1"
           INFRASPEC_CLOUD_TOKEN: ${{ secrets.INFRASPEC_CLOUD_TOKEN }}
 
       - name: Cleanup httpbin
