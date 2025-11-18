@@ -34,9 +34,11 @@ func NewAuthenticatedSession(region string) (*aws.Config, error) {
 			return nil, fmt.Errorf("failed to get InfraSpec Cloud token: %w", err)
 		}
 
-		if cloudToken != "" {
-			return NewAuthenticatedSessionFromInfraspecCloudToken(region, cloudToken)
+		if cloudToken == "" {
+			return nil, fmt.Errorf("virtual cloud is enabled but no token provided: set INFRASPEC_CLOUD_TOKEN environment variable or configure token in config file to use virtual cloud. To use real AWS instead, disable virtual cloud with --virtual-cloud=false")
 		}
+
+		return NewAuthenticatedSessionFromInfraspecCloudToken(region, cloudToken)
 	}
 
 	// Fall back to existing behavior
