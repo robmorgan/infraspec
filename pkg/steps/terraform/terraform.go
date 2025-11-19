@@ -9,6 +9,7 @@ import (
 
 	"github.com/cucumber/godog"
 
+	"github.com/robmorgan/infraspec/internal/config"
 	"github.com/robmorgan/infraspec/internal/contexthelpers"
 	"github.com/robmorgan/infraspec/pkg/awshelpers"
 	"github.com/robmorgan/infraspec/pkg/iacprovisioner"
@@ -42,66 +43,19 @@ func newTerraformConfigStep(ctx context.Context, path string) (context.Context, 
 		}
 	}
 
-	// Generate providers.tf for testing if AWS_ENDPOINT_URL is set
-	if err := generateTestProvidersFile(absPath); err != nil {
-		return nil, fmt.Errorf("failed to generate test providers file: %w", err)
-	}
-
 	options, err := iacprovisioner.WithDefaultRetryableErrors(&iacprovisioner.Options{
 		WorkingDir: absPath,
 		Vars:       make(map[string]interface{}),
+		EnvVars:    make(map[string]string),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to create Terraform options: %w", err)
 	}
 
+	// Set AWS endpoint environment variables when virtual cloud is enabled
+	configureVirtualCloudEndpoints(options)
+
 	return context.WithValue(ctx, contexthelpers.TFOptionsCtxKey{}, options), nil
-}
-
-// generateTestProvidersFile creates a providers_override.tf file in the given directory
-// if AWS_ENDPOINT_URL is set, indicating we're running in test mode.
-// Using _override.tf ensures it merges with existing provider configurations.
-func generateTestProvidersFile(workingDir string) error {
-	endpointURL := os.Getenv("AWS_ENDPOINT_URL")
-	// Only generate if we're in test mode (AWS_ENDPOINT_URL is set)
-	if endpointURL == "" {
-		return nil
-	}
-
-	// Use providers_override.tf to merge with existing provider blocks
-	providersPath := filepath.Join(workingDir, "providers_override.tf")
-	_ = os.Remove(providersPath) // Remove existing override file
-
-	// Get region from environment or default to us-east-1
-	region := os.Getenv("AWS_DEFAULT_REGION")
-	if region == "" {
-		region = os.Getenv("AWS_REGION")
-	}
-	if region == "" {
-		region = "us-east-1"
-	}
-
-	providersContent := fmt.Sprintf(`# Auto-generated file for testing - DO NOT COMMIT
-# This file is generated automatically when running tests with InfraSpec API
-# It merges/overrides existing AWS provider configuration for testing
-
-provider "aws" {
-  region = %q
-
-  skip_credentials_validation = true
-  skip_requesting_account_id  = true
-  skip_metadata_api_check     = true
-
-  endpoints {
-    dynamodb = %q
-    sts      = %q
-    s3       = %q
-    rds      = %q
-  }
-}
-`, region, endpointURL, endpointURL, endpointURL, endpointURL)
-
-	return os.WriteFile(providersPath, []byte(providersContent), 0644)
 }
 
 func newTerraformApplyStep(ctx context.Context) (context.Context, error) {
@@ -180,4 +134,68 @@ func newTerraformOutputContainsStep(ctx context.Context, outputName, expectedVal
 		return fmt.Errorf("expected output %s to contain %s, got %s", outputName, expectedValue, actualValue)
 	}
 	return nil
+}
+
+// configureVirtualCloudEndpoints sets AWS endpoint environment variables when
+// InfraSpec Virtual Cloud is enabled. This configures Terraform/OpenTofu to use
+// the InfraSpec Cloud API endpoints instead of real AWS.
+//
+// The function sets service-specific AWS_ENDPOINT_URL_* environment variables
+// that are automatically recognized by the AWS provider in Terraform/OpenTofu.
+// See: https://search.opentofu.org/provider/opentofu/aws/v6.1.0/docs/guides/custom-service-endpoints
+func configureVirtualCloudEndpoints(options *iacprovisioner.Options) {
+	if !config.UseInfraspecVirtualCloud() {
+		return
+	}
+
+	// Get the base endpoint URL (defaults to InfraSpec Cloud API if not set)
+	endpoint, ok := awshelpers.GetVirtualCloudEndpoint("")
+	if !ok {
+		return
+	}
+
+	// Check if AWS_ENDPOINT_URL is already set in the environment
+	// If it is, we don't need to set the service-specific ones
+	if existingEndpoint := os.Getenv("AWS_ENDPOINT_URL"); existingEndpoint != "" {
+		config.Logging.Logger.Infof("AWS_ENDPOINT_URL already set to: %s", existingEndpoint)
+		return
+	}
+
+	// List of AWS services that InfraSpec supports
+	// These will be set as AWS_ENDPOINT_URL_<SERVICE> environment variables
+	awsServices := []string{
+		"DYNAMODB",
+		"EC2",
+		"RDS",
+		"S3",
+		"STS",
+		"SSM",
+	}
+
+	config.Logging.Logger.Infof("Configuring virtual cloud endpoints for Terraform/OpenTofu to use: %s", endpoint)
+
+	// Set service-specific endpoint environment variables
+	for _, service := range awsServices {
+		envVar := fmt.Sprintf("AWS_ENDPOINT_URL_%s", service)
+
+		// Check if a service-specific endpoint is already set in the environment
+		if existingServiceEndpoint := os.Getenv(envVar); existingServiceEndpoint != "" {
+			config.Logging.Logger.Debugf("%s already set to: %s", envVar, existingServiceEndpoint)
+			options.EnvVars[envVar] = existingServiceEndpoint
+			continue
+		}
+
+		options.EnvVars[envVar] = endpoint
+		config.Logging.Logger.Debugf("Setting %s=%s", envVar, endpoint)
+	}
+
+	// Also set credentials configuration to skip AWS credential validation
+	// These are required when using custom endpoints
+	options.EnvVars["AWS_ACCESS_KEY_ID"] = awshelpers.InfraspecCloudAccessKeyID
+
+	// Get the InfraSpec Cloud token
+	token, err := config.GetInfraspecCloudToken()
+	if err == nil && token != "" {
+		options.EnvVars["AWS_SECRET_ACCESS_KEY"] = token
+	}
 }
