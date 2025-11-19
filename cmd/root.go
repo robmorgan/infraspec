@@ -75,7 +75,6 @@ func init() {
 	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
 	RootCmd.PersistentFlags().StringVarP(&format, "format", "f", "default", "output format (default, text, pretty, junit, cucumber)")
 	RootCmd.PersistentFlags().BoolVar(&virtualCloud, "virtual-cloud", false, "use InfraSpec Virtual Cloud to emulate AWS-compatible APIs")
-	RootCmd.PersistentFlags().BoolVar(&virtualCloud, "vc", false, "Alias for --virtual-cloud")
 
 	RootCmd.SetVersionTemplate(`{{printf "%s version %s\n" .Name .Version}}`)
 }

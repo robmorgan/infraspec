@@ -92,13 +92,14 @@ func LoadConfig(path string, virtualCloudFlag bool) (*Config, error) {
 		return nil, err
 	}
 
-	if virtualCloudFlag {
-		v.Set("virtual_cloud", true)
-	}
-
 	var cfg Config
 	if err := v.Unmarshal(&cfg); err != nil {
 		return nil, err
+	}
+
+	// Apply virtualCloudFlag after unmarshaling to ensure it overrides config file
+	if virtualCloudFlag {
+		cfg.VirtualCloud = true
 	}
 
 	normalizeTelemetry(&cfg)

@@ -17,12 +17,12 @@ import (
 const (
 	AuthAssumeRoleEnvVar = "INFRASPEC_IAM_ROLE" // OS environment variable name through which Assume Role ARN may be passed for authentication
 	// InfraspecCloudAccessKeyID is the access key ID used when authenticating with an InfraSpec Cloud token
-	InfraspecCloudAccessKeyID        = "infraspec-test"
+	InfraspecCloudAccessKeyID        = "infraspec-api"
 	InfraspecCloudDefaultEndpointURL = "https://api.infraspec.sh"
 )
 
 // NewAuthenticatedSession creates an AWS Config following to standard AWS authentication workflow.
-// If an InfraSpec Cloud token is configured, it uses that token as the secret access key with "infraspec-test" as the access key ID.
+// If an InfraSpec Cloud token is configured, it uses that token as the secret access key with "infraspec-api" as the access key ID.
 // If `INFRASPEC_IAM_ROLE` environment variable is set, it assumes IAM role specified in it.
 // Otherwise, uses default credentials.
 func NewAuthenticatedSession(region string) (*aws.Config, error) {
@@ -35,7 +35,7 @@ func NewAuthenticatedSession(region string) (*aws.Config, error) {
 		}
 
 		if cloudToken == "" {
-			return nil, fmt.Errorf("virtual cloud is enabled but no token provided: set INFRASPEC_CLOUD_TOKEN environment variable or configure token in config file to use virtual cloud. To use real AWS instead, disable virtual cloud with --virtual-cloud=false")
+			return nil, fmt.Errorf("virtual cloud is enabled but no token provided: set INFRASPEC_CLOUD_TOKEN environment variable or configure token in config file to use virtual cloud. To use real AWS instead, don't specify virtual cloud with --virtual-cloud")
 		}
 
 		return NewAuthenticatedSessionFromInfraspecCloudToken(region, cloudToken)

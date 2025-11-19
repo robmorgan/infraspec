@@ -41,6 +41,8 @@ func newTerraformConfigStep(ctx context.Context, path string) (context.Context, 
 		if err != nil {
 			return nil, fmt.Errorf("failed to get absolute path for %s: %w", path, err)
 		}
+	} else {
+		absPath = path
 	}
 
 	options, err := iacprovisioner.WithDefaultRetryableErrors(&iacprovisioner.Options{
@@ -52,8 +54,10 @@ func newTerraformConfigStep(ctx context.Context, path string) (context.Context, 
 		return nil, fmt.Errorf("failed to create Terraform options: %w", err)
 	}
 
-	// Set AWS endpoint environment variables when virtual cloud is enabled
-	configureVirtualCloudEndpoints(options)
+	// Set AWS endpoint environment variables and generate provider file when virtual cloud is enabled
+	if err := configureVirtualCloudEndpoints(options, absPath); err != nil {
+		return nil, fmt.Errorf("failed to configure virtual cloud endpoints: %w", err)
+	}
 
 	return context.WithValue(ctx, contexthelpers.TFOptionsCtxKey{}, options), nil
 }
@@ -136,29 +140,27 @@ func newTerraformOutputContainsStep(ctx context.Context, outputName, expectedVal
 	return nil
 }
 
-// configureVirtualCloudEndpoints sets AWS endpoint environment variables when
-// InfraSpec Virtual Cloud is enabled. This configures Terraform/OpenTofu to use
-// the InfraSpec Cloud API endpoints instead of real AWS.
+// configureVirtualCloudEndpoints sets AWS endpoint environment variables when InfraSpec Virtual Cloud is enabled. This
+// configures Terraform/OpenTofu to use the InfraSpec Cloud API endpoints instead of real AWS.
 //
-// The function sets service-specific AWS_ENDPOINT_URL_* environment variables
-// that are automatically recognized by the AWS provider in Terraform/OpenTofu.
+// The function sets service-specific AWS_ENDPOINT_URL_* environment variables that are
+// automatically recognized by the AWS provider file to ensure the AWS provider is configured.
 // See: https://search.opentofu.org/provider/opentofu/aws/v6.1.0/docs/guides/custom-service-endpoints
-func configureVirtualCloudEndpoints(options *iacprovisioner.Options) {
+func configureVirtualCloudEndpoints(options *iacprovisioner.Options, workingDir string) error {
 	if !config.UseInfraspecVirtualCloud() {
-		return
+		return nil
 	}
 
 	// Get the base endpoint URL (defaults to InfraSpec Cloud API if not set)
 	endpoint, ok := awshelpers.GetVirtualCloudEndpoint("")
 	if !ok {
-		return
+		return nil
 	}
 
-	// Check if AWS_ENDPOINT_URL is already set in the environment
-	// If it is, we don't need to set the service-specific ones
+	// If AWS_ENDPOINT_URL is already set in the environment, use it to configure each endpoint
 	if existingEndpoint := os.Getenv("AWS_ENDPOINT_URL"); existingEndpoint != "" {
 		config.Logging.Logger.Infof("AWS_ENDPOINT_URL already set to: %s", existingEndpoint)
-		return
+		endpoint = existingEndpoint
 	}
 
 	// List of AWS services that InfraSpec supports
@@ -189,13 +191,15 @@ func configureVirtualCloudEndpoints(options *iacprovisioner.Options) {
 		config.Logging.Logger.Debugf("Setting %s=%s", envVar, endpoint)
 	}
 
-	// Also set credentials configuration to skip AWS credential validation
-	// These are required when using custom endpoints
+	// Set credentials for InfraSpec Cloud authentication
+	// The access key and secret key are used by the AWS SDK to sign requests
 	options.EnvVars["AWS_ACCESS_KEY_ID"] = awshelpers.InfraspecCloudAccessKeyID
 
-	// Get the InfraSpec Cloud token
+	// Get the InfraSpec Cloud token and set it as the secret access key
 	token, err := config.GetInfraspecCloudToken()
 	if err == nil && token != "" {
 		options.EnvVars["AWS_SECRET_ACCESS_KEY"] = token
 	}
+
+	return nil
 }
