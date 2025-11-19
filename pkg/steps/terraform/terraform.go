@@ -145,7 +145,7 @@ func newTerraformOutputContainsStep(ctx context.Context, outputName, expectedVal
 //
 // The function sets service-specific AWS_ENDPOINT_URL_* environment variables that are
 // automatically recognized by the AWS provider. Each service gets its own subdomain endpoint
-// (e.g., dynamodb.api.infraspec.sh, sts.api.infraspec.sh) for proper AWS SigV4 authentication.
+// (e.g., dynamodb-aws.infraspec.sh, sts-aws.infraspec.sh) for proper AWS SigV4 authentication.
 // See: https://search.opentofu.org/provider/opentofu/aws/v6.1.0/docs/guides/custom-service-endpoints
 func configureVirtualCloudEndpoints(options *iacprovisioner.Options, workingDir string) error {
 	if !config.UseInfraspecVirtualCloud() {
