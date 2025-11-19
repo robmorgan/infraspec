@@ -144,7 +144,8 @@ func newTerraformOutputContainsStep(ctx context.Context, outputName, expectedVal
 // configures Terraform/OpenTofu to use the InfraSpec Cloud API endpoints instead of real AWS.
 //
 // The function sets service-specific AWS_ENDPOINT_URL_* environment variables that are
-// automatically recognized by the AWS provider file to ensure the AWS provider is configured.
+// automatically recognized by the AWS provider. Each service gets its own subdomain endpoint
+// (e.g., dynamodb.api.infraspec.sh, sts.api.infraspec.sh) for proper AWS SigV4 authentication.
 // See: https://search.opentofu.org/provider/opentofu/aws/v6.1.0/docs/guides/custom-service-endpoints
 func configureVirtualCloudEndpoints(options *iacprovisioner.Options, workingDir string) error {
 	if !config.UseInfraspecVirtualCloud() {
@@ -152,33 +153,27 @@ func configureVirtualCloudEndpoints(options *iacprovisioner.Options, workingDir 
 	}
 
 	// Get the base endpoint URL (defaults to InfraSpec Cloud API if not set)
-	endpoint, ok := awshelpers.GetVirtualCloudEndpoint("")
+	baseEndpoint, ok := awshelpers.GetVirtualCloudEndpoint("")
 	if !ok {
 		return nil
 	}
 
-	// If AWS_ENDPOINT_URL is already set in the environment, use it to configure each endpoint
-	if existingEndpoint := os.Getenv("AWS_ENDPOINT_URL"); existingEndpoint != "" {
-		config.Logging.Logger.Infof("AWS_ENDPOINT_URL already set to: %s", existingEndpoint)
-		endpoint = existingEndpoint
+	// Map of AWS services to their subdomain names
+	// Key = environment variable suffix, Value = subdomain prefix
+	serviceSubdomains := map[string]string{
+		"DYNAMODB": "dynamodb",
+		"STS":      "sts",
+		"RDS":      "rds",
+		"S3":       "s3",
+		"EC2":      "ec2",
+		"SSM":      "ssm",
 	}
 
-	// List of AWS services that InfraSpec supports
-	// These will be set as AWS_ENDPOINT_URL_<SERVICE> environment variables
-	awsServices := []string{
-		"DYNAMODB",
-		"EC2",
-		"RDS",
-		"S3",
-		"STS",
-		"SSM",
-	}
-
-	config.Logging.Logger.Infof("Configuring virtual cloud endpoints for Terraform/OpenTofu to use: %s", endpoint)
+	config.Logging.Logger.Infof("Configuring virtual cloud endpoints for Terraform/OpenTofu")
 
 	// Set service-specific endpoint environment variables
-	for _, service := range awsServices {
-		envVar := fmt.Sprintf("AWS_ENDPOINT_URL_%s", service)
+	for envSuffix, subdomain := range serviceSubdomains {
+		envVar := fmt.Sprintf("AWS_ENDPOINT_URL_%s", envSuffix)
 
 		// Check if a service-specific endpoint is already set in the environment
 		if existingServiceEndpoint := os.Getenv(envVar); existingServiceEndpoint != "" {
@@ -187,8 +182,10 @@ func configureVirtualCloudEndpoints(options *iacprovisioner.Options, workingDir 
 			continue
 		}
 
-		options.EnvVars[envVar] = endpoint
-		config.Logging.Logger.Debugf("Setting %s=%s", envVar, endpoint)
+		// Build service-specific endpoint URL with subdomain
+		serviceEndpoint := awshelpers.BuildServiceEndpoint(baseEndpoint, subdomain)
+		options.EnvVars[envVar] = serviceEndpoint
+		config.Logging.Logger.Debugf("Setting %s=%s", envVar, serviceEndpoint)
 	}
 
 	// Set credentials for InfraSpec Cloud authentication

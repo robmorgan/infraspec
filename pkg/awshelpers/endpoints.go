@@ -1,6 +1,7 @@
 package awshelpers
 
 import (
+	"net/url"
 	"os"
 	"strings"
 
@@ -27,4 +28,31 @@ func GetVirtualCloudEndpoint(service string) (string, bool) {
 	}
 
 	return InfraspecCloudDefaultEndpointURL, true
+}
+
+// BuildServiceEndpoint constructs a service-specific endpoint URL by adding a subdomain
+// to the base endpoint. For example:
+//   - Base: "https://api.infraspec.sh" + Subdomain: "dynamodb" = "https://dynamodb.api.infraspec.sh"
+//   - Base: "http://localhost:8000" + Subdomain: "sts" = "http://sts.localhost:8000"
+func BuildServiceEndpoint(baseEndpoint, subdomain string) string {
+	parsedURL, err := url.Parse(baseEndpoint)
+	if err != nil {
+		// If parsing fails, return the base endpoint as-is
+		return baseEndpoint
+	}
+
+	// Extract host and port
+	host := parsedURL.Hostname()
+	port := parsedURL.Port()
+
+	// Build new host with subdomain prefix
+	newHost := subdomain + "." + host
+	if port != "" {
+		newHost = newHost + ":" + port
+	}
+
+	// Reconstruct the URL with the new host
+	parsedURL.Host = newHost
+
+	return parsedURL.String()
 }
