@@ -14,7 +14,7 @@ import (
 // finally defaulting to the InfraSpec Cloud endpoint with service-specific subdomain.
 //
 // If service is empty, returns the base endpoint URL without subdomain construction.
-// Otherwise, constructs a service-specific subdomain endpoint (e.g. https://dynamodb-aws.infraspec.sh).
+// Otherwise, constructs a service-specific subdomain endpoint (e.g. https://dynamodb.infraspec.sh).
 func GetVirtualCloudEndpoint(service string) (string, bool) {
 	if !config.UseInfraspecVirtualCloud() {
 		return "", false
@@ -62,13 +62,7 @@ func BuildServiceEndpoint(baseEndpoint, subdomain string) string {
 	port := parsedURL.Port()
 
 	// Build new host with subdomain prefix
-	// S3 uses virtual-hosted style (s3 subdomain), other services use -aws suffix
-	var newHost string
-	if subdomain == "s3" {
-		newHost = "s3." + host
-	} else {
-		newHost = subdomain + "-aws." + host
-	}
+	newHost := subdomain + "." + host
 
 	if port != "" {
 		newHost = newHost + ":" + port
