@@ -198,5 +198,10 @@ func configureVirtualCloudEndpoints(options *iacprovisioner.Options, workingDir 
 		options.EnvVars["AWS_SECRET_ACCESS_KEY"] = token
 	}
 
+	// Force S3 to use path-style URLs instead of virtual-hosted style
+	// This prevents bucket names from being used as subdomains
+	// (e.g., s3-aws.infraspec.sh/bucket instead of bucket.s3-aws.infraspec.sh)
+	options.EnvVars["AWS_S3_USE_PATH_STYLE"] = "true"
+
 	return nil
 }
