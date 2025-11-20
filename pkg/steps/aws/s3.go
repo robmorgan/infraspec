@@ -13,11 +13,20 @@ import (
 
 // S3 Step Definitions
 func registerS3Steps(sc *godog.ScenarioContext) {
+	sc.Step(`^I have the necessary IAM permissions to describe S3 buckets$`, newVerifyAWSS3DescribeBucketsStep)
 	sc.Step(`^the S3 bucket "([^"]*)" should exist$`, newS3BucketExistsStep)
 	sc.Step(`^the S3 bucket "([^"]*)" should have a versioning configuration$`, newS3BucketVersioningStep)
 	sc.Step(`^the S3 bucket "([^"]*)" should have a public access block$`, newS3BucketPublicAccessBlockStep)
 	sc.Step(`^the S3 bucket "([^"]*)" should have a server access logging configuration$`, newS3BucketServerAccessLoggingStep)
 	sc.Step(`^the S3 bucket "([^"]*)" should have an encryption configuration$`, newS3BucketEncryptionStep)
+}
+
+func newVerifyAWSS3DescribeBucketsStep(ctx context.Context) error {
+	s3Assert, err := getS3Asserter(ctx)
+	if err != nil {
+		return err
+	}
+	return s3Assert.AssertS3DescribeBuckets()
 }
 
 func newS3BucketExistsStep(ctx context.Context, bucketName string) error {

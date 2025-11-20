@@ -16,11 +16,28 @@ var _ S3Asserter = (*AWSAsserter)(nil)
 
 // S3Asserter defines S3-specific assertions
 type S3Asserter interface {
+	AssertS3DescribeBuckets() error
 	AssertBucketExists(bucketName string) error
 	AssertBucketVersioning(bucketName string) error
 	AssertBucketEncryption(bucketName string) error
 	AssertBucketPublicAccessBlock(bucketName string) error
 	AssertBucketServerAccessLogging(bucketName string) error
+}
+
+// AssertS3DescribeBuckets checks if the AWS account has permission to describe S3 buckets
+func (a *AWSAsserter) AssertS3DescribeBuckets() error {
+	client, err := a.createS3Client()
+	if err != nil {
+		return err
+	}
+
+	// List buckets to verify access
+	_, err = client.ListBuckets(context.TODO(), &s3.ListBucketsInput{})
+	if err != nil {
+		return fmt.Errorf("error listing S3 buckets: %w", err)
+	}
+
+	return nil
 }
 
 func (a *AWSAsserter) AssertBucketExists(bucketName string) error {

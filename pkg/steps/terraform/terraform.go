@@ -21,6 +21,7 @@ func RegisterSteps(sc *godog.ScenarioContext) {
 	sc.Step(`^the Terraform module at "([^"]*)"$`, newTerraformConfigStep)
 	sc.Step(`^I have a Terraform configuration in "([^"]*)"$`, newTerraformConfigStep)
 	sc.Step(`^I set the variable "([^"]*)" to "([^"]*)"$`, newTerraformSetVariableStep)
+	sc.Step(`^I set variable "([^"]*)" to "([^"]*)"$`, newTerraformSetVariableStep) // Alternative pattern without "the"
 	sc.Step(`^I set the variable "([^"]*)" to$`, newTerraformSetMapVariableStep)
 	sc.Step(`^I set the variable "([^"]*)" to a random stable AWS region$`, newTerraformSetRandomStableAWSRegion)
 	sc.Step(`^the "([^"]*)" output is "([^"]*)"$`, newTerraformOutputEqualsStep)
