@@ -198,18 +198,5 @@ func configureVirtualCloudEndpoints(options *iacprovisioner.Options, workingDir 
 		options.EnvVars["AWS_SECRET_ACCESS_KEY"] = token
 	}
 
-	// Force S3 to use path-style URLs instead of virtual-hosted style
-	// This prevents bucket names from being used as subdomains
-	// (e.g., s3.infraspec.sh/bucket instead of bucket.s3.infraspec.sh)
-	options.EnvVars["AWS_S3_USE_PATH_STYLE"] = "true"              // AWS SDK Go V2
-	options.EnvVars["TF_AWS_S3_FORCE_PATH_STYLE"] = "true"         // Terraform provider override
-
-	// Skip AWS validation checks when using virtual cloud
-	// These prevent Terraform from attempting to validate against real AWS services
-	options.EnvVars["TF_AWS_SKIP_CREDENTIALS_VALIDATION"] = "true" // Skip STS GetCallerIdentity
-	options.EnvVars["TF_AWS_SKIP_METADATA_API_CHECK"] = "true"     // Skip EC2 metadata lookup
-	options.EnvVars["TF_AWS_SKIP_REGION_VALIDATION"] = "true"      // Allow any region
-	options.EnvVars["TF_AWS_SKIP_REQUESTING_ACCOUNT_ID"] = "true"  // Skip account ID lookup
-
 	return nil
 }
