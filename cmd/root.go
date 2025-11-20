@@ -12,6 +12,7 @@ import (
 	"github.com/robmorgan/infraspec/internal/config"
 	"github.com/robmorgan/infraspec/internal/runner"
 	"github.com/robmorgan/infraspec/internal/telemetry"
+	"github.com/robmorgan/infraspec/pkg/awshelpers"
 )
 
 var (
@@ -37,6 +38,12 @@ var (
 			if verbose {
 				cfg.Verbose = true
 				config.Logging.Logger.Debug("Verbose mode enabled")
+			}
+
+			// Check Virtual Cloud API health if enabled
+			if err := awshelpers.CheckVirtualCloudHealth(); err != nil {
+				fmt.Printf("Virtual Cloud health check failed: %v\n", err)
+				return
 			}
 
 			// Initialize telemetry

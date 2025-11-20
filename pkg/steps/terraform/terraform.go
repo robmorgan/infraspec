@@ -158,12 +158,12 @@ func configureVirtualCloudEndpoints(options *iacprovisioner.Options, workingDir 
 	// The AWS SDK uses specific service identifiers (e.g., APPLICATION_AUTO_SCALING)
 	// while infraspec uses simplified subdomains (e.g., autoscaling-aws.infraspec.sh)
 	serviceMap := map[string]string{
-		"DYNAMODB":                  "dynamodb",
-		"STS":                       "sts",
-		"RDS":                       "rds",
-		"S3":                        "s3",
-		"EC2":                       "ec2",
-		"SSM":                       "ssm",
+		"DYNAMODB":                 "dynamodb",
+		"STS":                      "sts",
+		"RDS":                      "rds",
+		"S3":                       "s3",
+		"EC2":                      "ec2",
+		"SSM":                      "ssm",
 		"APPLICATION_AUTO_SCALING": "autoscaling",
 	}
 
