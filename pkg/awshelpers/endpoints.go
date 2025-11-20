@@ -11,23 +11,37 @@ import (
 // GetVirtualCloudEndpoint returns the endpoint URL to use for the given AWS service when
 // InfraSpec Virtual Cloud mode is enabled. The function looks for a service-specific
 // environment variable (e.g. AWS_ENDPOINT_URL_RDS) and falls back to AWS_ENDPOINT_URL,
-// finally defaulting to the InfraSpec Cloud endpoint if none are provided.
+// finally defaulting to the InfraSpec Cloud endpoint with service-specific subdomain.
+//
+// If service is empty, returns the base endpoint URL without subdomain construction.
+// Otherwise, constructs a service-specific subdomain endpoint (e.g. https://dynamodb-aws.infraspec.sh).
 func GetVirtualCloudEndpoint(service string) (string, bool) {
 	if !config.UseInfraspecVirtualCloud() {
 		return "", false
 	}
 
+	// Check for service-specific environment variable first
 	if service != "" {
 		if endpoint := os.Getenv("AWS_ENDPOINT_URL_" + strings.ToUpper(service)); endpoint != "" {
 			return endpoint, true
 		}
 	}
 
+	// Check for general AWS_ENDPOINT_URL
 	if endpoint := os.Getenv("AWS_ENDPOINT_URL"); endpoint != "" {
+		// If a service is specified, build service-specific subdomain endpoint
+		if service != "" {
+			return BuildServiceEndpoint(endpoint, service), true
+		}
 		return endpoint, true
 	}
 
-	return InfraspecCloudDefaultEndpointURL, true
+	// Default to InfraSpec Cloud endpoint
+	baseEndpoint := InfraspecCloudDefaultEndpointURL
+	if service != "" {
+		return BuildServiceEndpoint(baseEndpoint, service), true
+	}
+	return baseEndpoint, true
 }
 
 // BuildServiceEndpoint constructs a service-specific endpoint URL by adding a subdomain

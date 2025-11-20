@@ -152,28 +152,15 @@ func configureVirtualCloudEndpoints(options *iacprovisioner.Options, workingDir 
 		return nil
 	}
 
-	// Get the base endpoint URL (defaults to InfraSpec Cloud API if not set)
-	baseEndpoint, ok := awshelpers.GetVirtualCloudEndpoint("")
-	if !ok {
-		return nil
-	}
-
-	// Map of AWS services to their subdomain names
-	// Key = environment variable suffix, Value = subdomain prefix
-	serviceSubdomains := map[string]string{
-		"DYNAMODB": "dynamodb",
-		"STS":      "sts",
-		"RDS":      "rds",
-		"S3":       "s3",
-		"EC2":      "ec2",
-		"SSM":      "ssm",
-	}
-
 	config.Logging.Logger.Infof("Configuring virtual cloud endpoints for Terraform/OpenTofu")
 
+	// List of AWS services to configure
+	// GetVirtualCloudEndpoint will automatically construct service-specific subdomain endpoints
+	awsServices := []string{"dynamodb", "sts", "rds", "s3", "ec2", "ssm"}
+
 	// Set service-specific endpoint environment variables
-	for envSuffix, subdomain := range serviceSubdomains {
-		envVar := fmt.Sprintf("AWS_ENDPOINT_URL_%s", envSuffix)
+	for _, service := range awsServices {
+		envVar := fmt.Sprintf("AWS_ENDPOINT_URL_%s", strings.ToUpper(service))
 
 		// Check if a service-specific endpoint is already set in the environment
 		if existingServiceEndpoint := os.Getenv(envVar); existingServiceEndpoint != "" {
@@ -182,8 +169,11 @@ func configureVirtualCloudEndpoints(options *iacprovisioner.Options, workingDir 
 			continue
 		}
 
-		// Build service-specific endpoint URL with subdomain
-		serviceEndpoint := awshelpers.BuildServiceEndpoint(baseEndpoint, subdomain)
+		// Get service-specific endpoint URL (automatically builds subdomain endpoint)
+		serviceEndpoint, ok := awshelpers.GetVirtualCloudEndpoint(service)
+		if !ok {
+			continue
+		}
 		options.EnvVars[envVar] = serviceEndpoint
 		config.Logging.Logger.Debugf("Setting %s=%s", envVar, serviceEndpoint)
 	}
