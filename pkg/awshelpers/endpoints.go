@@ -62,7 +62,13 @@ func BuildServiceEndpoint(baseEndpoint, subdomain string) string {
 	port := parsedURL.Port()
 
 	// Build new host with subdomain prefix
-	newHost := subdomain + "." + host
+	// S3 uses virtual-hosted style (s3 subdomain), other services use -aws suffix
+	var newHost string
+	if subdomain == "s3" {
+		newHost = "s3." + host
+	} else {
+		newHost = subdomain + "-aws." + host
+	}
 
 	if port != "" {
 		newHost = newHost + ":" + port

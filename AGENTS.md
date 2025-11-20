@@ -27,7 +27,6 @@ When implementing features that require Terraform/OpenTofu provider configuratio
 **Example**:
 ```go
 // Good: Using environment variables
-options.EnvVars["AWS_S3_USE_PATH_STYLE"] = "true"
 options.EnvVars["AWS_ENDPOINT_URL_S3"] = endpoint
 
 // Bad: Generating provider files
@@ -42,10 +41,11 @@ When working with the AWS provider, prefer these environment variables:
 
 - `AWS_ENDPOINT_URL` - General AWS endpoint override
 - `AWS_ENDPOINT_URL_<SERVICE>` - Service-specific endpoint (e.g., `AWS_ENDPOINT_URL_S3`, `AWS_ENDPOINT_URL_DYNAMODB`)
-- `AWS_S3_USE_PATH_STYLE` - Force S3 path-style URLs
 - `AWS_ACCESS_KEY_ID` - AWS access key
 - `AWS_SECRET_ACCESS_KEY` - AWS secret key
 - `AWS_REGION` - Default AWS region
+
+**Note**: InfraSpec uses S3 virtual hosted-style URLs by default when `--virtual-cloud` is enabled (e.g., `bucket-name.s3.infraspec.sh`). Path-style URLs are no longer supported.
 
 See the [Terraform AWS Provider documentation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs) for the complete list of supported environment variables.
 
