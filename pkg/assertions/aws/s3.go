@@ -152,7 +152,14 @@ func (a *AWSAsserter) createS3Client() (*s3.Client, error) {
 		return nil, fmt.Errorf("failed to create AWS session: %w", err)
 	}
 
-	opts := make([]func(*s3.Options), 0, 1)
+	opts := make([]func(*s3.Options), 0, 2)
+
+	// Use path-style URLs by default (e.g., http://s3.amazonaws.com/bucket/key)
+	// instead of virtual-hosted style (e.g., http://bucket.s3.amazonaws.com/key)
+	opts = append(opts, func(o *s3.Options) {
+		o.UsePathStyle = true
+	})
+
 	if endpoint, ok := awshelpers.GetVirtualCloudEndpoint("s3"); ok {
 		opts = append(opts, func(o *s3.Options) {
 			o.EndpointResolver = s3.EndpointResolverFromURL(endpoint)
