@@ -146,7 +146,7 @@ func newTerraformOutputContainsStep(ctx context.Context, outputName, expectedVal
 //
 // The function sets service-specific AWS_ENDPOINT_URL_* environment variables that are
 // automatically recognized by the AWS provider. Each service gets its own subdomain endpoint
-// (e.g., dynamodb-aws.infraspec.sh, sts-aws.infraspec.sh) for proper AWS SigV4 authentication.
+// (e.g., dynamodb.infraspec.sh, sts.infraspec.sh) for proper AWS SigV4 authentication.
 // See: https://search.opentofu.org/provider/opentofu/aws/v6.1.0/docs/guides/custom-service-endpoints
 func configureVirtualCloudEndpoints(options *iacprovisioner.Options, workingDir string) error {
 	if !config.UseInfraspecVirtualCloud() {
@@ -157,7 +157,7 @@ func configureVirtualCloudEndpoints(options *iacprovisioner.Options, workingDir 
 
 	// Map of AWS SDK service identifiers to infraspec subdomain names
 	// The AWS SDK uses specific service identifiers (e.g., APPLICATION_AUTO_SCALING)
-	// while infraspec uses simplified subdomains (e.g., autoscaling-aws.infraspec.sh)
+	// while infraspec uses simplified subdomains (e.g., autoscaling.infraspec.sh)
 	serviceMap := map[string]string{
 		"DYNAMODB":                 "dynamodb",
 		"STS":                      "sts",
@@ -200,8 +200,16 @@ func configureVirtualCloudEndpoints(options *iacprovisioner.Options, workingDir 
 
 	// Force S3 to use path-style URLs instead of virtual-hosted style
 	// This prevents bucket names from being used as subdomains
-	// (e.g., s3-aws.infraspec.sh/bucket instead of bucket.s3-aws.infraspec.sh)
-	options.EnvVars["AWS_S3_USE_PATH_STYLE"] = "true"
+	// (e.g., s3.infraspec.sh/bucket instead of bucket.s3.infraspec.sh)
+	options.EnvVars["AWS_S3_USE_PATH_STYLE"] = "true"              // AWS SDK Go V2
+	options.EnvVars["TF_AWS_S3_FORCE_PATH_STYLE"] = "true"         // Terraform provider override
+
+	// Skip AWS validation checks when using virtual cloud
+	// These prevent Terraform from attempting to validate against real AWS services
+	options.EnvVars["TF_AWS_SKIP_CREDENTIALS_VALIDATION"] = "true" // Skip STS GetCallerIdentity
+	options.EnvVars["TF_AWS_SKIP_METADATA_API_CHECK"] = "true"     // Skip EC2 metadata lookup
+	options.EnvVars["TF_AWS_SKIP_REGION_VALIDATION"] = "true"      // Allow any region
+	options.EnvVars["TF_AWS_SKIP_REQUESTING_ACCOUNT_ID"] = "true"  // Skip account ID lookup
 
 	return nil
 }

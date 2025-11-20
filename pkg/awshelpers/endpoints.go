@@ -46,8 +46,10 @@ func GetVirtualCloudEndpoint(service string) (string, bool) {
 
 // BuildServiceEndpoint constructs a service-specific endpoint URL by adding a subdomain
 // to the base endpoint. For example:
-//   - Base: "https://infraspec.sh" + Subdomain: "dynamodb" = "https://dynamodb-aws.infraspec.sh"
-//   - Base: "http://localhost:8000" + Subdomain: "sts" = "http://sts-aws.localhost:8000"
+//   - Base: "https://infraspec.sh" + Subdomain: "s3" = "https://s3.infraspec.sh"
+//   - Base: "https://infraspec.sh" + Subdomain: "dynamodb" = "https://dynamodb.infraspec.sh"
+//   - Base: "http://localhost:8000" + Subdomain: "s3" = "http://s3.localhost:8000"
+//   - Base: "http://localhost:8000" + Subdomain: "sts" = "http://sts.localhost:8000"
 func BuildServiceEndpoint(baseEndpoint, subdomain string) string {
 	parsedURL, err := url.Parse(baseEndpoint)
 	if err != nil {
@@ -59,8 +61,9 @@ func BuildServiceEndpoint(baseEndpoint, subdomain string) string {
 	host := parsedURL.Hostname()
 	port := parsedURL.Port()
 
-	// Build new host with subdomain prefix using -aws suffix
-	newHost := subdomain + "-aws." + host
+	// Build new host with subdomain prefix
+	newHost := subdomain + "." + host
+
 	if port != "" {
 		newHost = newHost + ":" + port
 	}
