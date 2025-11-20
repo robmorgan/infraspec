@@ -2,6 +2,10 @@
 /dist
 /infraspec
 
+# go
+cover.out
+cover.html
+
 # misc
 .DS_Store
 
@@ -11,7 +15,6 @@
 terraform.tfstate
 terraform.tfstate.backup
 providers.tf
-providers_override.tf
 
 # docker-compose
 test/volume
