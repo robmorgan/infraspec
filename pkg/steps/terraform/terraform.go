@@ -226,8 +226,14 @@ func configureVirtualCloudEndpoints(options *iacprovisioner.Options, workingDir 
 	options.EnvVars["AWS_ACCESS_KEY_ID"] = awshelpers.InfraspecCloudAccessKeyID
 
 	// Get the InfraSpec Cloud token and set it as the secret access key
-	token, err := config.GetInfraspecCloudToken()
-	if err == nil && token != "" {
+	if config.UseInfraspecVirtualCloud() {
+		token, err := config.GetInfraspecCloudToken()
+		if err != nil {
+			return fmt.Errorf("failed to get InfraSpec Cloud token: %w", err)
+		}
+		if token == "" {
+			return fmt.Errorf("virtual cloud is enabled but no token provided")
+		}
 		options.EnvVars["AWS_SECRET_ACCESS_KEY"] = token
 	}
 

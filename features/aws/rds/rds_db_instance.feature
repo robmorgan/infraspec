@@ -9,7 +9,7 @@ Feature: RDS Instance Creation
   Scenario: Create a PostgreSQL RDS instance with basic configuration
     Given I have a Terraform configuration in "../../../examples/aws/rds/postgres"
     And I set the variable "region" to a random stable AWS region
-    And I set the variable "name" to "test-postgres-db"
+    And I set the variable "name" to "test-postgres-db" with a random suffix
     And I set the variable "engine" to "postgres"
     And I set the variable "engine_version" to "17.5"
     And I set the variable "instance_class" to "db.t4g.micro"
@@ -22,15 +22,15 @@ Feature: RDS Instance Creation
       | Project     | infratest |
     When I run Terraform apply
     Then the output "db_instance_arn" should contain "test-postgres-db"
-    And the RDS instance "test-postgres-db" should exist
-    And the RDS instance "test-postgres-db" instance class should be "db.t4g.micro"
-    And the RDS instance "test-postgres-db" engine should be "postgres"
-    And the RDS instance "test-postgres-db" allocated storage should be 20
-    And the RDS instance "test-postgres-db" MultiAZ should be "false"
-    And the RDS instance "test-postgres-db" encryption should be "true"
-    And the RDS instance "test-postgres-db" status should be "available"
-    And the RDS instance "test-postgres-db" should not be publicly accessible
-    And the RDS instance "test-postgres-db" should have the tags
+    And the RDS instance from output "db_instance_id" should exist
+    And the RDS instance from output "db_instance_id" instance class should be "db.t4g.micro"
+    And the RDS instance from output "db_instance_id" engine should be "postgres"
+    And the RDS instance from output "db_instance_id" allocated storage should be 20
+    And the RDS instance from output "db_instance_id" MultiAZ should be "false"
+    And the RDS instance from output "db_instance_id" encryption should be "true"
+    And the RDS instance from output "db_instance_id" status should be "available"
+    And the RDS instance from output "db_instance_id" should not be publicly accessible
+    And the RDS instance from output "db_instance_id" should have the tags
       | Key         | Value            |
       | Name        | test-postgres-db |
       | Environment | test             |
@@ -39,7 +39,7 @@ Feature: RDS Instance Creation
   Scenario: Create a MySQL RDS instance with high availability
     Given I have a Terraform configuration in "../../../examples/aws/rds/postgres"
     And I set the variable "region" to a random stable AWS region
-    And I set the variable "name" to "test-mysql-db"
+    And I set the variable "name" to "test-mysql-db" with a random suffix
     And I set the variable "engine" to "mysql"
     And I set the variable "engine_version" to "8.4.5"
     And I set the variable "instance_class" to "db.t4g.micro"
@@ -52,15 +52,15 @@ Feature: RDS Instance Creation
       | Project     | infratest |
     When I run Terraform apply
     Then the output "db_instance_arn" should contain "test-mysql-db"
-    And the RDS instance "test-mysql-db" should exist
-    And the RDS instance "test-mysql-db" instance class should be "db.t4g.micro"
-    And the RDS instance "test-mysql-db" engine should be "mysql"
-    And the RDS instance "test-mysql-db" allocated storage should be 30
-    And the RDS instance "test-mysql-db" MultiAZ should be "true"
-    And the RDS instance "test-mysql-db" encryption should be "true"
-    And the RDS instance "test-mysql-db" status should be "available"
-    And the RDS instance "test-mysql-db" should not be publicly accessible
-    And the RDS instance "test-mysql-db" should have the tags
+    And the RDS instance from output "db_instance_id" should exist
+    And the RDS instance from output "db_instance_id" instance class should be "db.t4g.micro"
+    And the RDS instance from output "db_instance_id" engine should be "mysql"
+    And the RDS instance from output "db_instance_id" allocated storage should be 30
+    And the RDS instance from output "db_instance_id" MultiAZ should be "true"
+    And the RDS instance from output "db_instance_id" encryption should be "true"
+    And the RDS instance from output "db_instance_id" status should be "available"
+    And the RDS instance from output "db_instance_id" should not be publicly accessible
+    And the RDS instance from output "db_instance_id" should have the tags
       | Key         | Value         |
       | Name        | test-mysql-db |
       | Environment | test          |
