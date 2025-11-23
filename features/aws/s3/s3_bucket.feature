@@ -15,8 +15,8 @@ Feature: S3 Bucket Creation
       | Environment | test      |
       | Project     | infratest |
     When I run Terraform apply
-    Then the S3 bucket "my-bucket" should exist
-    And the S3 bucket "my-bucket" should have a versioning configuration
-    And the S3 bucket "my-bucket" should have a public access block
-    And the S3 bucket "my-bucket" should have a server access logging configuration
-    And the S3 bucket "my-bucket" should have an encryption configuration
+    Then the S3 bucket from output "bucket_name" should exist
+    And the S3 bucket from output "bucket_name" should have a versioning configuration
+    And the S3 bucket from output "bucket_name" should have a public access block
+    And the S3 bucket from output "bucket_name" should have a server access logging configuration
+    And the S3 bucket from output "bucket_name" should have an encryption configuration
