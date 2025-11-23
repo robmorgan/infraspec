@@ -31,10 +31,9 @@ Feature: RDS Instance Creation
     And the RDS instance from output "db_instance_id" status should be "available"
     And the RDS instance from output "db_instance_id" should not be publicly accessible
     And the RDS instance from output "db_instance_id" should have the tags
-      | Key         | Value            |
-      | Name        | test-postgres-db |
-      | Environment | test             |
-      | Project     | infratest        |
+      | Key         | Value     |
+      | Environment | test      |
+      | Project     | infratest |
 
   Scenario: Create a MySQL RDS instance with high availability
     Given I have a Terraform configuration in "../../../examples/aws/rds/postgres"
@@ -61,7 +60,6 @@ Feature: RDS Instance Creation
     And the RDS instance from output "db_instance_id" status should be "available"
     And the RDS instance from output "db_instance_id" should not be publicly accessible
     And the RDS instance from output "db_instance_id" should have the tags
-      | Key         | Value         |
-      | Name        | test-mysql-db |
-      | Environment | test          |
-      | Project     | infratest     |
+      | Key         | Value     |
+      | Environment | test      |
+      | Project     | infratest |

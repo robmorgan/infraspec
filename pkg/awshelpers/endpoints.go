@@ -48,8 +48,8 @@ func GetVirtualCloudEndpoint(service string) (string, bool) {
 // to the base endpoint. For example:
 //   - Base: "https://infraspec.sh" + Subdomain: "s3" = "https://s3.infraspec.sh"
 //   - Base: "https://infraspec.sh" + Subdomain: "dynamodb" = "https://dynamodb.infraspec.sh"
-//   - Base: "http://localhost:8000" + Subdomain: "s3" = "http://s3.localhost:8000"
-//   - Base: "http://localhost:8000" + Subdomain: "sts" = "http://sts.localhost:8000"
+//   - Base: "http://localhost:8000" + Subdomain: "s3" = "http://localhost:8000" (no subdomain for localhost)
+//   - Base: "http://127.0.0.1:8000" + Subdomain: "sts" = "http://127.0.0.1:8000" (no subdomain for 127.0.0.1)
 func BuildServiceEndpoint(baseEndpoint, subdomain string) string {
 	parsedURL, err := url.Parse(baseEndpoint)
 	if err != nil {
@@ -59,6 +59,13 @@ func BuildServiceEndpoint(baseEndpoint, subdomain string) string {
 
 	// Extract host and port
 	host := parsedURL.Hostname()
+
+	// For localhost or 127.0.0.1, don't use subdomains as they don't resolve properly
+	// The emulator handles all services on the same endpoint
+	if host == "localhost" || host == "127.0.0.1" || host == "::1" {
+		return baseEndpoint
+	}
+
 	port := parsedURL.Port()
 
 	// Build new host with subdomain prefix
