@@ -7,8 +7,33 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// setupMocks configures the mock clients for testing
+func setupMocks(t *testing.T) func() {
+	t.Helper()
+
+	// Store original factories
+	originalEC2Factory := ec2ClientFactory
+	originalSSMFactory := ssmClientFactory
+
+	// Replace with mock factories
+	ec2ClientFactory = func(region string) (EC2API, error) {
+		return NewMockEC2Client(region), nil
+	}
+
+	ssmClientFactory = func(region string) (SSMAPI, error) {
+		return NewMockSSMClient(region), nil
+	}
+
+	// Return cleanup function
+	return func() {
+		ec2ClientFactory = originalEC2Factory
+		ssmClientFactory = originalSSMFactory
+	}
+}
+
 func TestGetRandomRegion(t *testing.T) {
-	t.Parallel()
+	cleanup := setupMocks(t)
+	defer cleanup()
 
 	randomRegion, err := GetRandomRegion(nil, nil)
 	assert.NoError(t, err)
@@ -29,7 +54,8 @@ func TestGetRandomRegionExcludesForbiddenRegions(t *testing.T) {
 }
 
 func TestGetAllAwsRegions(t *testing.T) {
-	t.Parallel()
+	cleanup := setupMocks(t)
+	defer cleanup()
 
 	regions, err := GetAllAwsRegions()
 	assert.NoError(t, err)
@@ -47,22 +73,23 @@ func assertLooksLikeRegionName(t *testing.T, regionName string) {
 }
 
 func TestGetAvailabilityZones(t *testing.T) {
-	t.Parallel()
+	cleanup := setupMocks(t)
+	defer cleanup()
 
-	randomRegion, err := GetRandomStableRegion(nil, nil)
-	assert.NoError(t, err)
-	azs, err := GetAvailabilityZones(randomRegion)
+	// Use us-east-1 since we have a golden file for it
+	azs, err := GetAvailabilityZones("us-east-1")
 	assert.NoError(t, err)
 
 	// Every AWS account has access to different AZs, so he best we can do is make sure we get at least one back
 	assert.True(t, len(azs) > 1)
 	for _, az := range azs {
-		assert.Regexp(t, fmt.Sprintf("^%s[a-z]$", randomRegion), az)
+		assert.Regexp(t, fmt.Sprintf("^%s[a-z]$", "us-east-1"), az)
 	}
 }
 
 func TestGetRandomRegionForService(t *testing.T) {
-	t.Parallel()
+	cleanup := setupMocks(t)
+	defer cleanup()
 
 	serviceName := "apigatewayv2"
 

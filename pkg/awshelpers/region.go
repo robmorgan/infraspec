@@ -86,11 +86,21 @@ func GetRandomRegion(approvedRegions, forbiddenRegions []string) (string, error)
 	return region, nil
 }
 
+// ec2ClientFactory is a function that creates an EC2 client.
+// It can be overridden in tests to use a mock client.
+var ec2ClientFactory = func(region string) (EC2API, error) {
+	client, err := NewEc2Client(region)
+	if err != nil {
+		return nil, err
+	}
+	return client, nil
+}
+
 // GetAllAwsRegions gets the list of AWS regions available in this account.
 func GetAllAwsRegions() ([]string, error) {
 	config.Logging.Logger.Infof("Looking up all AWS regions available in this account")
 
-	ec2Client, err := NewEc2Client(defaultRegion)
+	ec2Client, err := ec2ClientFactory(defaultRegion)
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +123,7 @@ func GetAllAwsRegions() ([]string, error) {
 func GetAvailabilityZones(region string) ([]string, error) {
 	config.Logging.Logger.Infof("Looking up all availability zones available in this account for region %s", region)
 
-	ec2Client, err := NewEc2Client(region)
+	ec2Client, err := ec2ClientFactory(region)
 	if err != nil {
 		return nil, err
 	}
@@ -131,11 +141,21 @@ func GetAvailabilityZones(region string) ([]string, error) {
 	return out, nil
 }
 
+// ssmClientFactory is a function that creates an SSM client.
+// It can be overridden in tests to use a mock client.
+var ssmClientFactory = func(region string) (SSMAPI, error) {
+	client, err := NewSsmClient(region)
+	if err != nil {
+		return nil, err
+	}
+	return client, nil
+}
+
 // GetRegionsForService gets all AWS regions in which a service is available and returns errors.
 // See https://docs.aws.amazon.com/systems-manager/latest/userguide/parameter-store-public-parameters-global-infrastructure.html
 func GetRegionsForService(serviceName string) ([]string, error) {
 	// These values are available in any region, defaulting to us-east-1 since it's the oldest
-	ssmClient, err := NewSsmClient("us-east-1")
+	ssmClient, err := ssmClientFactory("us-east-1")
 	if err != nil {
 		return nil, err
 	}

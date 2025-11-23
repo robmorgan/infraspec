@@ -30,8 +30,9 @@ fmt: tidy ## tidy, format and imports
 	gci write --skip-generated -s standard -s default -s "prefix(github.com/robmorgan/infraspec)" .
 
 .PHONY: test
-test: ## run tests
-	go test -v ./...
+test: ## run all unit tests
+	@printf $(COLOR) "Running tests..."
+	@go test -v $$(go list ./... | grep -v '/test$$')
 
 .PHONY: go-test-cover
 go-test-cover: ## run test & generate coverage

@@ -6,9 +6,10 @@ import (
 	"slices"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+
+	"github.com/robmorgan/infraspec/pkg/awshelpers"
 )
 
 // Ensure the `AWSAsserter` struct implements the `DynamoDBAsserter` interface.
@@ -159,12 +160,19 @@ func (a *AWSAsserter) getDynamoDBTable(tableName string) (*types.TableDescriptio
 
 // Helper method to create a DynamoDB client
 func (a *AWSAsserter) createDynamoDBClient() (*dynamodb.Client, error) {
-	cfg, err := config.LoadDefaultConfig(context.TODO())
+	cfg, err := awshelpers.NewAuthenticatedSessionWithDefaultRegion()
 	if err != nil {
-		return nil, fmt.Errorf("failed to load AWS config: %w", err)
+		return nil, fmt.Errorf("failed to create AWS session: %w", err)
 	}
 
-	return dynamodb.NewFromConfig(cfg), nil
+	opts := make([]func(*dynamodb.Options), 0, 1)
+	if endpoint, ok := awshelpers.GetVirtualCloudEndpoint("dynamodb"); ok {
+		opts = append(opts, func(o *dynamodb.Options) {
+			o.EndpointResolver = dynamodb.EndpointResolverFromURL(endpoint)
+		})
+	}
+
+	return dynamodb.NewFromConfig(*cfg, opts...), nil
 }
 
 // Helper method to get the billing mode of a DynamoDB table

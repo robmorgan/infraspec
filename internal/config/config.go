@@ -3,8 +3,10 @@ package config
 import (
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
+	"github.com/spf13/viper"
 	"go.uber.org/zap/zapcore"
 	yaml "gopkg.in/yaml.v3"
 )
@@ -22,6 +24,7 @@ type Config struct {
 	Verbose         bool             `yaml:"verbose"` // Enable verbose mode
 	Debug           bool             `yaml:"debug"`   // Enable debug mode
 	Telemetry       TelemetryConfig  `yaml:"telemetry"`
+	VirtualCloud    bool             `yaml:"virtual_cloud"`
 }
 
 // StepDefinition defines a mapping between Gherkin steps and actions
@@ -60,26 +63,84 @@ type RetryConfig struct {
 	RetryableErrors []string      `yaml:"retryable_errors"`
 }
 
-// DefaultConfig returns a default configuration
-func DefaultConfig() (*Config, error) {
-	// Configure log level
-	Logging.setLogLevel(zapcore.InfoLevel)
+const defaultConfigPath = "infraspec.yaml"
 
+var currentConfig *Config
+
+// LoadConfig loads configuration from disk, applying default values and overrides from
+// environment variables and the virtual cloud CLI flag. If the config file is missing,
+// only the defaults are used.
+func LoadConfig(path string, virtualCloudFlag bool) (*Config, error) {
+	if path == "" {
+		path = defaultConfigPath
+	}
+
+	v := viper.New()
+	v.SetConfigFile(path)
+	v.SetConfigType("yaml")
+	applyDefaults(v)
+
+	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	v.AutomaticEnv()
+	_ = v.BindEnv("virtual_cloud", UseInfraspecVirtualCloudEnvVar)
+
+	if info, err := os.Stat(path); err == nil && !info.IsDir() {
+		if err := v.ReadInConfig(); err != nil {
+			return nil, err
+		}
+	} else if err != nil && !os.IsNotExist(err) {
+		return nil, err
+	}
+
+	var cfg Config
+	if err := v.Unmarshal(&cfg); err != nil {
+		return nil, err
+	}
+
+	// Apply virtualCloudFlag after unmarshaling to ensure it overrides config file
+	if virtualCloudFlag {
+		cfg.VirtualCloud = true
+	}
+
+	normalizeTelemetry(&cfg)
+
+	currentConfig = &cfg
+	return &cfg, nil
+}
+
+// Current returns the most recently loaded configuration.
+func Current() *Config {
+	return currentConfig
+}
+
+func applyDefaults(v *viper.Viper) {
+	telemetryDefaults := LoadTelemetryConfig()
+
+	// configure logging defaults once
+	Logging.setLogLevel(zapcore.InfoLevel)
 	if os.Getenv("INFRASPEC_DEBUG") != "" {
 		Logging.setLogLevel(zapcore.DebugLevel)
 	}
 
-	return &Config{
-		Version:  "1.0",
-		Provider: "aws",
-		Functions: Functions{
-			RandomString: RandomStringConfig{
-				Length:  randomStringLength,
-				Charset: "abcdefghijklmnopqrstuvwxyz0123456789",
-			},
-		},
-		Telemetry: LoadTelemetryConfig(),
-	}, nil
+	v.SetDefault("version", "1.0")
+	v.SetDefault("provider", "aws")
+	v.SetDefault("functions.random_string.length", randomStringLength)
+	v.SetDefault("functions.random_string.charset", "abcdefghijklmnopqrstuvwxyz0123456789")
+	v.SetDefault("telemetry.enabled", telemetryDefaults.Enabled)
+	v.SetDefault("telemetry.user_id", telemetryDefaults.UserID)
+	v.SetDefault("virtual_cloud", false)
+}
+
+func normalizeTelemetry(cfg *Config) {
+	defaults := LoadTelemetryConfig()
+
+	if cfg.Telemetry.UserID == "" {
+		cfg.Telemetry.UserID = defaults.UserID
+	}
+
+	if defaults.Enabled {
+		cfg.Telemetry.Enabled = defaults.Enabled || cfg.Telemetry.Enabled
+	}
 }
 
 // Load reads and parses the configuration file

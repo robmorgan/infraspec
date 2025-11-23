@@ -258,7 +258,7 @@ func (f *Formatter) clearScreen() {
 
 func (f *Formatter) printHeader() {
 	header := headerStyle.Render("InfraSpec") + " by Rob Morgan"
-	subtitle := mutedStyle.Render("Test your cloud infrastructure in plain English, no code required.")
+	subtitle := mutedStyle.Render("Test your AWS infrastructure in plain English, no code required.")
 
 	fmt.Fprintf(f.writer, "%s\n", header)
 	fmt.Fprintf(f.writer, "%s\n", subtitle)

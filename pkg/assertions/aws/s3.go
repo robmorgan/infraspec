@@ -5,9 +5,10 @@ import (
 	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
+
+	"github.com/robmorgan/infraspec/pkg/awshelpers"
 )
 
 // Ensure the `AWSAsserter` struct implements the `S3Asserter` interface.
@@ -15,11 +16,28 @@ var _ S3Asserter = (*AWSAsserter)(nil)
 
 // S3Asserter defines S3-specific assertions
 type S3Asserter interface {
+	AssertS3DescribeBuckets() error
 	AssertBucketExists(bucketName string) error
 	AssertBucketVersioning(bucketName string) error
 	AssertBucketEncryption(bucketName string) error
 	AssertBucketPublicAccessBlock(bucketName string) error
 	AssertBucketServerAccessLogging(bucketName string) error
+}
+
+// AssertS3DescribeBuckets checks if the AWS account has permission to describe S3 buckets
+func (a *AWSAsserter) AssertS3DescribeBuckets() error {
+	client, err := a.createS3Client()
+	if err != nil {
+		return err
+	}
+
+	// List buckets to verify access
+	_, err = client.ListBuckets(context.TODO(), &s3.ListBucketsInput{})
+	if err != nil {
+		return fmt.Errorf("error listing S3 buckets: %w", err)
+	}
+
+	return nil
 }
 
 func (a *AWSAsserter) AssertBucketExists(bucketName string) error {
@@ -129,10 +147,22 @@ func (a *AWSAsserter) AssertBucketServerAccessLogging(bucketName string) error {
 
 // Helper method to create an S3 client
 func (a *AWSAsserter) createS3Client() (*s3.Client, error) {
-	cfg, err := config.LoadDefaultConfig(context.TODO())
+	cfg, err := awshelpers.NewAuthenticatedSessionWithDefaultRegion()
 	if err != nil {
-		return nil, fmt.Errorf("failed to load AWS config: %w", err)
+		return nil, fmt.Errorf("failed to create AWS session: %w", err)
 	}
 
-	return s3.NewFromConfig(cfg), nil
+	opts := make([]func(*s3.Options), 0, 2)
+
+	if endpoint, ok := awshelpers.GetVirtualCloudEndpoint("s3"); ok {
+		// When using virtual cloud, use virtual-hosted style URLs
+		// (e.g., http://bucket.s3.infraspec.sh/key or http://bucket.s3.localhost:8000/key)
+		// instead of path-style (e.g., http://s3.infraspec.sh/bucket/key)
+		opts = append(opts, func(o *s3.Options) {
+			o.EndpointResolver = s3.EndpointResolverFromURL(endpoint)
+			o.UsePathStyle = false
+		})
+	}
+
+	return s3.NewFromConfig(*cfg, opts...), nil
 }
