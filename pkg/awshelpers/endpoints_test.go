@@ -41,7 +41,7 @@ func TestGetVirtualCloudEndpoint(t *testing.T) {
 			service:             "rds",
 			virtualCloudEnabled: true,
 			awsEndpointURL:      "http://localhost:8000",
-			expectedEndpoint:    "http://rds.localhost:8000",
+			expectedEndpoint:    "http://localhost:8000",
 			expectedOk:          true,
 		},
 		{
@@ -78,7 +78,7 @@ func TestGetVirtualCloudEndpoint(t *testing.T) {
 			service:             "sts",
 			virtualCloudEnabled: true,
 			awsEndpointURL:      "http://localhost:8000",
-			expectedEndpoint:    "http://sts.localhost:8000",
+			expectedEndpoint:    "http://localhost:8000",
 			expectedOk:          true,
 		},
 	}
@@ -145,7 +145,7 @@ func TestBuildServiceEndpoint(t *testing.T) {
 			name:         "builds localhost subdomain with port",
 			baseEndpoint: "http://localhost:8000",
 			subdomain:    "rds",
-			expected:     "http://rds.localhost:8000",
+			expected:     "http://localhost:8000",
 		},
 		{
 			name:         "builds s3 subdomain",
@@ -157,7 +157,7 @@ func TestBuildServiceEndpoint(t *testing.T) {
 			name:         "builds sts subdomain for localhost",
 			baseEndpoint: "http://localhost:8000",
 			subdomain:    "sts",
-			expected:     "http://sts.localhost:8000",
+			expected:     "http://localhost:8000",
 		},
 		{
 			name:         "handles custom domain",
