@@ -63,6 +63,7 @@ jobs:
         env:
           INFRASPEC_TELEMETRY_DISABLED: "1"
           INFRASPEC_CLOUD_TOKEN: ${{ secrets.INFRASPEC_CLOUD_TOKEN }}
+          INFRASPEC_BEARER_TOKEN: "test-token"
 
       - name: Cleanup httpbin
         if: always()
