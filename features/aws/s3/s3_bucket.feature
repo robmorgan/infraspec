@@ -9,7 +9,7 @@ Feature: S3 Bucket Creation
   Scenario: Create an S3 bucket with a name
     Given I have a Terraform configuration in "../../../examples/aws/s3/s3-bucket"
     And I set the variable "region" to a random stable AWS region
-    And I set variable "bucket_name" to "my-bucket"
+    And I set variable "bucket_name" to "my-bucket" with a random suffix
     And I set the variable "tags" to
       | Key         | Value     |
       | Environment | test      |

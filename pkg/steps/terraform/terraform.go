@@ -1,11 +1,14 @@
 package terraform
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"math/rand"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/cucumber/godog"
 
@@ -22,6 +25,8 @@ func RegisterSteps(sc *godog.ScenarioContext) {
 	sc.Step(`^I have a Terraform configuration in "([^"]*)"$`, newTerraformConfigStep)
 	sc.Step(`^I set the variable "([^"]*)" to "([^"]*)"$`, newTerraformSetVariableStep)
 	sc.Step(`^I set variable "([^"]*)" to "([^"]*)"$`, newTerraformSetVariableStep) // Alternative pattern without "the"
+	sc.Step(`^I set the variable "([^"]*)" to "([^"]*)" with a random suffix$`, newTerraformSetVariableWithRandomSuffixStep)
+	sc.Step(`^I set variable "([^"]*)" to "([^"]*)" with a random suffix$`, newTerraformSetVariableWithRandomSuffixStep) // Alternative pattern without "the"
 	sc.Step(`^I set the variable "([^"]*)" to$`, newTerraformSetMapVariableStep)
 	sc.Step(`^I set the variable "([^"]*)" to a random stable AWS region$`, newTerraformSetRandomStableAWSRegion)
 	sc.Step(`^the "([^"]*)" output is "([^"]*)"$`, newTerraformOutputEqualsStep)
@@ -112,6 +117,34 @@ func newTerraformSetRandomStableAWSRegion(ctx context.Context, name string) (con
 	}
 	ctx = contexthelpers.SetAwsRegion(ctx, awsRegion)
 	return newTerraformSetVariableStep(ctx, name, awsRegion)
+}
+
+func newTerraformSetVariableWithRandomSuffixStep(ctx context.Context, name, value string) (context.Context, error) {
+	randomSuffix := uniqueId()
+	valueWithSuffix := fmt.Sprintf("%s-%s", value, randomSuffix)
+	return newTerraformSetVariableStep(ctx, name, valueWithSuffix)
+}
+
+const base62chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+const uniqueIDLength = 6 // Should be good for 62^6 = 56+ billion combinations
+
+// uniqueId returns a unique (ish) id we can attach to resources so they don't conflict with each other.
+// Uses base 62 to generate a 6 character string that's unlikely to collide with the handful of tests we run in
+// parallel. Based on code here: http://stackoverflow.com/a/9543797/483528
+func uniqueId() string {
+	var out bytes.Buffer
+
+	generator := newRand()
+	for i := 0; i < uniqueIDLength; i++ {
+		out.WriteByte(base62chars[generator.Intn(len(base62chars))])
+	}
+
+	return out.String()
+}
+
+// newRand creates a new random number generator, seeding it with the current system time.
+func newRand() *rand.Rand {
+	return rand.New(rand.NewSource(time.Now().UnixNano()))
 }
 
 func newTerraformOutputEqualsStep(ctx context.Context, outputName, expectedValue string) error {
