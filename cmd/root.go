@@ -12,11 +12,13 @@ import (
 	"github.com/robmorgan/infraspec/internal/config"
 	"github.com/robmorgan/infraspec/internal/runner"
 	"github.com/robmorgan/infraspec/internal/telemetry"
+	"github.com/robmorgan/infraspec/pkg/awshelpers"
 )
 
 var (
-	verbose bool
-	format  string
+	verbose      bool
+	format       string
+	virtualCloud bool
 
 	RootCmd = &cobra.Command{
 		Use:     "infraspec [features...]",
@@ -27,7 +29,7 @@ var (
 		Run: func(cmd *cobra.Command, args []string) {
 			startTime := time.Now()
 
-			cfg, err := config.DefaultConfig()
+			cfg, err := config.LoadConfig("", virtualCloud)
 			if err != nil {
 				fmt.Printf("Failed to load config: %v\n", err)
 				return
@@ -36,6 +38,12 @@ var (
 			if verbose {
 				cfg.Verbose = true
 				config.Logging.Logger.Debug("Verbose mode enabled")
+			}
+
+			// Check Virtual Cloud API health if enabled
+			if err := awshelpers.CheckVirtualCloudHealth(); err != nil {
+				fmt.Printf("Virtual Cloud health check failed: %v\n", err)
+				return
 			}
 
 			// Initialize telemetry
@@ -72,7 +80,8 @@ var (
 func init() {
 	// Global flags
 	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
-	RootCmd.PersistentFlags().StringVarP(&format, "format", "f", "default", "output format (default, pretty, junit, cucumber)")
+	RootCmd.PersistentFlags().StringVarP(&format, "format", "f", "default", "output format (default, text, pretty, junit, cucumber)")
+	RootCmd.PersistentFlags().BoolVar(&virtualCloud, "virtual-cloud", false, "use InfraSpec Virtual Cloud to emulate AWS-compatible APIs")
 
 	RootCmd.SetVersionTemplate(`{{printf "%s version %s\n" .Name .Version}}`)
 }

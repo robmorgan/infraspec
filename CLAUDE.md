@@ -29,7 +29,7 @@ Kubernetes without requiring users to write traditional test code using framewor
 ### Prerequisites
 - Go 1.24.4 or later
 - Make (for build automation)
-- LocalStack (for AWS emulation during testing)
+- InfraSpec API (for AWS emulation during testing)
 
 ### Getting Started
 1. Clone the repository.
@@ -62,7 +62,7 @@ Kubernetes without requiring users to write traditional test code using framewor
 
 ### Testing Patterns
 - Use `github.com/stretchr/testify` for assertions
-- Write integration tests that work with LocalStack
+- Write integration tests that work with InfraSpec API
 - Follow BDD patterns with Gherkin feature files
 - Test both positive and negative scenarios
 - Include retry logic for flaky cloud operations
@@ -126,7 +126,7 @@ Use these scopes when relevant:
 
 ### Testing Philosophy
 - **BDD First**: Write Gherkin scenarios before implementation
-- **LocalStack Integration**: Use LocalStack for AWS service emulation
+- **InfraSpec API Integration**: Use InfraSpec API for AWS service emulation
 - **Real-world Examples**: Include practical Terraform configurations
 - **Error Scenarios**: Test both success and failure paths
 
@@ -178,10 +178,10 @@ Use these scopes when relevant:
 ## Troubleshooting
 
 ### Common Issues
-- **LocalStack connectivity**: Ensure LocalStack is running and accessible
+- **InfraSpec API connectivity**: Ensure InfraSpec API is running and accessible on port 8000
 - **AWS credentials**: Check AWS configuration and permissions
 - **Go module issues**: Run `make tidy` to resolve dependencies
-- **Test failures**: Verify LocalStack services are running
+- **Test failures**: Verify InfraSpec API services are running
 
 ### Development Tools
 - Use `make help` to see all available commands

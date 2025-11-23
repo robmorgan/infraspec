@@ -31,7 +31,7 @@ type RDSAsserter interface {
 
 // AssertRDSServiceAccess checks if the AWS account has permission to access the RDS service
 //
-// TODO: This doesn't work on LocalStack as the API isn't supported, so we're best off leaving this call undocumented,
+// TODO: This doesn't work on InfraSpec API as the API isn't supported, so we're best off leaving this call undocumented,
 // until its ported to use something like the IAM policy simulator instead.
 func (a *AWSAsserter) AssertRDSServiceAccess() error {
 	client, err := awshelpers.NewRdsClientWithDefaultRegion()

@@ -8,6 +8,7 @@ import (
 	"github.com/cucumber/godog"
 
 	"github.com/robmorgan/infraspec/internal/contexthelpers"
+	"github.com/robmorgan/infraspec/pkg/iacprovisioner"
 	"github.com/robmorgan/infraspec/pkg/assertions"
 	"github.com/robmorgan/infraspec/pkg/assertions/aws"
 )
@@ -26,6 +27,17 @@ func registerRDSSteps(sc *godog.ScenarioContext) {
 	sc.Step(`^the RDS instance "([^"]*)" encryption should be "(true|false)"$`, newRDSInstanceEncryptionStep)
 	sc.Step(`^the RDS instance "([^"]*)" should not be publicly accessible$`, newRDSInstanceNotPubliclyAccessibleStep)
 	sc.Step(`^the RDS instance "([^"]*)" should have the tags$`, newRDSInstanceTagsStep)
+
+	// Steps that read DB instance identifier from Terraform output
+	sc.Step(`^the RDS instance from output "([^"]*)" should exist$`, newRDSInstanceFromOutputExistsStep)
+	sc.Step(`^the RDS instance from output "([^"]*)" status should be "([^"]*)"$`, newRDSInstanceFromOutputStatusStep)
+	sc.Step(`^the RDS instance from output "([^"]*)" instance class should be "([^"]*)"$`, newRDSInstanceFromOutputClassStep)
+	sc.Step(`^the RDS instance from output "([^"]*)" engine should be "([^"]*)"$`, newRDSInstanceFromOutputEngineStep)
+	sc.Step(`^the RDS instance from output "([^"]*)" allocated storage should be (\d+)$`, newRDSInstanceFromOutputStorageStep)
+	sc.Step(`^the RDS instance from output "([^"]*)" MultiAZ should be "(true|false)"$`, newRDSInstanceFromOutputMultiAZStep)
+	sc.Step(`^the RDS instance from output "([^"]*)" encryption should be "(true|false)"$`, newRDSInstanceFromOutputEncryptionStep)
+	sc.Step(`^the RDS instance from output "([^"]*)" should not be publicly accessible$`, newRDSInstanceFromOutputNotPubliclyAccessibleStep)
+	sc.Step(`^the RDS instance from output "([^"]*)" should have the tags$`, newRDSInstanceFromOutputTagsStep)
 }
 
 func newVerifyAWSRDSAccessStep(ctx context.Context) error {
@@ -202,4 +214,88 @@ func getRdsAsserter(ctx context.Context) (aws.RDSAsserter, error) {
 		return nil, fmt.Errorf("asserter does not implement RDSAsserter")
 	}
 	return rdsAssert, nil
+}
+
+// Step functions that read DB instance identifier from Terraform output
+
+func newRDSInstanceFromOutputExistsStep(ctx context.Context, outputName string) error {
+	dbInstanceID, err := getDBInstanceIDFromOutput(ctx, outputName)
+	if err != nil {
+		return err
+	}
+	return newRDSInstanceExistsStep(ctx, dbInstanceID)
+}
+
+func newRDSInstanceFromOutputStatusStep(ctx context.Context, outputName, status string) error {
+	dbInstanceID, err := getDBInstanceIDFromOutput(ctx, outputName)
+	if err != nil {
+		return err
+	}
+	return newRDSInstanceStatusStep(ctx, dbInstanceID, status)
+}
+
+func newRDSInstanceFromOutputClassStep(ctx context.Context, outputName, instanceClass string) error {
+	dbInstanceID, err := getDBInstanceIDFromOutput(ctx, outputName)
+	if err != nil {
+		return err
+	}
+	return newRDSInstanceClassStep(ctx, dbInstanceID, instanceClass)
+}
+
+func newRDSInstanceFromOutputEngineStep(ctx context.Context, outputName, engine string) error {
+	dbInstanceID, err := getDBInstanceIDFromOutput(ctx, outputName)
+	if err != nil {
+		return err
+	}
+	return newRDSInstanceEngineStep(ctx, dbInstanceID, engine)
+}
+
+func newRDSInstanceFromOutputStorageStep(ctx context.Context, outputName string, allocatedStorage int32) error {
+	dbInstanceID, err := getDBInstanceIDFromOutput(ctx, outputName)
+	if err != nil {
+		return err
+	}
+	return newRDSInstanceStorageStep(ctx, dbInstanceID, allocatedStorage)
+}
+
+func newRDSInstanceFromOutputMultiAZStep(ctx context.Context, outputName, multiAZStr string) error {
+	dbInstanceID, err := getDBInstanceIDFromOutput(ctx, outputName)
+	if err != nil {
+		return err
+	}
+	return newRDSInstanceMultiAZStep(ctx, dbInstanceID, multiAZStr)
+}
+
+func newRDSInstanceFromOutputEncryptionStep(ctx context.Context, outputName, encryptedStr string) error {
+	dbInstanceID, err := getDBInstanceIDFromOutput(ctx, outputName)
+	if err != nil {
+		return err
+	}
+	return newRDSInstanceEncryptionStep(ctx, dbInstanceID, encryptedStr)
+}
+
+func newRDSInstanceFromOutputNotPubliclyAccessibleStep(ctx context.Context, outputName string) error {
+	dbInstanceID, err := getDBInstanceIDFromOutput(ctx, outputName)
+	if err != nil {
+		return err
+	}
+	return newRDSInstanceNotPubliclyAccessibleStep(ctx, dbInstanceID)
+}
+
+func newRDSInstanceFromOutputTagsStep(ctx context.Context, outputName string, table *godog.Table) error {
+	dbInstanceID, err := getDBInstanceIDFromOutput(ctx, outputName)
+	if err != nil {
+		return err
+	}
+	return newRDSInstanceTagsStep(ctx, dbInstanceID, table)
+}
+
+// Helper function to get DB instance identifier from Terraform output
+func getDBInstanceIDFromOutput(ctx context.Context, outputName string) (string, error) {
+	options := contexthelpers.GetIacProvisionerOptions(ctx)
+	dbInstanceID, err := iacprovisioner.Output(options, outputName)
+	if err != nil {
+		return "", fmt.Errorf("failed to get DB instance ID from output %s: %w", outputName, err)
+	}
+	return dbInstanceID, nil
 }

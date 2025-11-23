@@ -1,0 +1,10 @@
+{
+  "availabilityZones": [
+    {"zoneName": "us-east-1a", "state": "available"},
+    {"zoneName": "us-east-1b", "state": "available"},
+    {"zoneName": "us-east-1c", "state": "available"},
+    {"zoneName": "us-east-1d", "state": "available"},
+    {"zoneName": "us-east-1e", "state": "available"},
+    {"zoneName": "us-east-1f", "state": "available"}
+  ]
+}

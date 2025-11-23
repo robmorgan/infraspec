@@ -10,38 +10,60 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Start LocalStack
-        uses: LocalStack/setup-localstack@v0.2.4
-        with:
-          image-tag: "4.6.0"
-          install-awslocal: "true"
-          use-pro: "true"
-        env:
-          LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
-
-      - name: Start httpbin
-        run: |
-          docker run -d --name httpbin -p 8000:80 kennethreitz/httpbin
-          # Wait for httpbin to be ready
-          timeout 30 bash -c 'until curl -f http://localhost:8000/status/200; do sleep 1; done'
-
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: "1.0.11"
-
-      - uses: actions/checkout@v5
+      - name: Checkout infraspec
+        uses: actions/checkout@v5
 
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
 
-      - name: Run Tests
+      - name: Start httpbin
         run: |
-          go test -v ./...
+          docker run -d --name httpbin -p 9000:80 kennethreitz/httpbin
+          # Wait for httpbin to be ready
+          timeout 30 bash -c 'until curl -f http://localhost:9000/status/200; do sleep 1; done'
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.0.11"
+
+      - name: Run Unit Tests
+        run: |
+          # Run all unit tests (excluding integration tests in test/ directory)
+          go test -v $(go list ./... | grep -v '/test$')
         env:
           INFRASPEC_TELEMETRY_DISABLED: "1"
+
+      - name: Build InfraSpec Binary
+        run: |
+          go build -o ./infraspec ./cmd/infraspec
+
+      - name: Run Integration Tests
+        run: |
+          # Run each feature file using infraspec CLI with Virtual Cloud
+          echo "Running DynamoDB feature..."
+          ./infraspec features/aws/dynamodb/dynamodb_table.feature --virtual-cloud
+
+          echo "Running S3 feature..."
+          ./infraspec features/aws/s3/s3_bucket.feature --virtual-cloud
+
+          echo "Running RDS feature..."
+          ./infraspec features/aws/rds/rds_db_instance.feature --virtual-cloud
+
+          echo "Running Terraform hello world feature..."
+          ./infraspec features/terraform/hello_world.feature --virtual-cloud
+
+          echo "Running HTTP requests feature..."
+          ./infraspec features/http/http_requests.feature
+
+          echo "Running HTTP API tests feature..."
+          ./infraspec features/http/api_tests.feature
+        env:
+          INFRASPEC_TELEMETRY_DISABLED: "1"
+          INFRASPEC_CLOUD_TOKEN: ${{ secrets.INFRASPEC_CLOUD_TOKEN }}
+          INFRASPEC_BEARER_TOKEN: "test-token"
 
       - name: Cleanup httpbin
         if: always()

@@ -4,7 +4,7 @@ Feature: API Testing Example
   So that I can ensure they are working correctly after deployment
 
   Scenario: Test authentication endpoint
-    Given I have a HTTP endpoint at "http://localhost:8000/basic-auth/testuser/testpass"
+    Given I have a HTTP endpoint at "http://localhost:9000/basic-auth/testuser/testpass"
     And I set the headers to
       | Name         | Value            |
       | Content-Type | application/json |
@@ -15,7 +15,7 @@ Feature: API Testing Example
     And the HTTP response should contain "authenticated"
 
   Scenario: Test protected endpoint with authentication
-    Given I have a HTTP endpoint at "http://localhost:8000/bearer"
+    Given I have a HTTP endpoint at "http://localhost:9000/bearer"
     And I set the headers to
       | Name          | Value             |
       | Authorization | Bearer test-token |
@@ -25,7 +25,7 @@ Feature: API Testing Example
     And the HTTP response should contain "token"
 
   Scenario: Test Bearer token authentication
-    Given I have a HTTP endpoint at "http://localhost:8000/bearer"
+    Given I have a HTTP endpoint at "http://localhost:9000/bearer"
     And I am authenticated with a valid bearer token
     When I send a GET request
     Then the HTTP response status should be 200
@@ -33,7 +33,7 @@ Feature: API Testing Example
     And the HTTP response should contain "authenticated"
 
   Scenario: Test file upload endpoint
-    Given I have a HTTP endpoint at "http://localhost:8000/post"
+    Given I have a HTTP endpoint at "http://localhost:9000/post"
     And I have a file "../../examples/http/test-file.txt" as field "file"
     And I set content type to "multipart/form-data"
     And I set the form data to:
@@ -46,6 +46,6 @@ Feature: API Testing Example
     And the HTTP response should contain "191152a9-0bd6-4db0-999d-12787295f1ec"
 
   Scenario: Test API error handling
-    Given I have a HTTP endpoint at "http://localhost:8000/status/404"
+    Given I have a HTTP endpoint at "http://localhost:9000/status/404"
     When I send a GET request
     Then the HTTP response status should be 404

@@ -1,7 +1,7 @@
 {
   "name": "infraspec",
   "version": "0.1.0",
-  "description": "Test your cloud infrastructure in plain English, no code required.",
+  "description": "Test your AWS infrastructure in plain English, no code required.",
   "devDependencies": {
     "gherkin-lint": "^4.0.0"
   },

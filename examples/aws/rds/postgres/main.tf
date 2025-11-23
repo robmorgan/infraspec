@@ -87,8 +87,8 @@ resource "aws_db_instance" "default" {
 }
 
 output "db_instance_id" {
-  description = "The ID of the RDS instance"
-  value       = aws_db_instance.default.id
+  description = "The identifier of the RDS instance (use for DescribeDBInstances)"
+  value       = aws_db_instance.default.identifier
 }
 
 output "db_instance_endpoint" {

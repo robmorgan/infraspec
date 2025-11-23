@@ -129,7 +129,7 @@ You can view the [full roadmap here](https://github.com/users/robmorgan/projects
 Contributions are welcome! Please open an issue or submit a pull request. Please note, that this project is still in
 it's infancy and many internal APIs are likely to change.
 
-**Note:** Our tests use [LocalStack](https://github.com/localstack/localstack), which emulates the AWS APIs, in order to
+**Note:** Our tests use [InfraSpec API](https://github.com/robmorgan/infraspec-api), a lightweight AWS service emulator, in order to
 save both time and money.
 
 ## 📄 License
