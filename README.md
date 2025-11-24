@@ -17,18 +17,15 @@
 
 ---
 
-## Why InfraSpec?
+Testing infrastructure shouldn't require learning complex testing frameworks or writing hundreds of lines of code.
+InfraSpec lets you write infrastructure tests in **plain English** using the battle-tested Gherkin syntax.
 
-Testing infrastructure shouldn't require learning complex testing frameworks or writing hundreds of lines of code. InfraSpec lets you write infrastructure tests in **plain English** using the battle-tested Gherkin syntax.
+Traditional infrastructure testing solutions like Terratest require programming knowledge, so writing the tests can take
+as long as writing the infrastructure itself. They also limit collaboration so non-technical stakeholders can’t review
+or contribute, and tests often become difficult to maintain or understand over time.
 
-**The Problem:**
-- Traditional infrastructure testing tools like Terratest require Go/Python knowledge
-- Writing tests takes as long as writing the infrastructure code itself
-- Non-technical stakeholders can't review or contribute to tests
-- Tests are hard to maintain and understand months later
-
-**The Solution:**
-InfraSpec combines a rich library of pre-built testing patterns with natural language specifications. Write tests that read like documentation and are executable from day one.
+InfraSpec combines a rich library of pre-built testing patterns with natural language specifications. Write tests that
+read like documentation and are executable from day one.
 
 ## ⚡ Quick Example
 
@@ -51,14 +48,12 @@ Feature: S3 Bucket Creation
 ```
 
 Run it:
+
 ```bash
-infraspec run features/s3_bucket.feature
+infraspec features/s3_bucket.feature
 ```
 
 That's it! No code to write, no frameworks to learn. InfraSpec handles the rest.
-
-> [!WARNING]
-> InfraSpec is under active development. APIs and features are subject to change. We welcome early adopters and feedback!
 
 ## ✨ Features
 
@@ -113,7 +108,7 @@ This creates a `features/` directory where your tests will live.
 Generate a test template for the service you want to test:
 
 ```bash
-infraspec new s3.feature
+infraspec new s3_bucket.feature
 ```
 
 Or create a test manually in `features/s3_bucket.feature`:
@@ -131,13 +126,13 @@ Feature: S3 Bucket Security
 ### 3. Run Your Tests
 
 ```bash
-infraspec run features/s3_bucket.feature
+infraspec features/s3_bucket.feature
 ```
 
 Or run all tests:
 
 ```bash
-infraspec run features/
+infraspec features/
 ```
 
 ### 4. Integrate with CI/CD
@@ -147,7 +142,7 @@ Add to your GitHub Actions workflow:
 ```yaml
 - name: Run InfraSpec Tests
   run: |
-    infraspec run features/
+    infraspec features/
 ```
 
 ## 🔍 What Can You Test?
@@ -162,14 +157,14 @@ Add to your GitHub Actions workflow:
 
 ### ☁️ AWS Resources
 
-| Service | Status | Example Assertions |
-|---------|--------|-------------------|
-| **S3** | ✅ Supported | Versioning, encryption, public access, logging |
-| **DynamoDB** | ✅ Supported | Tables, indexes, capacity modes, encryption |
-| **RDS** | ✅ Supported | Instances, security groups, backups, encryption |
-| **EC2** | 🚧 Partial | Basic instance validation |
-| **API Gateway** | ⏳ Planned | - |
-| **Lambda** | ⏳ Planned | - |
+| Service         | Status       | Example Assertions                              |
+| --------------- | ------------ | ----------------------------------------------- |
+| **S3**          | ✅ Supported | Versioning, encryption, public access, logging  |
+| **DynamoDB**    | ✅ Supported | Tables, indexes, capacity modes, encryption     |
+| **RDS**         | ✅ Supported | Instances, security groups, backups, encryption |
+| **EC2**         | 🚧 Partial   | Basic instance validation                       |
+| **API Gateway** | ⏳ Planned   | -                                               |
+| **Lambda**      | ⏳ Planned   | -                                               |
 
 ### 🌐 HTTP/APIs
 
@@ -225,14 +220,14 @@ Scenario Outline: S3 bucket configuration across environments
 
 ## 🆚 InfraSpec vs. Alternatives
 
-| Feature | InfraSpec | Terratest | Terraform Testing | Conftest |
-|---------|-----------|-----------|-------------------|----------|
-| **Language** | Plain English (Gherkin) | Go | HCL | Rego |
-| **Learning Curve** | Low | High | Medium | Medium |
-| **AWS Integration** | Native | Manual | Limited | Policy-based |
-| **Non-technical Friendly** | ✅ Yes | ❌ No | ⚠️ Partial | ❌ No |
-| **Live Resource Testing** | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
-| **Pre-built Assertions** | ✅ Hundreds | ❌ None | ⚠️ Some | ❌ None |
+| Feature                    | InfraSpec               | Terratest | Terraform Testing | Conftest     |
+| -------------------------- | ----------------------- | --------- | ----------------- | ------------ |
+| **Language**               | Plain English (Gherkin) | Go        | HCL               | Rego         |
+| **Learning Curve**         | Low                     | High      | Medium            | Medium       |
+| **AWS Integration**        | Native                  | Manual    | Limited           | Policy-based |
+| **Non-technical Friendly** | ✅ Yes                  | ❌ No     | ⚠️ Partial        | ❌ No        |
+| **Live Resource Testing**  | ✅ Yes                  | ✅ Yes    | ❌ No             | ❌ No        |
+| **Pre-built Assertions**   | ✅ Hundreds             | ❌ None   | ⚠️ Some           | ❌ None      |
 
 ## 🎯 Roadmap
 
@@ -240,13 +235,13 @@ We're actively expanding InfraSpec's capabilities. Here's what's on the horizon:
 
 ### Current Status
 
-| AWS Service | Status | Coverage |
-|-------------|--------|----------|
-| S3 | ✅ Supported | Buckets, versioning, encryption, logging, public access |
-| DynamoDB | ✅ Supported | Tables, GSI/LSI, billing modes, streams, encryption |
-| RDS | ✅ Supported | Instances, snapshots, security groups, backups |
-| EC2 | 🚧 Partial | Basic instance validation |
-| SSM | 🚧 Partial | Parameter store |
+| AWS Service | Status       | Coverage                                                |
+| ----------- | ------------ | ------------------------------------------------------- |
+| S3          | ✅ Supported | Buckets, versioning, encryption, logging, public access |
+| DynamoDB    | ✅ Supported | Tables, GSI/LSI, billing modes, streams, encryption     |
+| RDS         | ✅ Supported | Instances, snapshots, security groups, backups          |
+| EC2         | 🚧 Partial   | Basic instance validation                               |
+| SSM         | 🚧 Partial   | Parameter store                                         |
 
 ### Coming Soon
 
@@ -262,7 +257,10 @@ We're actively expanding InfraSpec's capabilities. Here's what's on the horizon:
 
 ### VS Code
 
-Install the [Cucumber (Gherkin) Full Support](https://marketplace.visualstudio.com/items?itemName=alexkrechik.cucumberautocomplete) extension for:
+Install the
+[Cucumber (Gherkin) Full Support](https://marketplace.visualstudio.com/items?itemName=alexkrechik.cucumberautocomplete)
+extension for:
+
 - Syntax highlighting
 - Auto-completion
 - Step definition navigation
@@ -273,7 +271,8 @@ Enable the built-in Gherkin plugin for full IDE support.
 
 ## 🤝 Contributing
 
-We welcome contributions! Whether you're fixing bugs, adding features, or improving documentation, your help makes InfraSpec better.
+We welcome contributions! Whether you're fixing bugs, adding features, or improving documentation, your help makes
+InfraSpec better.
 
 ### Ways to Contribute
 
@@ -300,7 +299,8 @@ make test
 make build
 ```
 
-**Note:** Our tests use [InfraSpec API](https://github.com/robmorgan/infraspec-api), a lightweight AWS service emulator, to save time and costs during development.
+**Note:** Our tests use [InfraSpec API](https://github.com/robmorgan/infraspec-api), a lightweight AWS service emulator,
+to save time and costs during development.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
@@ -313,7 +313,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ## 📄 License
 
-InfraSpec is open source software licensed under the [Apache License 2.0](https://github.com/robmorgan/infraspec/blob/main/LICENSE.md).
+InfraSpec is open source software licensed under the
+[Apache License 2.0](https://github.com/robmorgan/infraspec/blob/main/LICENSE.md).
 
 ---
 
