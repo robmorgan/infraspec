@@ -98,21 +98,6 @@ jobs:
       - name: Checkout infraspec
         uses: actions/checkout@v5
 
-      - name: Set up Go
-        uses: actions/setup-go@v6
-        with:
-          go-version-file: go.mod
-
-      - name: Cache Go modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/go/pkg/mod
-            ~/.cache/go-build
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-
       - name: Download InfraSpec Binary
         uses: actions/download-artifact@v4
         with:
@@ -163,7 +148,6 @@ jobs:
           INFRASPEC_TELEMETRY_DISABLED: "1"
           INFRASPEC_CLOUD_TOKEN: ${{ secrets.INFRASPEC_CLOUD_TOKEN }}
           INFRASPEC_BEARER_TOKEN: "test-token"
-          TF_CLI_ARGS: "-parallelism=10"
 
       - name: Cleanup httpbin
         if: always() && matrix.test-suite.needs_httpbin
