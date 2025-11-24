@@ -41,6 +41,20 @@ type Options struct {
 	Binary     string // Name of the binary that will be used to run the IaC code.
 	WorkingDir string // The path to the folder where the IaC code is stored.
 
+	// If set to true, Terraform configurations will be copied to a temporary directory before running.
+	// This is useful for running tests in parallel without file conflicts or to avoid polluting the
+	// original source directory with generated files. The temporary directory will be created with
+	// the TempFolderPrefix as a prefix.
+	CopyToTemp bool
+
+	// The prefix to use when creating temporary directories for Terraform configurations.
+	// Only used when CopyToTemp is true. If empty, defaults to "infraspec-terraform-".
+	TempFolderPrefix string
+
+	// The original working directory before copying to temp. This is set automatically when CopyToTemp
+	// is true and should not be set manually.
+	OriginalWorkingDir string
+
 	// The vars to pass to Terraform commands using the -var option. Note that terraform does not support passing `null`
 	// as a variable value through the command line. That is, if you use `map[string]interface{}{"foo": nil}` as `Vars`,
 	// this will translate to the string literal `"null"` being assigned to the variable `foo`. However, nulls in
