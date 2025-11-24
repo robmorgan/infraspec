@@ -127,8 +127,9 @@ jobs:
         with:
           path: |
             ~/.terraform.d/plugin-cache
-          key: ${{ runner.os }}-terraform-1.5.7
+          key: ${{ runner.os }}-terraform-1.5.7-${{ hashFiles('examples/**/.terraform.lock.hcl') }}
           restore-keys: |
+            ${{ runner.os }}-terraform-1.5.7-
             ${{ runner.os }}-terraform-
 
       - name: Install Terraform
