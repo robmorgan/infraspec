@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  unit-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout infraspec
@@ -18,16 +18,15 @@ jobs:
         with:
           go-version-file: go.mod
 
-      - name: Start httpbin
-        run: |
-          docker run -d --name httpbin -p 9000:80 kennethreitz/httpbin
-          # Wait for httpbin to be ready
-          timeout 30 bash -c 'until curl -f http://localhost:9000/status/200; do sleep 1; done'
-
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v3
+      - name: Cache Go modules
+        uses: actions/cache@v4
         with:
-          terraform_version: "1.0.11"
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
 
       - name: Run Unit Tests
         run: |
@@ -36,37 +35,131 @@ jobs:
         env:
           INFRASPEC_TELEMETRY_DISABLED: "1"
 
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout infraspec
+        uses: actions/checkout@v5
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
       - name: Build InfraSpec Binary
         run: |
           go build -o ./infraspec ./cmd/infraspec
 
+      - name: Upload InfraSpec Binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: infraspec-binary
+          path: ./infraspec
+          retention-days: 1
+
+  integration-test:
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      matrix:
+        test-suite:
+          - name: aws
+            path: features/aws/
+            needs_httpbin: false
+            needs_terraform: true
+            use_virtual_cloud: true
+          - name: terraform
+            path: features/terraform/hello_world.feature
+            needs_httpbin: false
+            needs_terraform: true
+            use_virtual_cloud: true
+          - name: http_requests
+            path: features/http/http_requests.feature
+            needs_httpbin: true
+            needs_terraform: false
+            use_virtual_cloud: false
+          - name: api_tests
+            path: features/http/api_tests.feature
+            needs_httpbin: true
+            needs_terraform: false
+            use_virtual_cloud: false
+      fail-fast: false
+    steps:
+      - name: Checkout infraspec
+        uses: actions/checkout@v5
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Download InfraSpec Binary
+        uses: actions/download-artifact@v4
+        with:
+          name: infraspec-binary
+
+      - name: Make InfraSpec Binary Executable
+        run: chmod +x ./infraspec
+
+      - name: Install Terraform
+        if: matrix.test-suite.needs_terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.0.11"
+
+      - name: Cache Terraform Providers
+        if: matrix.test-suite.needs_terraform
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.terraform.d/plugin-cache
+          key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
+          restore-keys: |
+            ${{ runner.os }}-terraform-
+
+      - name: Start httpbin
+        if: matrix.test-suite.needs_httpbin
+        run: |
+          docker run -d --name httpbin -p 9000:80 kennethreitz/httpbin
+          # Wait for httpbin to be ready
+          timeout 30 bash -c 'until curl -f http://localhost:9000/status/200; do sleep 1; done'
+
       - name: Run Integration Tests
         run: |
-          # Run each feature file using infraspec CLI with Virtual Cloud
-          echo "Running DynamoDB feature..."
-          ./infraspec features/aws/dynamodb/dynamodb_table.feature --virtual-cloud
-
-          echo "Running S3 feature..."
-          ./infraspec features/aws/s3/s3_bucket.feature --virtual-cloud
-
-          echo "Running RDS feature..."
-          ./infraspec features/aws/rds/rds_db_instance.feature --virtual-cloud
-
-          echo "Running Terraform hello world feature..."
-          ./infraspec features/terraform/hello_world.feature --virtual-cloud
-
-          echo "Running HTTP requests feature..."
-          ./infraspec features/http/http_requests.feature
-
-          echo "Running HTTP API tests feature..."
-          ./infraspec features/http/api_tests.feature
+          echo "Running ${{ matrix.test-suite.name }} tests..."
+          if [ "${{ matrix.test-suite.use_virtual_cloud }}" = "true" ]; then
+            ./infraspec ${{ matrix.test-suite.path }} --virtual-cloud
+          else
+            ./infraspec ${{ matrix.test-suite.path }}
+          fi
         env:
           INFRASPEC_TELEMETRY_DISABLED: "1"
           INFRASPEC_CLOUD_TOKEN: ${{ secrets.INFRASPEC_CLOUD_TOKEN }}
           INFRASPEC_BEARER_TOKEN: "test-token"
+          TF_CLI_ARGS: "-parallelism=10"
 
       - name: Cleanup httpbin
-        if: always()
+        if: always() && matrix.test-suite.needs_httpbin
         run: |
           docker stop httpbin || true
           docker rm httpbin || true
