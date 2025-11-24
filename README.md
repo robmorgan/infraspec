@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/badge/🚀%20Try-InfraSpec%20Virtual%20Cloud-5B47ED?style=for-the-badge" alt="Try Virtual Cloud">
   </a>
   <br>
-  <sub>100x faster tests • 90% cost savings • 14-day free trial</sub>
+  <sub>100x faster tests • 90% cost savings • Zero AWS costs</sub>
 </p>
 
 ---
@@ -112,19 +112,19 @@ Add the `--virtual-cloud` flag to your tests:
 
 ```bash
 # Use Virtual Cloud for fast, cost-free testing
-infraspec features/ --virtual-cloud
+infraspec --virtual-cloud features/
 ```
 
 Or set it as default in your CI/CD:
 
 ```yaml
 - name: Run InfraSpec Tests
-  run: infraspec features/ --virtual-cloud
+  run: infraspec --virtual-cloud features/
   env:
     INFRASPEC_CLOUD_TOKEN: ${{ secrets.INFRASPEC_CLOUD_TOKEN }}
 ```
 
-→ [**Start 14-day free trial**](https://infraspec.sh/virtual-cloud) → [View pricing](https://infraspec.sh/pricing) →
+→ [**Get started**](https://infraspec.sh/virtual-cloud) → [View pricing](https://infraspec.sh/pricing) →
 [Compare with alternatives](https://infraspec.sh/vs-localstack)
 
 ## ✨ Features
