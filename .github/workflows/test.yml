@@ -61,7 +61,7 @@ jobs:
           go build -o ./infraspec ./cmd/infraspec
 
       - name: Upload InfraSpec Binary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: infraspec-binary
           path: ./infraspec
