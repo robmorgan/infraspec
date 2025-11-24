@@ -63,37 +63,44 @@ infraspec features/s3_bucket.feature
 
 That's it! No code to write, no frameworks to learn. InfraSpec handles the rest.
 
-> [!WARNING]
-> InfraSpec is under active development. APIs and features are subject to change. We welcome early adopters and feedback!
+> [!WARNING] InfraSpec is under active development. APIs and features are subject to change. We welcome early adopters
+> and feedback!
 
 ## 💰 InfraSpec Virtual Cloud - Test Faster, Pay Less
 
-Stop paying AWS for every test run. **InfraSpec Virtual Cloud** is a high-fidelity AWS emulator designed specifically for infrastructure testing. Make your tests faster and cheaper:
+Stop paying AWS for every test run. **InfraSpec Virtual Cloud** is a high-fidelity AWS emulator designed specifically
+for infrastructure testing. Make your tests faster and cheaper:
 
 ### Why Virtual Cloud?
 
 **Testing against real AWS is expensive and slow:**
+
 - 💸 **High costs** - $0.10+ per test run adds up fast
 - ⏱️ **Slow execution** - Network calls take 2-10 seconds each
 - 🔄 **CI/CD bills** - Costs accumulate with every pipeline run
 - 🐌 **Poor feedback** - Slow tests reduce developer productivity
+- 🗑️ **Cleanup headaches** - Failed tests leave orphaned resources that cost money
 
 **InfraSpec Virtual Cloud solves this:**
+
 - ⚡ **100x faster** - Tests run in milliseconds, not seconds
 - 💰 **90% cheaper** - No AWS charges for testing infrastructure
 - 🔒 **No credentials needed** - Test safely without AWS access
+- 🧹 **No cleanup required** - Failed tests don't leave dangling resources in AWS
 - 🎯 **High fidelity** - Accurate AWS behavior without complexity
 - 🚀 **CI/CD optimized** - Unlimited parallel tests without cost concerns
 
 ### Real Cost Savings
 
 **Without Virtual Cloud:**
+
 ```
 10 developers × 50 test runs/day × $0.10/run × 20 days = $1,000/month
 Plus slow feedback: 10 min/run × 500 runs = 83 hours wasted monthly
 ```
 
 **With Virtual Cloud:**
+
 ```
 $99/month flat rate + instant feedback = $901 saved + 83 hours recovered
 ROI in the first week
@@ -117,9 +124,8 @@ Or set it as default in your CI/CD:
     INFRASPEC_CLOUD_TOKEN: ${{ secrets.INFRASPEC_CLOUD_TOKEN }}
 ```
 
-→ [**Start 14-day free trial**](https://infraspec.sh/virtual-cloud)
-→ [View pricing](https://infraspec.sh/pricing)
-→ [Compare with alternatives](https://infraspec.sh/vs-localstack)
+→ [**Start 14-day free trial**](https://infraspec.sh/virtual-cloud) → [View pricing](https://infraspec.sh/pricing) →
+[Compare with alternatives](https://infraspec.sh/vs-localstack)
 
 ## ✨ Features
 
@@ -234,7 +240,8 @@ Add to your GitHub Actions workflow:
 | **API Gateway** | ⏳ Planned   | ⏳ Planned    | -                                               |
 | **Lambda**      | ⏳ Planned   | ⏳ Planned    | -                                               |
 
-💡 **Tip:** All services marked with ✅ in Virtual Cloud work with the `--virtual-cloud` flag for instant, cost-free testing.
+💡 **Tip:** All services marked with ✅ in Virtual Cloud work with the `--virtual-cloud` flag for instant, cost-free
+testing.
 
 ### 🌐 HTTP/APIs
 
@@ -369,8 +376,8 @@ make test
 make build
 ```
 
-**Note:** Our tests use [InfraSpec Virtual Cloud](https://infraspec.sh/virtual-cloud), a high-fidelity AWS emulator,
-to save time and costs during development. The Virtual Cloud API is available as a paid service for production use.
+**Note:** Our tests use [InfraSpec Virtual Cloud](https://infraspec.sh/virtual-cloud), a high-fidelity AWS emulator, to
+save time and costs during development. The Virtual Cloud API is available as a paid service for production use.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
@@ -379,7 +386,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 - 💬 [GitHub Discussions](https://github.com/robmorgan/infraspec/discussions) - Ask questions and share ideas
 - 🐛 [Issue Tracker](https://github.com/robmorgan/infraspec/issues) - Report bugs and request features
 - 📖 [Documentation](https://infraspec.sh) - Full documentation and guides
-- 🐦 [Twitter/X](https://twitter.com/robmorgan) - Follow for updates
+- 🐦 [Twitter/X](https://twitter.com/_rjm_) - Follow @\_rjm\_ for updates
 
 ## 📄 License
 
