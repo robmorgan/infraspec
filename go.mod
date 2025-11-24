@@ -4,7 +4,7 @@ go 1.24.4
 
 require (
 	github.com/amplitude/analytics-go v1.2.0
-	github.com/aws/aws-sdk-go-v2 v1.39.6
+	github.com/aws/aws-sdk-go-v2 v1.40.0
 	github.com/aws/aws-sdk-go-v2/config v1.31.20
 	github.com/aws/aws-sdk-go-v2/credentials v1.18.24
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.52.4
