@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/robmorgan/infraspec/actions"><img src="https://github.com/robmorgan/infraspec/workflows/CI/badge.svg" alt="Build Status"></a>
+  <a href="https://github.com/robmorgan/infraspec/actions"><img src="https://github.com/robmorgan/infraspec/workflows/Test/badge.svg" alt="Build Status"></a>
   <a href="https://github.com/robmorgan/infraspec/blob/main/LICENSE.md"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License"></a>
   <a href="https://goreportcard.com/report/github.com/robmorgan/infraspec"><img src="https://goreportcard.com/badge/github.com/robmorgan/infraspec" alt="Go Report Card"></a>
   <a href="https://github.com/robmorgan/infraspec/releases"><img src="https://img.shields.io/github/v/release/robmorgan/infraspec" alt="Release"></a>
