@@ -121,21 +121,27 @@ jobs:
       - name: Make InfraSpec Binary Executable
         run: chmod +x ./infraspec
 
-      - name: Install Terraform
-        if: matrix.test-suite.needs_terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: "1.0.11"
-
       - name: Cache Terraform Providers
         if: matrix.test-suite.needs_terraform
         uses: actions/cache@v4
         with:
           path: |
             ~/.terraform.d/plugin-cache
-          key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
+          key: ${{ runner.os }}-terraform-1.5.7
           restore-keys: |
             ${{ runner.os }}-terraform-
+
+      - name: Install Terraform
+        if: matrix.test-suite.needs_terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.5.7"
+
+      - name: Configure Terraform Plugin Cache
+        if: matrix.test-suite.needs_terraform
+        run: |
+          mkdir -p ~/.terraform.d/plugin-cache
+          echo 'plugin_cache_dir = "$HOME/.terraform.d/plugin-cache"' > ~/.terraformrc
 
       - name: Start httpbin
         if: matrix.test-suite.needs_httpbin
