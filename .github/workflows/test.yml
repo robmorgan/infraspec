@@ -73,23 +73,28 @@ jobs:
     strategy:
       matrix:
         test-suite:
-          - name: aws
-            path: features/aws/
+          - name: aws_dynamodb
+            path: features/aws/dynamodb/
+            needs_httpbin: false
+            needs_terraform: true
+            use_virtual_cloud: true
+          - name: aws_s3
+            path: features/aws/s3/
+            needs_httpbin: false
+            needs_terraform: true
+            use_virtual_cloud: true
+          - name: aws_rds
+            path: features/aws/rds/
             needs_httpbin: false
             needs_terraform: true
             use_virtual_cloud: true
           - name: terraform
-            path: features/terraform/hello_world.feature
+            path: features/terraform/
             needs_httpbin: false
             needs_terraform: true
             use_virtual_cloud: true
           - name: http_requests
-            path: features/http/http_requests.feature
-            needs_httpbin: true
-            needs_terraform: false
-            use_virtual_cloud: false
-          - name: api_tests
-            path: features/http/api_tests.feature
+            path: features/http/
             needs_httpbin: true
             needs_terraform: false
             use_virtual_cloud: false
