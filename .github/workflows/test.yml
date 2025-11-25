@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout infraspec
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up Go
         uses: actions/setup-go@v6
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout infraspec
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Set up Go
         uses: actions/setup-go@v6
@@ -101,7 +101,7 @@ jobs:
       fail-fast: false
     steps:
       - name: Checkout infraspec
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Download InfraSpec Binary
         uses: actions/download-artifact@v6
