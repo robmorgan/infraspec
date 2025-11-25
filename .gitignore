@@ -22,6 +22,8 @@ test/volume
 vendor/
 
 # next.js / nextra / bun
+.env
+.env.local
 node_modules/
 .next/
 _pagefind/
