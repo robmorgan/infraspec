@@ -8,6 +8,10 @@ export default {
     title: "Docs",
     type: "page",
   },
+  "virtual-cloud": {
+    title: "Virtual Cloud",
+    type: "page",
+  },
   support: {
     title: "Support",
     type: "page",

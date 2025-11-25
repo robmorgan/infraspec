@@ -10,17 +10,17 @@ import { Callout, Steps, Tabs } from "nextra/components";
   <Image src="/infraspec_logo_512.png" alt="InfraSpec Logo" width={128} height={128} />
 </div>
 
-{<h1 className="text-center font-extrabold md:text-5xl mt-2">InfraSpec Virtual Cloud</h1>}
+<h1 className="text-center font-extrabold md:text-5xl mt-2">InfraSpec Virtual Cloud</h1>
 
 <div className="mx-auto max-w-full w-[880px] text-center px-4 mt-4 mb-10">
-  {<p className="text-lg mb-2 text-gray-600 md:!text-2xl">
+  <p className="text-lg mb-2 text-gray-600 md:!text-2xl">
     Test infrastructure 100x faster. Pay 90% less. Zero AWS costs.
-  </p>}
+  </p>
 </div>
 
 <div className="text-center mb-8">
   <a
-    href="#get-started"
+    href="#getting-started"
     className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition-colors"
   >
     Get Started →
@@ -40,7 +40,7 @@ Testing infrastructure against real AWS is **expensive, slow, and risky**:
 - 🐌 **Poor feedback loops** - Slow tests kill developer productivity
 - 🔐 **Security concerns** - Exposing AWS credentials in CI/CD environments
 
-<Callout type="warning" emoji="⚠️">
+<Callout type="info" emoji="⚠️">
   **Real Cost Example**: A team of 10 developers running 50 tests/day spends **$1,000+/month** on AWS testing
   costs alone, plus **83+ hours** of wasted time waiting for slow tests.
 </Callout>
@@ -100,7 +100,7 @@ go install github.com/robmorgan/infraspec@latest
 
 ### Get Your API Token
 
-Sign up at [infraspec.sh](https://infraspec.sh) and get your `INFRASPEC_CLOUD_TOKEN`.
+Sign up at [infraspec.sh](https://infraspec.sh) and get your InfraSpec Cloud Token.
 
 ### Run Tests with Virtual Cloud
 
@@ -126,7 +126,7 @@ Virtual Cloud provides high-fidelity emulation for the most commonly tested AWS 
 | **VPC**      | 🚧 Coming    | VPCs, subnets, route tables, NAT gateways                 |
 
 <Callout type="info">
-  Need a service that's not listed? [Contact us](mailto:support@infraspec.sh) to discuss custom emulation.
+  Need a service that's not listed? [Contact us](mailto:sales@brightfame.co) to discuss custom emulation.
 </Callout>
 
 ## Real Cost Savings Calculator
@@ -241,53 +241,8 @@ Configure Virtual Cloud behavior with environment variables:
 
 ```bash
 # Required: Your Virtual Cloud API token
-export INFRASPEC_CLOUD_TOKEN="your-token-here"
-
-# Optional: Custom Virtual Cloud endpoint (for enterprise)
-export INFRASPEC_CLOUD_ENDPOINT="https://virtual-cloud.yourcompany.com"
-
-# Optional: Enable debug logging
-export INFRASPEC_DEBUG=true
+infraspec config set infraspec-cloud-token YOUR_TOKEN_HERE
 ```
-
-## InfraSpec Virtual Cloud vs. Alternatives
-
-### vs. LocalStack
-
-| Feature                 | InfraSpec Virtual Cloud | LocalStack Pro    |
-| ----------------------- | ----------------------- | ----------------- |
-| **Purpose**             | Infrastructure testing  | General emulation |
-| **Terraform Support**   | Native, optimized       | Basic             |
-| **InfraSpec CLI**       | Integrated              | Separate setup    |
-| **Pricing**             | $99/month flat          | $25/user/month    |
-| **DynamoDB Fidelity**   | High                    | Medium            |
-| **RDS Support**         | Full emulation          | Limited           |
-| **Setup Complexity**    | Zero (flag only)        | Docker + config   |
-| **CI/CD Optimized**     | Yes                     | Requires tuning   |
-
-### vs. AWS Moto
-
-| Feature                 | InfraSpec Virtual Cloud | Moto (Python)     |
-| ----------------------- | ----------------------- | ----------------- |
-| **Deployment**          | Managed service         | Self-hosted       |
-| **Fidelity**            | High                    | Medium            |
-| **RDS Emulation**       | Full                    | Mock only         |
-| **DynamoDB Streams**    | Supported               | Limited           |
-| **Maintenance**         | Managed by InfraSpec    | Self-maintained   |
-| **Performance**         | Optimized               | Variable          |
-| **Terraform Testing**   | Purpose-built           | Adapter required  |
-
-### vs. Real AWS
-
-| Feature                 | InfraSpec Virtual Cloud | Real AWS       |
-| ----------------------- | ----------------------- | -------------- |
-| **Speed**               | Milliseconds            | 2-10 seconds   |
-| **Cost (1000 tests)**   | Included                | $100+          |
-| **Credentials Needed**  | No                      | Yes            |
-| **Cleanup Required**    | Automatic               | Manual         |
-| **Parallel Tests**      | Unlimited               | Rate limited   |
-| **Network Dependency**  | None                    | Required       |
-| **Cost Predictability** | Fixed monthly           | Variable       |
 
 ## Pricing
 
@@ -345,7 +300,7 @@ export INFRASPEC_DEBUG=true
   </div>
 </div>
 
-## Getting Started {#get-started}
+## Getting Started
 
 <Steps>
 ### Sign Up
@@ -385,7 +340,7 @@ and CI/CD, then validate against real AWS before production deployment.
 
 ### What happens if I exceed my plan limits?
 
-Virtual Cloud has no usage limits—unlimited tests, unlimited parallel execution. The pricing is per team size,
+Virtual Cloud has no usage limits, unlimited tests, unlimited parallel execution. The pricing is per team size,
 not per usage.
 
 ### Do you offer volume discounts?
@@ -401,7 +356,7 @@ Enterprise customers can deploy Virtual Cloud in their own infrastructure for en
 ### How do I migrate from LocalStack or Moto?
 
 InfraSpec Virtual Cloud is API-compatible with standard AWS SDKs and Terraform providers. Simply point your tests
-to Virtual Cloud—no code changes required. [Contact support](/support) for migration assistance.
+to Virtual Cloud with no code changes required. [Contact support](/support) for migration assistance.
 
 ### What SLAs do you provide?
 
