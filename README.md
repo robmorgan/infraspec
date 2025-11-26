@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/badge/🚀%20Try-InfraSpec%20Virtual%20Cloud-5B47ED?style=for-the-badge" alt="Try Virtual Cloud">
   </a>
   <br>
-  <sub>100x faster tests • 90% cost savings • Zero AWS costs</sub>
+  <sub>100x faster tests • 90% cost savings • Zero cleanup</sub>
 </p>
 
 ---
@@ -63,9 +63,6 @@ infraspec features/s3_bucket.feature
 
 That's it! No code to write, no frameworks to learn. InfraSpec handles the rest.
 
-> [!WARNING] InfraSpec is under active development. APIs and features are subject to change. We welcome early adopters
-> and feedback!
-
 ## 💰 InfraSpec Virtual Cloud - Test Faster, Pay Less
 
 Stop paying AWS for every test run. **InfraSpec Virtual Cloud** is a high-fidelity AWS emulator designed specifically
@@ -89,22 +86,6 @@ for infrastructure testing. Make your tests faster and cheaper:
 - 🧹 **No cleanup required** - Failed tests don't leave dangling resources in AWS
 - 🎯 **High fidelity** - Accurate AWS behavior without complexity
 - 🚀 **CI/CD optimized** - Unlimited parallel tests without cost concerns
-
-### Real Cost Savings
-
-**Without Virtual Cloud:**
-
-```
-10 developers × 50 test runs/day × $0.10/run × 20 days = $1,000/month
-Plus slow feedback: 10 min/run × 500 runs = 83 hours wasted monthly
-```
-
-**With Virtual Cloud:**
-
-```
-$99/month flat rate + instant feedback = $901 saved + 83 hours recovered
-ROI in the first week
-```
 
 ### Getting Started with Virtual Cloud
 

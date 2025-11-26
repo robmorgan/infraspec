@@ -1,6 +1,7 @@
 ---
 title: InfraSpec Virtual Cloud - High-Fidelity AWS Emulator
 sidebar: false
+toc: false
 ---
 
 import Image from "next/image";
@@ -14,7 +15,7 @@ import { Callout, Steps, Tabs } from "nextra/components";
 
 <div className="mx-auto max-w-full w-[880px] text-center px-4 mt-4 mb-10">
   <p className="text-lg mb-2 text-gray-600 md:!text-2xl">
-    Test infrastructure 100x faster. Pay 90% less. Zero AWS costs.
+    Test infrastructure 100x faster. Pay 90% less. Zero cleanup.
   </p>
 </div>
 
@@ -40,10 +41,10 @@ Testing infrastructure against real AWS is **expensive, slow, and risky**:
 - 🐌 **Poor feedback loops** - Slow tests kill developer productivity
 - 🔐 **Security concerns** - Exposing AWS credentials in CI/CD environments
 
-<Callout type="info" emoji="⚠️">
-  **Real Cost Example**: A team of 10 developers running 50 tests/day spends **$1,000+/month** on AWS testing
-  costs alone, plus **83+ hours** of wasted time waiting for slow tests.
-</Callout>
+> [!NOTE]
+>
+> **Real Cost Example**: A team of 10 developers running 50 tests/day spends **$1,000+/month** on AWS testing costs
+> alone, plus **83+ hours** of wasted time waiting for slow tests.
 
 ## The Solution: InfraSpec Virtual Cloud
 
@@ -58,25 +59,33 @@ provides accurate AWS behavior without the complexity, cost, or latency of real 
     <p>Tests run in milliseconds instead of seconds. No network latency, no API rate limits.</p>
   </div>
 
-  <div className="border rounded-lg p-6">
-    <h3 className="text-xl font-bold mb-2">💰 90% Cheaper</h3>
-    <p>Flat monthly rate with unlimited tests. No per-request charges, no surprise bills.</p>
-  </div>
+{" "}
 
-  <div className="border rounded-lg p-6">
-    <h3 className="text-xl font-bold mb-2">🔒 Zero Credentials</h3>
-    <p>No AWS credentials needed. Test safely without exposing secrets in CI/CD.</p>
-  </div>
+<div className="border rounded-lg p-6">
+  <h3 className="text-xl font-bold mb-2">💰 90% Cheaper</h3>
+  <p>Flat monthly rate with unlimited tests. No per-request charges, no surprise bills.</p>
+</div>
 
-  <div className="border rounded-lg p-6">
-    <h3 className="text-xl font-bold mb-2">🧹 No Cleanup</h3>
-    <p>Failed tests don't leave dangling resources. Everything is ephemeral and automatic.</p>
-  </div>
+{" "}
 
-  <div className="border rounded-lg p-6">
-    <h3 className="text-xl font-bold mb-2">🎯 High Fidelity</h3>
-    <p>Accurate AWS behavior without complexity. Purpose-built for infrastructure testing.</p>
-  </div>
+<div className="border rounded-lg p-6">
+  <h3 className="text-xl font-bold mb-2">🔒 Zero Credentials</h3>
+  <p>No AWS credentials needed. Test safely without exposing secrets in CI/CD.</p>
+</div>
+
+{" "}
+
+<div className="border rounded-lg p-6">
+  <h3 className="text-xl font-bold mb-2">🧹 No Cleanup</h3>
+  <p>Failed tests don't leave dangling resources. Everything is ephemeral and automatic.</p>
+</div>
+
+{" "}
+
+<div className="border rounded-lg p-6">
+  <h3 className="text-xl font-bold mb-2">🎯 High Fidelity</h3>
+  <p>Accurate AWS behavior without complexity. Purpose-built for infrastructure testing.</p>
+</div>
 
   <div className="border rounded-lg p-6">
     <h3 className="text-xl font-bold mb-2">🚀 Unlimited Scale</h3>
@@ -86,8 +95,8 @@ provides accurate AWS behavior without the complexity, cost, or latency of real 
 
 ## How It Works
 
-InfraSpec Virtual Cloud runs as a managed service that emulates AWS APIs with high fidelity. Simply point your tests
-to Virtual Cloud instead of real AWS:
+InfraSpec Virtual Cloud runs as a managed service that emulates AWS APIs with high fidelity. Simply point your tests to
+Virtual Cloud instead of real AWS:
 
 <Steps>
 ### Install InfraSpec CLI
@@ -100,7 +109,7 @@ go install github.com/robmorgan/infraspec@latest
 
 ### Get Your API Token
 
-Sign up at [infraspec.sh](https://infraspec.sh) and get your InfraSpec Cloud Token.
+Sign up at [cloud.infraspec.sh](https://cloud.infraspec.sh/) and get your InfraSpec Cloud Token.
 
 ### Run Tests with Virtual Cloud
 
@@ -109,58 +118,61 @@ infraspec --virtual-cloud features/
 ```
 
 Virtual Cloud automatically handles all AWS API calls without touching real AWS.
+
 </Steps>
 
 ## Supported AWS Services
 
 Virtual Cloud provides high-fidelity emulation for the most commonly tested AWS services:
 
-| Service      | Status       | Features                                                  |
-| ------------ | ------------ | --------------------------------------------------------- |
-| **S3**       | ✅ Supported | Buckets, objects, versioning, encryption, public access   |
-| **DynamoDB** | ✅ Supported | Tables, items, GSI/LSI, streams, billing modes, backups   |
-| **RDS**      | ✅ Supported | Instances, snapshots, parameter groups, security groups   |
-| **EC2**      | ✅ Supported | Instances, AMIs, security groups, key pairs               |
-| **SSM**      | ✅ Supported | Parameter Store (String, SecureString, StringList)        |
-| **Lambda**   | 🚧 Coming    | Functions, layers, triggers                               |
-| **VPC**      | 🚧 Coming    | VPCs, subnets, route tables, NAT gateways                 |
+| Service      | Status       | Features                                                |
+| ------------ | ------------ | ------------------------------------------------------- |
+| **S3**       | ✅ Supported | Buckets, objects, versioning, encryption, public access |
+| **DynamoDB** | ✅ Supported | Tables, items, GSI/LSI, streams, billing modes, backups |
+| **RDS**      | ✅ Supported | Instances, snapshots, parameter groups, security groups |
+| **EC2**      | ✅ Supported | Instances, AMIs, security groups, key pairs             |
+| **SSM**      | ✅ Supported | Parameter Store (String, SecureString, StringList)      |
+| **Lambda**   | 🚧 Coming    | Functions, layers, triggers                             |
+| **VPC**      | 🚧 Coming    | VPCs, subnets, route tables, NAT gateways               |
 
-<Callout type="info">
-  Need a service that's not listed? [Contact us](mailto:sales@brightfame.co) to discuss custom emulation.
-</Callout>
+<Callout type="info">Need a service that's not listed? [Contact us](/contact) to discuss custom emulation.</Callout>
 
 ## Real Cost Savings Calculator
 
 <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 my-8">
   <h3 className="text-xl font-bold mb-4">Calculate Your Savings</h3>
 
-  **Your Current Setup:**
-  - Team size: 10 developers
-  - Tests per day per developer: 50 runs
-  - Average AWS cost per test: $0.10
-  - Time per test: 10 minutes
-  - Working days per month: 20 days
+**Your Current Setup:**
 
-  **Monthly Costs:**
-  ```
-  AWS Testing Costs:
-  10 developers × 50 tests/day × $0.10/test × 20 days = $1,000/month
+- Team size: 10 developers
+- Tests per day per developer: 50 runs
+- Average AWS cost per test: $0.10
+- Time per test: 10 minutes
+- Working days per month: 20 days
 
-  Developer Time Wasted:
-  10 developers × 50 tests/day × 10 min/test × 20 days = 16,667 minutes
-  = 278 hours/month = $13,900/month (at $50/hour)
+**Monthly Costs:**
 
-  Total Monthly Cost: $14,900
-  ```
+```
+AWS Testing Costs:
+10 developers × 50 tests/day × $0.10/test × 20 days = $1,000/month
 
-  **With InfraSpec Virtual Cloud:**
-  ```
-  Virtual Cloud Subscription: $99/month
-  Developer Time Saved: Tests run in 6 seconds instead of 10 minutes
+Developer Time Wasted:
+10 developers × 50 tests/day × 10 min/test × 20 days = 16,667 minutes
+= 278 hours/month = $13,900/month (at $50/hour)
 
-  Savings: $14,801/month
-  ROI: 14,900% in first month
-  ```
+Total Monthly Cost: $14,900
+```
+
+**With InfraSpec Virtual Cloud:**
+
+```
+Virtual Cloud Subscription: $99/month
+Developer Time Saved: Tests run in 6 seconds instead of 10 minutes
+
+Savings: $14,801/month
+ROI: 14,900% in first month
+```
+
 </div>
 
 ## Usage Examples
@@ -200,8 +212,10 @@ infraspec --virtual-cloud features/s3/bucket_encryption.feature
             env:
               INFRASPEC_CLOUD_TOKEN: ${{ secrets.INFRASPEC_CLOUD_TOKEN }}
     ```
+
   </Tabs.Tab>
 
+{/* prettier-ignore */}
   <Tabs.Tab>
     ```yaml filename=".gitlab-ci.yml"
     test:
@@ -214,6 +228,7 @@ infraspec --virtual-cloud features/s3/bucket_encryption.feature
     ```
   </Tabs.Tab>
 
+  {/* prettier-ignore */}
   <Tabs.Tab>
     ```yaml filename=".circleci/config.yml"
     version: 2.1
@@ -244,68 +259,12 @@ Configure Virtual Cloud behavior with environment variables:
 infraspec config set infraspec-cloud-token YOUR_TOKEN_HERE
 ```
 
-## Pricing
-
-<div className="grid md:grid-cols-3 gap-6 my-8">
-  <div className="border rounded-lg p-6 bg-gray-50 dark:bg-gray-900">
-    <h3 className="text-xl font-bold mb-2">Open Source</h3>
-    <div className="text-3xl font-bold mb-4">Free</div>
-    <ul className="space-y-2 mb-6">
-      <li>✅ InfraSpec CLI</li>
-      <li>✅ Gherkin step definitions</li>
-      <li>✅ Test against real AWS</li>
-      <li>✅ Community support</li>
-      <li>❌ No Virtual Cloud access</li>
-    </ul>
-    <a href="/docs/getting-started" className="block text-center border-2 border-purple-600 text-purple-600 py-2 px-4 rounded-lg hover:bg-purple-50">
-      Get Started
-    </a>
-  </div>
-
-  <div className="border-2 border-purple-600 rounded-lg p-6 bg-purple-50 dark:bg-purple-950 relative">
-    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-bold">
-      POPULAR
-    </div>
-    <h3 className="text-xl font-bold mb-2">Virtual Cloud</h3>
-    <div className="text-3xl font-bold mb-4">$99<span className="text-lg font-normal">/month</span></div>
-    <ul className="space-y-2 mb-6">
-      <li>✅ Everything in Open Source</li>
-      <li>✅ Virtual Cloud access</li>
-      <li>✅ 100x faster tests</li>
-      <li>✅ Zero AWS costs</li>
-      <li>✅ Unlimited tests</li>
-      <li>✅ 5 team members</li>
-      <li>✅ Email support</li>
-    </ul>
-    <a href="#get-started" className="block text-center bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700">
-      Get Started
-    </a>
-  </div>
-
-  <div className="border rounded-lg p-6 bg-gray-50 dark:bg-gray-900">
-    <h3 className="text-xl font-bold mb-2">Enterprise</h3>
-    <div className="text-3xl font-bold mb-4">Custom</div>
-    <ul className="space-y-2 mb-6">
-      <li>✅ Everything in Virtual Cloud</li>
-      <li>✅ Self-hosted option</li>
-      <li>✅ SSO/SAML integration</li>
-      <li>✅ Custom service emulation</li>
-      <li>✅ SLA guarantees</li>
-      <li>✅ Unlimited team members</li>
-      <li>✅ Priority support</li>
-    </ul>
-    <a href="/contact" className="block text-center border-2 border-purple-600 text-purple-600 py-2 px-4 rounded-lg hover:bg-purple-50">
-      Contact Sales
-    </a>
-  </div>
-</div>
-
 ## Getting Started
 
 <Steps>
 ### Sign Up
 
-Create your InfraSpec account at [infraspec.sh/signup](https://infraspec.sh/signup) and get your API token.
+Create your InfraSpec account at [cloud.infraspec.sh](https://cloud.infraspec.sh/) and get your API token.
 
 ### Configure Your Environment
 
@@ -324,29 +283,20 @@ infraspec --virtual-cloud features/
 ### Watch the Magic
 
 Your tests now run 100x faster with zero AWS costs. No cleanup needed!
+
 </Steps>
 
 ## Frequently Asked Questions
 
 ### How accurate is Virtual Cloud compared to real AWS?
 
-Virtual Cloud provides high-fidelity emulation of AWS APIs, matching real AWS behavior for 99%+ of infrastructure
-testing scenarios. We continuously update our emulation based on AWS API changes and customer feedback.
+Virtual Cloud provides high-fidelity emulation of AWS APIs, matching real AWS behavior for infrastructure testing
+scenarios. We continuously update our emulation based on AWS API changes and customer feedback.
 
 ### Can I test against both Virtual Cloud and real AWS?
 
-Yes! Simply omit the `--virtual-cloud` flag to test against real AWS. Many teams use Virtual Cloud for development
-and CI/CD, then validate against real AWS before production deployment.
-
-### What happens if I exceed my plan limits?
-
-Virtual Cloud has no usage limits, unlimited tests, unlimited parallel execution. The pricing is per team size,
-not per usage.
-
-### Do you offer volume discounts?
-
-Yes! Enterprise customers with 20+ developers receive custom pricing with volume discounts. [Contact
-sales](/contact) for details.
+Yes! Simply omit the `--virtual-cloud` flag to test against real AWS. Many teams use Virtual Cloud for development and
+CI/CD, then validate against real AWS before production deployment.
 
 ### Can I self-host Virtual Cloud?
 
@@ -355,30 +305,24 @@ Enterprise customers can deploy Virtual Cloud in their own infrastructure for en
 
 ### How do I migrate from LocalStack or Moto?
 
-InfraSpec Virtual Cloud is API-compatible with standard AWS SDKs and Terraform providers. Simply point your tests
-to Virtual Cloud with no code changes required. [Contact support](/support) for migration assistance.
-
-### What SLAs do you provide?
-
-Enterprise plans include 99.9% uptime SLA with priority support. [Contact sales](/contact) for SLA details.
+InfraSpec Virtual Cloud is API-compatible with standard AWS SDKs and Terraform providers. Simply point your tests to
+Virtual Cloud with no code changes required. [Contact sales](/contact) for migration assistance.
 
 ## Ready to Get Started?
 
 <div className="text-center my-12">
   <a
-    href="https://infraspec.sh/signup"
-    className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-10 rounded-lg text-xl transition-colors mr-4"
+    href="/pricing"
+    className="inline-block border-2 border-purple-600 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-950 font-bold py-4 px-10 rounded-lg text-xl transition-colors mr-4"
+  >
+    View Pricing
+  </a>
+  <a
+    href="https://cloud.infraspec.sh/"
+    className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-10 rounded-lg text-xl transition-colors"
   >
     Get Started →
   </a>
-  <a
-    href="/contact"
-    className="inline-block border-2 border-purple-600 text-purple-600 hover:bg-purple-50 font-bold py-4 px-10 rounded-lg text-xl transition-colors"
-  >
-    Contact Sales
-  </a>
 </div>
 
-<div className="text-center text-gray-600 my-8">
-  Questions? [Contact us](/contact) or [view documentation](/docs)
-</div>
+<div className="text-center text-gray-600 my-8">Questions? [Contact us](/contact) or [view documentation](/docs)</div>

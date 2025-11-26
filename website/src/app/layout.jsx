@@ -64,7 +64,17 @@ const navbar = (
       </>
     }
     projectLink="https://github.com/robmorgan/infraspec"
-  />
+  >
+    <a href="https://cloud.infraspec.sh/" className="hidden sm:inline-block text-sm hover:text-purple-600 transition-colors">
+      Sign In
+    </a>
+    <a
+      href="https://cloud.infraspec.sh/"
+      className="hidden sm:inline-block bg-purple-600 hover:bg-purple-700 text-white font-semibold py-1.5 px-4 rounded-lg text-sm transition-colors"
+    >
+      Sign Up
+    </a>
+  </Navbar>
 )
 const footer = <Footer>{new Date().getFullYear()} © Rob Morgan.</Footer>
  
