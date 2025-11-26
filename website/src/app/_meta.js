@@ -12,6 +12,10 @@ export default {
     title: "Virtual Cloud",
     type: "page",
   },
+  pricing: {
+    title: "Pricing",
+    type: "page",
+  },
   support: {
     title: "Support",
     type: "page",

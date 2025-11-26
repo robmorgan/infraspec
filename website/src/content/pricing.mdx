@@ -1,0 +1,181 @@
+---
+title: Pricing - InfraSpec
+description:
+  Simple, transparent pricing for infrastructure testing. Start free with open source or upgrade to InfraSpec Pro for
+  100x faster tests.
+sidebar: false
+toc: false
+---
+
+import Image from "next/image";
+
+<div className="flex justify-center">
+  <Image src="/infraspec_logo_512.png" alt="InfraSpec Logo" width={128} height={128} />
+</div>
+
+<h1 className="text-center font-extrabold md:text-5xl mt-2">Simple, Transparent Pricing</h1>
+
+<div className="mx-auto max-w-full w-[880px] text-center px-4 mt-4 mb-10">
+  <p className="text-lg mb-2 text-gray-600 md:!text-2xl">
+    Start free. Upgrade when you need faster tests and zero AWS cleanup. Cancel anytime.
+  </p>
+</div>
+
+---
+
+<div className="grid md:grid-cols-3 gap-6 my-12">
+  <div className="border rounded-lg p-6 bg-gray-50 dark:bg-gray-900">
+    <h3 className="text-xl font-bold mb-2">Open Source</h3>
+    <div className="text-3xl font-bold mb-4">Free</div>
+    <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm">Perfect for getting started with infrastructure testing</p>
+    <ul className="space-y-2 mb-6">
+      <li>✅ InfraSpec CLI</li>
+      <li>✅ Gherkin step definitions</li>
+      <li>✅ Test against real AWS</li>
+      <li>✅ Community support</li>
+      <li className="text-gray-400">❌ No Virtual Cloud access</li>
+    </ul>
+    <a href="/docs/getting-started" className="block text-center border-2 border-purple-600 text-purple-600 py-2 px-4 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-950">
+      Get Started
+    </a>
+  </div>
+
+{" "}
+
+<div className="border-2 border-purple-600 rounded-lg p-6 bg-purple-50 dark:bg-purple-950 relative">
+  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-bold">
+    POPULAR
+  </div>
+  <h3 className="text-xl font-bold mb-2">InfraSpec Pro</h3>
+  <div className="text-3xl font-bold mb-4">
+    $99<span className="text-lg font-normal">/month</span>
+  </div>
+  <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm">For teams that want faster tests and lower costs</p>
+  <ul className="space-y-2 mb-6">
+    <li>✅ Everything in Open Source</li>
+    <li>✅ Virtual Cloud access</li>
+    <li>✅ 100x faster tests</li>
+    <li>✅ Zero AWS costs</li>
+    <li>✅ Unlimited tests</li>
+    <li>✅ 5 team members</li>
+    <li>✅ Email support</li>
+  </ul>
+  <a
+    href="https://cloud.infraspec.sh/"
+    className="block text-center bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700"
+  >
+    Sign up
+  </a>
+</div>
+
+  <div className="border rounded-lg p-6 bg-gray-50 dark:bg-gray-900">
+    <h3 className="text-xl font-bold mb-2">InfraSpec Enterprise</h3>
+    <div className="text-3xl font-bold mb-4">Custom</div>
+    <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm">For organizations with advanced requirements</p>
+    <ul className="space-y-2 mb-6">
+      <li>✅ Everything in Pro</li>
+      <li>✅ Self-hosted option</li>
+      <li>✅ SSO/SAML integration</li>
+      <li>✅ Custom service emulation</li>
+      <li>✅ SLA guarantees</li>
+      <li>✅ Unlimited team members</li>
+      <li>✅ Priority support</li>
+    </ul>
+    <a href="/contact" className="block text-center border-2 border-purple-600 text-purple-600 py-2 px-4 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-950">
+      Contact Sales
+    </a>
+  </div>
+</div>
+
+---
+
+## Calculate Your Savings
+
+<div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 my-8">
+  <h3 className="text-xl font-bold mb-4">Real Cost Savings Example</h3>
+
+**Your Current Setup:**
+
+- Team size: 10 developers
+- Tests per day per developer: 50 runs
+- Average AWS cost per test: $0.10
+- Time per test: 10 minutes
+- Working days per month: 20 days
+
+**Monthly Costs:**
+
+```
+AWS Testing Costs:
+10 developers × 50 tests/day × $0.10/test × 20 days = $1,000/month
+
+Developer Time Wasted:
+10 developers × 50 tests/day × 10 min/test × 20 days = 16,667 minutes
+= 278 hours/month = $13,900/month (at $50/hour)
+
+Total Monthly Cost: $14,900
+```
+
+**With InfraSpec Pro:**
+
+```
+InfraSpec Pro Subscription: $99/month
+Developer Time Saved: Tests run in 6 seconds instead of 10 minutes
+
+Savings: $14,801/month
+ROI: 14,900% in first month
+```
+
+</div>
+
+---
+
+## Frequently Asked Questions
+
+### What's included in the free Open Source tier?
+
+The Open Source tier includes the full InfraSpec CLI, all Gherkin step definitions, and the ability to test against real
+AWS. You get everything you need to write infrastructure tests in plain English.
+
+### How does InfraSpec Pro billing work?
+
+InfraSpec Pro is billed monthly at $99/month USD. You can cancel anytime. There are no per-test charges or usage
+limits - run as many tests as you want.
+
+### Can I try InfraSpec Pro before committing?
+
+While we don't currently offer a free trial, we provide flexible monthly billing with no long-term commitment - cancel
+anytime.
+
+### What counts as a "team member"?
+
+A team member is anyone who runs tests using your InfraSpec Pro account. The Pro plan includes 5 team members. Need
+more? You can add additional team members for $20/month per seat. [Contact us](/contact) for Enterprise pricing.
+
+### Do you offer annual billing?
+
+Yes! Annual plans receive a 10% discount. [Contact sales](/contact) for details.
+
+### What if I need more than 5 team members?
+
+You can add additional team members for $20/month per seat when using InfraSpec Pro. Our Enterprise plan includes
+unlimited team members, plus additional features like SSO, self-hosting, and custom SLAs. [Contact sales](/contact) to
+discuss your needs.
+
+---
+
+<div className="text-center my-12">
+  <a
+    href="https://cloud.infraspec.sh/"
+    className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-10 rounded-lg text-xl transition-colors mr-4"
+  >
+    Ready to Accelerate Your Testing?
+  </a>
+  <a
+    href="/contact"
+    className="inline-block border-2 border-purple-600 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-950 font-bold py-4 px-10 rounded-lg text-xl transition-colors"
+  >
+    Contact Sales
+  </a>
+</div>
+
+<div className="text-center text-gray-600 my-8">Questions? [Contact us](/contact) or [view documentation](/docs)</div>
