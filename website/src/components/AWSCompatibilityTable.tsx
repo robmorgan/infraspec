@@ -142,10 +142,10 @@ function ServiceRow({ service }: { service: Service }) {
     (service.virtualCloud?.operations?.length ?? 0) > 0;
 
   return (
-    <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+    <div className="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-white dark:bg-gray-900">
       <button
         onClick={() => hasDetails && setIsExpanded(!isExpanded)}
-        className={`w-full px-4 py-3 flex items-center justify-between text-left ${
+        className={`w-full px-4 py-3 flex items-center justify-between text-left bg-white dark:bg-gray-900 ${
           hasDetails ? 'hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer' : ''
         }`}
         disabled={!hasDetails}
@@ -153,7 +153,7 @@ function ServiceRow({ service }: { service: Service }) {
         <div className="flex items-center gap-3">
           {hasDetails && (
             <svg
-              className={`w-4 h-4 text-gray-400 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
+              className={`w-4 h-4 text-gray-500 dark:text-gray-400 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -163,10 +163,10 @@ function ServiceRow({ service }: { service: Service }) {
           )}
           {!hasDetails && <div className="w-4" />}
           <div>
-            <div className="font-medium text-gray-900 dark:text-gray-100">
+            <div className="font-semibold text-gray-900 dark:text-gray-100">
               {service.fullName}
             </div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">
+            <div className="text-sm text-gray-600 dark:text-gray-400">
               {service.name.toUpperCase()}
             </div>
           </div>
@@ -177,7 +177,7 @@ function ServiceRow({ service }: { service: Service }) {
       </button>
 
       {isExpanded && hasDetails && (
-        <div className="px-4 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30">
+        <div className="px-4 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
           <div className="grid md:grid-cols-2 gap-6">
             {/* InfraSpec Column */}
             <div>
