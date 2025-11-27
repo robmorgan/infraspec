@@ -11,6 +11,9 @@ export default {
   "virtual-cloud": {
     title: "Virtual Cloud",
     type: "page",
+    theme: {
+      toc: false,
+    },
   },
   pricing: {
     title: "Pricing",

@@ -4,7 +4,7 @@
   <br>InfraSpec
 </h1>
   <p align="center">
-    <strong>✅ Test your Terraform AWS infrastructure in plain English, no code required.</strong>
+    <strong>✅ Test your AWS infrastructure code in plain English.</strong>
   </p>
 </p>
 
