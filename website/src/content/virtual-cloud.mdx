@@ -123,7 +123,8 @@ Virtual Cloud automatically handles all AWS API calls without touching real AWS.
 
 ## Always Current with AWS
 
-AWS releases hundreds of API changes every year. Virtual Cloud stays current automatically through **CloudMirror**, our proprietary AWS API parity system.
+AWS releases hundreds of API changes every year. Virtual Cloud stays current automatically through **CloudMirror**, our
+proprietary AWS API parity system.
 
 <div className="grid md:grid-cols-3 gap-6 my-8">
   <div className="border rounded-lg p-6">
@@ -131,10 +132,15 @@ AWS releases hundreds of API changes every year. Virtual Cloud stays current aut
     <p>CloudMirror scans the latest AWS SDK every week, identifying new operations and API changes automatically.</p>
   </div>
 
-  <div className="border rounded-lg p-6">
-    <h3 className="text-xl font-bold mb-2">🎯 Smart Prioritization</h3>
-    <p>Not all APIs are equal. We prioritize high-impact operations (Create, Delete, Describe) that matter most for testing.</p>
-  </div>
+{" "}
+
+<div className="border rounded-lg p-6">
+  <h3 className="text-xl font-bold mb-2">🎯 Smart Prioritization</h3>
+  <p>
+    Not all APIs are equal. We prioritize high-impact operations (Create, Delete, Describe) that matter most for
+    testing.
+  </p>
+</div>
 
   <div className="border rounded-lg p-6">
     <h3 className="text-xl font-bold mb-2">📊 Full Transparency</h3>
@@ -144,58 +150,53 @@ AWS releases hundreds of API changes every year. Virtual Cloud stays current aut
 
 This means you always get accurate, up-to-date AWS behavior without waiting for manual updates. Learn more about [how CloudMirror works](/docs/cloudmirror).
 
-## Supported AWS Services
+## How Virtual Cloud Compares to LocalStack
 
-Virtual Cloud provides high-fidelity emulation for the most commonly tested AWS services:
+Already familiar with LocalStack? Here's how InfraSpec Virtual Cloud is different:
 
-| Service      | Status       | Features                                                |
-| ------------ | ------------ | ------------------------------------------------------- |
-| **S3**       | ✅ Supported | Buckets, objects, versioning, encryption, public access |
-| **DynamoDB** | ✅ Supported | Tables, items, GSI/LSI, streams, billing modes, backups |
-| **RDS**      | ✅ Supported | Instances, snapshots, parameter groups, security groups |
-| **EC2**      | ✅ Supported | Instances, AMIs, security groups, key pairs             |
-| **SSM**      | ✅ Supported | Parameter Store (String, SecureString, StringList)      |
-| **Lambda**   | 🚧 Coming    | Functions, layers, triggers                             |
-| **VPC**      | 🚧 Coming    | VPCs, subnets, route tables, NAT gateways               |
+<div className="overflow-x-auto my-8">
+  <table className="w-full border-collapse">
+    <thead>
+      <tr className="bg-gray-100 dark:bg-gray-800">
+        <th className="border p-3 text-left">Feature</th>
+        <th className="border p-3 text-center">Virtual Cloud</th>
+        <th className="border p-3 text-center">LocalStack</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border p-3 font-medium">Primary Focus</td>
+        <td className="border p-3 text-center">Infrastructure Testing</td>
+        <td className="border p-3 text-center">General AWS Emulation</td>
+      </tr>
+      <tr className="bg-gray-50 dark:bg-gray-900">
+        <td className="border p-3 font-medium">Testing Framework</td>
+        <td className="border p-3 text-center">✅ Built-in (BDD/Gherkin)</td>
+        <td className="border p-3 text-center">❌ Bring your own</td>
+      </tr>
+      <tr>
+        <td className="border p-3 font-medium">Setup</td>
+        <td className="border p-3 text-center">✅ Single CLI command</td>
+        <td className="border p-3 text-center">⚠️ Docker + configuration</td>
+      </tr>
+      <tr className="bg-gray-50 dark:bg-gray-900">
+        <td className="border p-3 font-medium">AWS Parity Tracking</td>
+        <td className="border p-3 text-center">✅ Weekly (CloudMirror)</td>
+        <td className="border p-3 text-center">⚠️ Manual updates</td>
+      </tr>
+      <tr>
+        <td className="border p-3 font-medium">Infrastructure Assertions</td>
+        <td className="border p-3 text-center">✅ 20+ built-in</td>
+        <td className="border p-3 text-center">❌ Write your own</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
-<Callout type="info">Need a service that's not listed? [Contact us](/contact) to discuss custom emulation.</Callout>
-
-## Real Cost Savings Calculator
-
-<div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 my-8">
-  <h3 className="text-xl font-bold mb-4">Calculate Your Savings</h3>
-
-**Your Current Setup:**
-
-- Team size: 10 developers
-- Tests per day per developer: 50 runs
-- Average AWS cost per test: $0.10
-- Time per test: 10 minutes
-- Working days per month: 20 days
-
-**Monthly Costs:**
-
-```
-AWS Testing Costs:
-10 developers × 50 tests/day × $0.10/test × 20 days = $1,000/month
-
-Developer Time Wasted:
-10 developers × 50 tests/day × 10 min/test × 20 days = 16,667 minutes
-= 278 hours/month = $13,900/month (at $50/hour)
-
-Total Monthly Cost: $14,900
-```
-
-**With InfraSpec Virtual Cloud:**
-
-```
-Virtual Cloud Subscription: $99/month
-Developer Time Saved: Tests run in 6 seconds instead of 10 minutes
-
-Savings: $14,801/month
-ROI: 14,900% in first month
-```
-
+<div className="text-center">
+  <a href="/vs-localstack" className="text-purple-600 hover:underline font-medium">
+    See the full InfraSpec vs LocalStack comparison →
+  </a>
 </div>
 
 ## Usage Examples
@@ -251,7 +252,7 @@ infraspec --virtual-cloud features/s3/bucket_encryption.feature
     ```
   </Tabs.Tab>
 
-  {/* prettier-ignore */}
+{/* prettier-ignore */}
   <Tabs.Tab>
     ```yaml filename=".circleci/config.yml"
     version: 2.1
@@ -273,15 +274,6 @@ infraspec --virtual-cloud features/s3/bucket_encryption.feature
   </Tabs.Tab>
 </Tabs>
 
-### Environment Variables
-
-Configure Virtual Cloud behavior with environment variables:
-
-```bash
-# Required: Your Virtual Cloud API token
-infraspec config set infraspec-cloud-token YOUR_TOKEN_HERE
-```
-
 ## Getting Started
 
 <Steps>
@@ -294,16 +286,20 @@ Create your InfraSpec account at [cloud.infraspec.sh](https://cloud.infraspec.sh
 Add your token to your environment or CI/CD secrets:
 
 ```bash
+# Configure an environment variable
 export INFRASPEC_CLOUD_TOKEN="your-token-here"
+
+# Or persist it in your config file
+infraspec config set infraspec-cloud-token YOUR_TOKEN_HERE
 ```
 
-### Run Your First Test
+### Run Your First Test using Virtual Cloud
 
 ```bash
 infraspec --virtual-cloud features/
 ```
 
-### Watch the Magic
+### Feel the Speed, See the Magic!
 
 Your tests now run 100x faster with zero AWS costs. No cleanup needed!
 
@@ -314,7 +310,9 @@ Your tests now run 100x faster with zero AWS costs. No cleanup needed!
 ### How accurate is Virtual Cloud compared to real AWS?
 
 Virtual Cloud provides high-fidelity emulation of AWS APIs, matching real AWS behavior for infrastructure testing
-scenarios. Our [CloudMirror](/docs/cloudmirror) system automatically tracks AWS SDK changes weekly, ensuring we stay current with new operations and API updates. Check our [AWS Compatibility page](/docs/compatibility) for detailed coverage information.
+scenarios. Our [CloudMirror](/docs/cloudmirror) system automatically tracks AWS SDK changes weekly, ensuring we stay
+current with new operations and API updates. Check our [AWS Compatibility page](/docs/compatibility) for detailed
+coverage information.
 
 ### Can I test against both Virtual Cloud and real AWS?
 
