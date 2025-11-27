@@ -121,6 +121,29 @@ Virtual Cloud automatically handles all AWS API calls without touching real AWS.
 
 </Steps>
 
+## Always Current with AWS
+
+AWS releases hundreds of API changes every year. Virtual Cloud stays current automatically through **CloudMirror**, our proprietary AWS API parity system.
+
+<div className="grid md:grid-cols-3 gap-6 my-8">
+  <div className="border rounded-lg p-6">
+    <h3 className="text-xl font-bold mb-2">🔄 Weekly Analysis</h3>
+    <p>CloudMirror scans the latest AWS SDK every week, identifying new operations and API changes automatically.</p>
+  </div>
+
+  <div className="border rounded-lg p-6">
+    <h3 className="text-xl font-bold mb-2">🎯 Smart Prioritization</h3>
+    <p>Not all APIs are equal. We prioritize high-impact operations (Create, Delete, Describe) that matter most for testing.</p>
+  </div>
+
+  <div className="border rounded-lg p-6">
+    <h3 className="text-xl font-bold mb-2">📊 Full Transparency</h3>
+    <p>Check our <a href="/docs/compatibility" className="text-purple-600 hover:underline">AWS Compatibility page</a> for real-time coverage data on every supported service.</p>
+  </div>
+</div>
+
+This means you always get accurate, up-to-date AWS behavior without waiting for manual updates. Learn more about [how CloudMirror works](/docs/cloudmirror).
+
 ## Supported AWS Services
 
 Virtual Cloud provides high-fidelity emulation for the most commonly tested AWS services:
@@ -291,7 +314,7 @@ Your tests now run 100x faster with zero AWS costs. No cleanup needed!
 ### How accurate is Virtual Cloud compared to real AWS?
 
 Virtual Cloud provides high-fidelity emulation of AWS APIs, matching real AWS behavior for infrastructure testing
-scenarios. We continuously update our emulation based on AWS API changes and customer feedback.
+scenarios. Our [CloudMirror](/docs/cloudmirror) system automatically tracks AWS SDK changes weekly, ensuring we stay current with new operations and API updates. Check our [AWS Compatibility page](/docs/compatibility) for detailed coverage information.
 
 ### Can I test against both Virtual Cloud and real AWS?
 
