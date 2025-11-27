@@ -5,7 +5,7 @@ description: How InfraSpec stays up-to-date with AWS API changes
 
 # CloudMirror
 
-CloudMirror is an AWS API parity analyzer that helps InfraSpec stay current with AWS service changes. It automatically compares the AWS SDK against our implementations, tracks coverage, and identifies gaps.
+CloudMirror is our internal AWS API parity analyzer that helps InfraSpec stay current with AWS service changes. It automatically compares the AWS SDK against our implementations, tracks coverage, and identifies gaps.
 
 ## How It Works
 
@@ -40,11 +40,11 @@ CloudMirror runs weekly via GitHub Actions to:
 - Analyze all implemented services against the latest AWS SDK
 - Generate coverage reports showing implementation progress
 - Create GitHub issues for significant API changes
-- Update coverage badges for documentation
+- Update the [AWS Compatibility](/docs/compatibility) page
 
 ### Priority-Based Development
 
-Not all AWS operations are equally important. CloudMirror assigns priorities:
+Not all AWS operations are equally important. CloudMirror assigns priorities to help us focus on what matters most:
 
 | Priority | Operations | Examples |
 |----------|------------|----------|
@@ -52,68 +52,15 @@ Not all AWS operations are equally important. CloudMirror assigns priorities:
 | **Medium** | Lifecycle operations | `Start*`, `Stop*`, `Modify*`, `Update*`, `Enable*`, `Disable*` |
 | **Low** | Administrative operations | Everything else |
 
-This helps us focus on the operations that matter most for infrastructure testing.
+This ensures we prioritize the operations that matter most for infrastructure testing.
 
-### Stub Generation
+### Version Tracking
 
-When adding support for new operations, CloudMirror can generate starter code:
+When AWS releases SDK updates, CloudMirror identifies:
 
-```bash
-cloudmirror --service=rds --generate-stubs --priority=high
-```
-
-This creates boilerplate handlers that match AWS API signatures, accelerating implementation.
-
-## Coverage Reports
-
-CloudMirror generates reports in multiple formats:
-
-### JSON Reports
-
-Machine-readable format for automation and the [AWS Compatibility](/docs/compatibility) page:
-
-```json
-{
-  "service_name": "rds",
-  "coverage_percent": 8.2,
-  "total_operations": 85,
-  "supported": [
-    {"name": "CreateDBInstance", "implemented": true, "priority": "high"},
-    {"name": "DescribeDBInstances", "implemented": true, "priority": "high"}
-  ],
-  "missing": [
-    {"name": "CreateDBSnapshot", "implemented": false, "priority": "high"}
-  ]
-}
-```
-
-### Markdown Reports
-
-Human-readable reports for documentation:
-
-```bash
-cloudmirror --service=all --output=markdown --output-file=COVERAGE.md
-```
-
-### Coverage Badges
-
-SVG badges showing coverage percentages:
-
-```bash
-cloudmirror --service=rds --output=badge --output-file=rds-coverage.svg
-```
-
-## Version Diffing
-
-When AWS releases SDK updates, CloudMirror can compare versions to identify:
-
-- **New operations** - Recently added AWS APIs
-- **Removed operations** - Deprecated APIs
+- **New operations** - Recently added AWS APIs we should consider supporting
+- **Removed operations** - Deprecated APIs we may need to handle
 - **Changed operations** - Modified parameters or behavior
-
-```bash
-cloudmirror --service=rds --baseline=old-report.json
-```
 
 This helps us proactively add support for new AWS features.
 
@@ -123,10 +70,10 @@ CloudMirror bridges both InfraSpec components:
 
 ### InfraSpec Assertions
 
-Scans assertion interfaces in the InfraSpec repository to track which test assertions are available:
+Tracks which test assertions are available for validating your infrastructure:
 
 ```go
-// Detected assertion methods
+// Example assertion methods
 type S3Asserter interface {
     AssertBucketExists(bucketName string) error
     AssertBucketVersioning(bucketName string) error
@@ -136,67 +83,13 @@ type S3Asserter interface {
 
 ### Virtual Cloud
 
-Analyzes the InfraSpec API (Virtual Cloud) to track which AWS operations are emulated:
+Tracks which AWS operations are emulated in the Virtual Cloud, allowing you to test infrastructure without real AWS resources:
 
 ```go
-// Detected operations from switch statements
-case "CreateDBInstance":
-    return s.createDBInstance(ctx, params)
-case "DescribeDBInstances":
-    return s.describeDBInstances(ctx, params)
+// Example emulated operations
+- CreateDBInstance
+- DescribeDBInstances
+- DeleteDBInstance
 ```
 
-## Running CloudMirror
-
-### Prerequisites
-
-CloudMirror requires a full clone of the AWS SDK (not just the Go module cache) because it needs access to Smithy model files:
-
-```bash
-git clone --depth 1 https://github.com/aws/aws-sdk-go-v2.git /tmp/aws-sdk-go-v2
-```
-
-### Basic Usage
-
-```bash
-# Analyze a specific service
-cloudmirror --service=rds --output=json
-
-# Analyze all services
-cloudmirror --service=all --output=markdown
-
-# Generate website compatibility data
-cloudmirror --website-report --output-file=aws-compatibility.json
-
-# List implemented services
-cloudmirror --list-implemented
-
-# List services not yet implemented
-cloudmirror --list-missing
-```
-
-### Command Reference
-
-| Flag | Description |
-|------|-------------|
-| `--service` | Service to analyze (e.g., 'rds', 's3', or 'all') |
-| `--output` | Output format: json, markdown, badge |
-| `--output-file` | Output file path (default: stdout) |
-| `--website-report` | Generate combined report for website |
-| `--generate-stubs` | Generate stub implementations |
-| `--priority` | Filter by priority: high, medium, low |
-| `--baseline` | Baseline JSON for diff comparison |
-| `--list-services` | List available AWS services in SDK |
-| `--list-implemented` | List implemented services |
-| `--list-missing` | List AWS services not yet implemented |
-
-## Contributing
-
-Want to help improve AWS coverage? Here's how:
-
-1. **Check the [Compatibility Page](/docs/compatibility)** - See what's implemented and what's missing
-2. **Pick a high-priority operation** - Focus on CRUD operations first
-3. **Use stub generation** - Let CloudMirror create the boilerplate
-4. **Submit a PR** - We welcome contributions!
-
-For more details, see our [Contributing Guide](https://github.com/robmorgan/infraspec/blob/main/CONTRIBUTING.md).
+The data from CloudMirror powers the [AWS Compatibility](/docs/compatibility) page, giving you full visibility into what's supported.
