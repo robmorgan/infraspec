@@ -1,0 +1,313 @@
+---
+title: InfraSpec vs LocalStack - AWS Testing Comparison
+description: Compare InfraSpec and LocalStack for AWS infrastructure testing. See why teams choose InfraSpec for faster, simpler infrastructure validation.
+sidebar: false
+toc: false
+---
+
+import Image from "next/image";
+
+<div className="flex justify-center">
+  <Image src="/infraspec_logo_512.png" alt="InfraSpec Logo" width={128} height={128} />
+</div>
+
+<h1 className="text-center font-extrabold md:text-5xl mt-2">InfraSpec vs LocalStack</h1>
+
+<div className="mx-auto max-w-full w-[880px] text-center px-4 mt-4 mb-10">
+  <p className="text-lg mb-2 text-gray-600 md:!text-2xl">
+    Purpose-built infrastructure testing vs. general-purpose AWS emulation
+  </p>
+</div>
+
+---
+
+## The Right Tool for the Job
+
+**LocalStack** is a general-purpose AWS emulator designed to replicate the entire AWS cloud locally. It's powerful but complex—built for developers who need a local AWS environment for all kinds of development work.
+
+**InfraSpec** is purpose-built for **infrastructure testing**. It combines a BDD testing framework with a high-fidelity AWS emulator (Virtual Cloud), giving you everything you need to validate infrastructure—and nothing you don't.
+
+<div className="bg-purple-50 dark:bg-purple-950 border border-purple-200 dark:border-purple-800 rounded-lg p-6 my-8">
+  <p className="text-lg font-medium text-purple-900 dark:text-purple-100">
+    💡 <strong>Key Insight:</strong> If your goal is testing infrastructure configurations, InfraSpec gets you there faster with less complexity. If you need a full local AWS environment for application development, LocalStack might be the right choice.
+  </p>
+</div>
+
+## Feature Comparison
+
+<div className="overflow-x-auto my-8">
+  <table className="w-full border-collapse">
+    <thead>
+      <tr className="bg-gray-100 dark:bg-gray-800">
+        <th className="border p-3 text-left">Feature</th>
+        <th className="border p-3 text-center">InfraSpec</th>
+        <th className="border p-3 text-center">LocalStack</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border p-3 font-medium">Primary Purpose</td>
+        <td className="border p-3 text-center">Infrastructure Testing</td>
+        <td className="border p-3 text-center">General AWS Emulation</td>
+      </tr>
+      <tr className="bg-gray-50 dark:bg-gray-900">
+        <td className="border p-3 font-medium">Testing Framework</td>
+        <td className="border p-3 text-center">✅ Built-in (BDD/Gherkin)</td>
+        <td className="border p-3 text-center">❌ Bring your own</td>
+      </tr>
+      <tr>
+        <td className="border p-3 font-medium">Plain English Tests</td>
+        <td className="border p-3 text-center">✅ Native support</td>
+        <td className="border p-3 text-center">❌ Not supported</td>
+      </tr>
+      <tr className="bg-gray-50 dark:bg-gray-900">
+        <td className="border p-3 font-medium">Setup Complexity</td>
+        <td className="border p-3 text-center">✅ Single CLI command</td>
+        <td className="border p-3 text-center">⚠️ Docker + configuration</td>
+      </tr>
+      <tr>
+        <td className="border p-3 font-medium">Managed Cloud Option</td>
+        <td className="border p-3 text-center">✅ Virtual Cloud</td>
+        <td className="border p-3 text-center">✅ LocalStack Cloud</td>
+      </tr>
+      <tr className="bg-gray-50 dark:bg-gray-900">
+        <td className="border p-3 font-medium">AWS Parity Tracking</td>
+        <td className="border p-3 text-center">✅ CloudMirror (weekly)</td>
+        <td className="border p-3 text-center">⚠️ Manual updates</td>
+      </tr>
+      <tr>
+        <td className="border p-3 font-medium">Terraform Integration</td>
+        <td className="border p-3 text-center">✅ Native support</td>
+        <td className="border p-3 text-center">✅ Supported</td>
+      </tr>
+      <tr className="bg-gray-50 dark:bg-gray-900">
+        <td className="border p-3 font-medium">Infrastructure Assertions</td>
+        <td className="border p-3 text-center">✅ 20+ built-in</td>
+        <td className="border p-3 text-center">❌ Write your own</td>
+      </tr>
+      <tr>
+        <td className="border p-3 font-medium">Coverage Transparency</td>
+        <td className="border p-3 text-center">✅ Public compatibility page</td>
+        <td className="border p-3 text-center">⚠️ Documentation only</td>
+      </tr>
+      <tr className="bg-gray-50 dark:bg-gray-900">
+        <td className="border p-3 font-medium">Open Source</td>
+        <td className="border p-3 text-center">✅ CLI + Framework</td>
+        <td className="border p-3 text-center">✅ Core features</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+## Why Teams Switch to InfraSpec
+
+### 1. Tests in Plain English
+
+With InfraSpec, your infrastructure tests are readable by anyone on the team:
+
+```gherkin
+Feature: S3 Bucket Security
+
+  Scenario: Production buckets must be encrypted
+    Given I have AWS credentials
+    When I look up the S3 bucket "prod-data-bucket"
+    Then the bucket should have encryption enabled
+    And the bucket should have versioning enabled
+    And the bucket should block public access
+```
+
+With LocalStack, you write code:
+
+```python
+# LocalStack requires custom test code
+def test_bucket_encryption():
+    s3 = boto3.client('s3', endpoint_url='http://localhost:4566')
+    response = s3.get_bucket_encryption(Bucket='prod-data-bucket')
+    assert 'ServerSideEncryptionConfiguration' in response
+    # ... more assertions
+```
+
+### 2. Zero Configuration
+
+**InfraSpec:**
+```bash
+# Install and run
+brew install infraspec
+infraspec --virtual-cloud features/
+```
+
+**LocalStack:**
+```bash
+# Install Docker, then LocalStack
+docker pull localstack/localstack
+docker run -d -p 4566:4566 localstack/localstack
+# Configure AWS CLI endpoints
+# Set up test framework
+# Write test harness
+# ...
+```
+
+### 3. Purpose-Built Assertions
+
+InfraSpec includes assertions designed for infrastructure validation:
+
+- `AssertBucketEncryption` - Verify S3 encryption settings
+- `AssertDBInstanceMultiAZ` - Check RDS high availability
+- `AssertTableBillingMode` - Validate DynamoDB configuration
+- And [many more](/docs/compatibility)...
+
+LocalStack provides AWS API emulation, but you build your own testing logic.
+
+### 4. Automatic AWS Parity
+
+InfraSpec's [CloudMirror](/docs/cloudmirror) system tracks AWS API changes weekly:
+
+- Automatically identifies new AWS operations
+- Prioritizes high-impact APIs for implementation
+- Publishes real-time [coverage data](/docs/compatibility)
+
+You always know exactly what's supported—and what's coming next.
+
+## Service Coverage Comparison
+
+Both InfraSpec and LocalStack support core AWS services, but with different focus areas:
+
+<div className="grid md:grid-cols-2 gap-6 my-8">
+  <div className="border rounded-lg p-6">
+    <h3 className="text-xl font-bold mb-4">InfraSpec Virtual Cloud</h3>
+    <p className="text-gray-600 dark:text-gray-400 mb-4">Focused on infrastructure testing services:</p>
+    <ul className="space-y-2">
+      <li>✅ S3 - Buckets, objects, encryption, versioning</li>
+      <li>✅ RDS - Instances, snapshots, parameter groups</li>
+      <li>✅ DynamoDB - Tables, items, streams</li>
+      <li>✅ EC2 - Instances, security groups, AMIs</li>
+      <li>✅ SSM - Parameter Store</li>
+      <li>🚧 Lambda, VPC, IAM (coming soon)</li>
+    </ul>
+    <p className="text-sm text-gray-500 mt-4">
+      <a href="/docs/compatibility" className="text-purple-600 hover:underline">View full compatibility →</a>
+    </p>
+  </div>
+
+  <div className="border rounded-lg p-6">
+    <h3 className="text-xl font-bold mb-4">LocalStack</h3>
+    <p className="text-gray-600 dark:text-gray-400 mb-4">Broader service coverage:</p>
+    <ul className="space-y-2">
+      <li>✅ 80+ AWS services</li>
+      <li>✅ Deep API coverage</li>
+      <li>⚠️ Varying fidelity levels</li>
+      <li>⚠️ Pro tier for advanced features</li>
+      <li>⚠️ Complex configuration</li>
+    </ul>
+    <p className="text-sm text-gray-500 mt-4">
+      Best for teams needing broad AWS emulation beyond testing.
+    </p>
+  </div>
+</div>
+
+## Pricing Comparison
+
+<div className="overflow-x-auto my-8">
+  <table className="w-full border-collapse">
+    <thead>
+      <tr className="bg-gray-100 dark:bg-gray-800">
+        <th className="border p-3 text-left">Plan</th>
+        <th className="border p-3 text-center">InfraSpec</th>
+        <th className="border p-3 text-center">LocalStack</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td className="border p-3 font-medium">Free / Open Source</td>
+        <td className="border p-3 text-center">CLI + Framework<br/><span className="text-sm text-gray-500">(test against real AWS)</span></td>
+        <td className="border p-3 text-center">Community Edition<br/><span className="text-sm text-gray-500">(limited services)</span></td>
+      </tr>
+      <tr className="bg-gray-50 dark:bg-gray-900">
+        <td className="border p-3 font-medium">Pro / Team</td>
+        <td className="border p-3 text-center"><strong>$99/month</strong><br/><span className="text-sm text-gray-500">5 users, unlimited tests</span></td>
+        <td className="border p-3 text-center"><strong>$35/month/user</strong><br/><span className="text-sm text-gray-500">Per-seat pricing</span></td>
+      </tr>
+      <tr>
+        <td className="border p-3 font-medium">Team of 5</td>
+        <td className="border p-3 text-center text-green-600 font-bold">$99/month</td>
+        <td className="border p-3 text-center">$175/month</td>
+      </tr>
+      <tr className="bg-gray-50 dark:bg-gray-900">
+        <td className="border p-3 font-medium">Team of 10</td>
+        <td className="border p-3 text-center text-green-600 font-bold">$199/month</td>
+        <td className="border p-3 text-center">$350/month</td>
+      </tr>
+      <tr>
+        <td className="border p-3 font-medium">Enterprise</td>
+        <td className="border p-3 text-center">Custom</td>
+        <td className="border p-3 text-center">Custom</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<p className="text-sm text-gray-500 text-center">Pricing as of 2025. Check vendor websites for current pricing.</p>
+
+## When to Choose Each
+
+<div className="grid md:grid-cols-2 gap-6 my-8">
+  <div className="border-2 border-purple-600 rounded-lg p-6 bg-purple-50 dark:bg-purple-950">
+    <h3 className="text-xl font-bold mb-4 text-purple-900 dark:text-purple-100">Choose InfraSpec if you...</h3>
+    <ul className="space-y-2 text-purple-900 dark:text-purple-100">
+      <li>✅ Want to test infrastructure configurations</li>
+      <li>✅ Prefer plain English test definitions</li>
+      <li>✅ Need fast CI/CD pipeline integration</li>
+      <li>✅ Want built-in infrastructure assertions</li>
+      <li>✅ Value simplicity over breadth</li>
+      <li>✅ Need transparent AWS parity tracking</li>
+    </ul>
+  </div>
+
+  <div className="border rounded-lg p-6">
+    <h3 className="text-xl font-bold mb-4">Choose LocalStack if you...</h3>
+    <ul className="space-y-2">
+      <li>Need 80+ AWS services locally</li>
+      <li>Building applications (not just testing infra)</li>
+      <li>Want to run Lambda functions locally</li>
+      <li>Need deep API compatibility</li>
+      <li>Have complex multi-service workflows</li>
+      <li>Already have a test framework you prefer</li>
+    </ul>
+  </div>
+</div>
+
+## Migration is Easy
+
+Already using LocalStack? Switching to InfraSpec is straightforward:
+
+1. **Keep your infrastructure** - InfraSpec works with the same Terraform configs
+2. **Rewrite tests in Gherkin** - More readable, less code to maintain
+3. **Point to Virtual Cloud** - Just add `--virtual-cloud` flag
+4. **Remove LocalStack** - No more Docker containers to manage
+
+Most teams complete migration in a day.
+
+---
+
+## Ready to Try InfraSpec?
+
+See the difference purpose-built infrastructure testing makes.
+
+<div className="text-center my-12">
+  <a
+    href="/docs/getting-started"
+    className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-10 rounded-lg text-xl transition-colors mr-4"
+  >
+    Get Started Free →
+  </a>
+  <a
+    href="/virtual-cloud"
+    className="inline-block border-2 border-purple-600 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-950 font-bold py-4 px-10 rounded-lg text-xl transition-colors"
+  >
+    Learn About Virtual Cloud
+  </a>
+</div>
+
+<div className="text-center text-gray-600 my-8">
+  Questions? [Contact us](/contact) • [View pricing](/pricing) • [Read the docs](/docs)
+</div>
