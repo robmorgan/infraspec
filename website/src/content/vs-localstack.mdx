@@ -1,6 +1,8 @@
 ---
 title: InfraSpec vs LocalStack - AWS Testing Comparison
-description: Compare InfraSpec and LocalStack for AWS infrastructure testing. See why teams choose InfraSpec for faster, simpler infrastructure validation.
+description:
+  Compare InfraSpec and LocalStack for AWS infrastructure testing. See why teams choose InfraSpec for faster, simpler
+  infrastructure validation.
 sidebar: false
 toc: false
 ---
@@ -23,13 +25,17 @@ import Image from "next/image";
 
 ## The Right Tool for the Job
 
-**LocalStack** is a general-purpose AWS emulator designed to replicate the entire AWS cloud locally. It's powerful but complex—built for developers who need a local AWS environment for all kinds of development work.
+**LocalStack** is a general-purpose AWS emulator designed to replicate the entire AWS cloud locally. It's powerful but
+complex—built for developers who need a local AWS environment for all kinds of development work.
 
-**InfraSpec** is purpose-built for **infrastructure testing**. It combines a BDD testing framework with a high-fidelity AWS emulator (Virtual Cloud), giving you everything you need to validate infrastructure—and nothing you don't.
+**InfraSpec** is purpose-built for **infrastructure testing**. It combines a BDD testing framework with a high-fidelity
+AWS emulator (Virtual Cloud), giving you everything you need to validate infrastructure—and nothing you don't.
 
 <div className="bg-purple-50 dark:bg-purple-950 border border-purple-200 dark:border-purple-800 rounded-lg p-6 my-8">
   <p className="text-lg font-medium text-purple-900 dark:text-purple-100">
-    💡 <strong>Key Insight:</strong> If your goal is testing infrastructure configurations, InfraSpec gets you there faster with less complexity. If you need a full local AWS environment for application development, LocalStack might be the right choice.
+    💡 <strong>Key Insight:</strong> If your goal is testing infrastructure configurations, InfraSpec gets you there
+    faster with less complexity. If you need a full local AWS environment for application development, LocalStack might
+    be the right choice.
   </p>
 </div>
 
@@ -47,7 +53,7 @@ import Image from "next/image";
     <tbody>
       <tr>
         <td className="border p-3 font-medium">Primary Purpose</td>
-        <td className="border p-3 text-center">Infrastructure Testing</td>
+        <td className="border p-3 text-center">Infrastructure Code Testing</td>
         <td className="border p-3 text-center">General AWS Emulation</td>
       </tr>
       <tr className="bg-gray-50 dark:bg-gray-900">
@@ -73,7 +79,7 @@ import Image from "next/image";
       <tr className="bg-gray-50 dark:bg-gray-900">
         <td className="border p-3 font-medium">AWS Parity Tracking</td>
         <td className="border p-3 text-center">✅ CloudMirror (weekly)</td>
-        <td className="border p-3 text-center">⚠️ Manual updates</td>
+        <td className="border p-3 text-center">✅ Weekly</td>
       </tr>
       <tr>
         <td className="border p-3 font-medium">Terraform Integration</td>
@@ -88,7 +94,7 @@ import Image from "next/image";
       <tr>
         <td className="border p-3 font-medium">Coverage Transparency</td>
         <td className="border p-3 text-center">✅ Public compatibility page</td>
-        <td className="border p-3 text-center">⚠️ Documentation only</td>
+        <td className="border p-3 text-center">✅ Documentation</td>
       </tr>
       <tr className="bg-gray-50 dark:bg-gray-900">
         <td className="border p-3 font-medium">Open Source</td>
@@ -130,6 +136,7 @@ def test_bucket_encryption():
 ### 2. Zero Configuration
 
 **InfraSpec:**
+
 ```bash
 # Install and run
 brew install infraspec
@@ -137,6 +144,7 @@ infraspec --virtual-cloud features/
 ```
 
 **LocalStack:**
+
 ```bash
 # Install Docker, then LocalStack
 docker pull localstack/localstack
@@ -157,16 +165,6 @@ InfraSpec includes assertions designed for infrastructure validation:
 - And [many more](/docs/compatibility)...
 
 LocalStack provides AWS API emulation, but you build your own testing logic.
-
-### 4. Automatic AWS Parity
-
-InfraSpec's [CloudMirror](/docs/cloudmirror) system tracks AWS API changes weekly:
-
-- Automatically identifies new AWS operations
-- Prioritizes high-impact APIs for implementation
-- Publishes real-time [coverage data](/docs/compatibility)
-
-You always know exactly what's supported—and what's coming next.
 
 ## Service Coverage Comparison
 
@@ -219,13 +217,29 @@ Both InfraSpec and LocalStack support core AWS services, but with different focu
     <tbody>
       <tr>
         <td className="border p-3 font-medium">Free / Open Source</td>
-        <td className="border p-3 text-center">CLI + Framework<br/><span className="text-sm text-gray-500">(test against real AWS)</span></td>
-        <td className="border p-3 text-center">Community Edition<br/><span className="text-sm text-gray-500">(limited services)</span></td>
+        <td className="border p-3 text-center">
+          CLI + Framework
+          <br />
+          <span className="text-sm text-gray-500">(test against real AWS)</span>
+        </td>
+        <td className="border p-3 text-center">
+          Community Edition
+          <br />
+          <span className="text-sm text-gray-500">(limited services)</span>
+        </td>
       </tr>
       <tr className="bg-gray-50 dark:bg-gray-900">
         <td className="border p-3 font-medium">Pro / Team</td>
-        <td className="border p-3 text-center"><strong>$99/month</strong><br/><span className="text-sm text-gray-500">5 users, unlimited tests</span></td>
-        <td className="border p-3 text-center"><strong>$35/month/user</strong><br/><span className="text-sm text-gray-500">Per-seat pricing</span></td>
+        <td className="border p-3 text-center">
+          <strong>$99/month</strong>
+          <br />
+          <span className="text-sm text-gray-500">5 users, unlimited tests</span>
+        </td>
+        <td className="border p-3 text-center">
+          <strong>$39/month/user</strong>
+          <br />
+          <span className="text-sm text-gray-500">Billed Annually</span>
+        </td>
       </tr>
       <tr>
         <td className="border p-3 font-medium">Team of 5</td>
@@ -246,7 +260,7 @@ Both InfraSpec and LocalStack support core AWS services, but with different focu
   </table>
 </div>
 
-<p className="text-sm text-gray-500 text-center">Pricing as of 2025. Check vendor websites for current pricing.</p>
+<p className="text-sm text-gray-500 text-center">* Pricing as of December 2025.</p>
 
 ## When to Choose Each
 

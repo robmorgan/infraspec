@@ -1,6 +1,6 @@
 ---
 asIndexPage: true
-title: Test your AWS infrastructure in plain English
+title: Test your AWS infrastructure code in plain English
 sidebar: false
 ---
 
@@ -14,16 +14,18 @@ import { Callout } from "nextra/components";
 {<h1 className="text-center font-extrabold md:text-5xl mt-2">InfraSpec</h1>}
 
 <div className="mx-auto max-w-full w-[880px] text-center px-4 mt-4 mb-10">
-  {<p className="text-lg mb-2 text-gray-600 md:!text-2xl">Test your AWS infrastructure in plain English</p>}
+  {<p className="text-lg mb-2 text-gray-600 md:!text-2xl">Test your AWS infrastructure code in plain English</p>}
 </div>
 
-InfraSpec is a CLI tool for testing your Terraform AWS infrastructure code in plain English, without writing a single
-line of code. It combines a rich library of testing patterns with a domain-specific language for testing cloud
-infrastructure.
+InfraSpec is a CLI tool for testing your Terraform AWS infrastructure code in plain English. It combines a rich library
+of testing patterns with a domain-specific language for testing cloud infrastructure.
 
 Tests are written using easy-to-learn [Gherkin](https://cucumber.io/docs/gherkin/) syntax, which is suitable for both
 technical and non-technical team members. This approach constrasts sharply with existing tools which require significant
 programming expertise.
+
+Developers can optionally use [InfraSpec Virtual Cloud](/virtual-cloud) to rapidly test against a high-fidelity AWS
+emulator, without worry about incurring AWS costs or cleaning up after themselves.
 
 ## Features
 
