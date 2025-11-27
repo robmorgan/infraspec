@@ -1,0 +1,45 @@
+---
+title: AWS Compatibility
+description: AWS service and operation support in InfraSpec and Virtual Cloud
+---
+
+import AWSCompatibilityTable from '../../components/AWSCompatibilityTable'
+
+# AWS Compatibility
+
+This page shows the implementation status of AWS services in InfraSpec. We support two modes of operation:
+
+- **InfraSpec Assertions** - Test assertions that verify your infrastructure configuration against real AWS resources or the Virtual Cloud
+- **Virtual Cloud** - A local AWS emulator that allows you to test infrastructure without deploying to real AWS
+
+## Service Status
+
+Click on any implemented service to see detailed operation-level support.
+
+<AWSCompatibilityTable />
+
+## About Coverage
+
+### InfraSpec Assertions
+
+InfraSpec assertions are high-level test functions designed for infrastructure validation. Each assertion maps to one or more AWS API calls and provides meaningful error messages when validation fails.
+
+Example assertions:
+- `AssertBucketExists` - Verifies an S3 bucket exists and is accessible
+- `AssertDBInstanceStatus` - Checks the status of an RDS database instance
+- `AssertTableTags` - Validates DynamoDB table tags match expected values
+
+### Virtual Cloud
+
+The Virtual Cloud is an AWS-compatible API server that emulates AWS services locally. It allows you to:
+
+- Run infrastructure tests without AWS credentials
+- Test faster with no network latency to AWS
+- Avoid AWS costs during development and testing
+- Run tests in CI/CD without cloud access
+
+Coverage percentage indicates how many AWS API operations are implemented compared to the total available in the AWS SDK.
+
+## Requesting New Services
+
+If you need support for an AWS service that isn't listed here, please [open an issue](https://github.com/robmorgan/infraspec/issues) on GitHub. We prioritize services based on community demand.
