@@ -63,51 +63,6 @@ infraspec features/s3_bucket.feature
 
 That's it! No code to write, no frameworks to learn. InfraSpec handles the rest.
 
-## 💰 InfraSpec Virtual Cloud - Test Faster, Pay Less
-
-Stop paying AWS for every test run. **InfraSpec Virtual Cloud** is a high-fidelity AWS emulator designed specifically
-for infrastructure testing. Make your tests faster and cheaper:
-
-### Why Virtual Cloud?
-
-**Testing against real AWS is expensive and slow:**
-
-- 💸 **High costs** - $0.10+ per test run adds up fast
-- ⏱️ **Slow execution** - Network calls take 2-10 seconds each
-- 🔄 **CI/CD bills** - Costs accumulate with every pipeline run
-- 🐌 **Poor feedback** - Slow tests reduce developer productivity
-- 🗑️ **Cleanup headaches** - Failed tests leave orphaned resources that cost money
-
-**InfraSpec Virtual Cloud solves this:**
-
-- ⚡ **100x faster** - Tests run in milliseconds, not seconds
-- 💰 **90% cheaper** - No AWS charges for testing infrastructure
-- 🔒 **No credentials needed** - Test safely without AWS access
-- 🧹 **No cleanup required** - Failed tests don't leave dangling resources in AWS
-- 🎯 **High fidelity** - Accurate AWS behavior without complexity
-- 🚀 **CI/CD optimized** - Unlimited parallel tests without cost concerns
-
-### Getting Started with Virtual Cloud
-
-Add the `--virtual-cloud` flag to your tests:
-
-```bash
-# Use Virtual Cloud for fast, cost-free testing
-infraspec --virtual-cloud features/
-```
-
-Or set it as default in your CI/CD:
-
-```yaml
-- name: Run InfraSpec Tests
-  run: infraspec --virtual-cloud features/
-  env:
-    INFRASPEC_CLOUD_TOKEN: ${{ secrets.INFRASPEC_CLOUD_TOKEN }}
-```
-
-→ [**Get started**](https://infraspec.sh/virtual-cloud) → [View pricing](https://infraspec.sh/pricing) →
-[Compare with alternatives](https://infraspec.sh/vs-localstack)
-
 ## ✨ Features
 
 - 🗣️ **Plain English syntax** - Write tests that read like documentation using Gherkin
@@ -189,6 +144,14 @@ Or run all tests:
 infraspec features/
 ```
 
+Optionally use [InfraSpec Virtual Cloud](https://infraspec.sh/virtual-cloud) for rapid testing with zero cleanup:
+
+```bash
+infraspec --virtual-cloud features/
+```
+
+→ [**Learn more about InfraSpec Virtual Cloud**](https://infraspec.sh/virtual-cloud)
+
 ### 4. Integrate with CI/CD
 
 Add to your GitHub Actions workflow:
@@ -211,18 +174,7 @@ Add to your GitHub Actions workflow:
 
 ### ☁️ AWS Resources
 
-| Service         | Status       | Virtual Cloud | Example Assertions                              |
-| --------------- | ------------ | ------------- | ----------------------------------------------- |
-| **S3**          | ✅ Supported | ✅ Supported  | Versioning, encryption, public access, logging  |
-| **DynamoDB**    | ✅ Supported | ✅ Supported  | Tables, indexes, capacity modes, encryption     |
-| **RDS**         | ✅ Supported | ✅ Supported  | Instances, security groups, backups, encryption |
-| **EC2**         | 🚧 Partial   | ✅ Supported  | Basic instance validation                       |
-| **SSM**         | 🚧 Partial   | ✅ Supported  | Parameter store                                 |
-| **API Gateway** | ⏳ Planned   | ⏳ Planned    | -                                               |
-| **Lambda**      | ⏳ Planned   | ⏳ Planned    | -                                               |
-
-💡 **Tip:** All services marked with ✅ in Virtual Cloud work with the `--virtual-cloud` flag for instant, cost-free
-testing.
+→ [**See the AWS Compatibility page for the current status**](https://infraspec.sh/docs/compatibility)
 
 ### 🌐 HTTP/APIs
 
@@ -289,27 +241,8 @@ Scenario Outline: S3 bucket configuration across environments
 
 ## 🎯 Roadmap
 
-We're actively expanding InfraSpec's capabilities. Here's what's on the horizon:
-
-### Current Status
-
-| AWS Service | Status       | Coverage                                                |
-| ----------- | ------------ | ------------------------------------------------------- |
-| S3          | ✅ Supported | Buckets, versioning, encryption, logging, public access |
-| DynamoDB    | ✅ Supported | Tables, GSI/LSI, billing modes, streams, encryption     |
-| RDS         | ✅ Supported | Instances, snapshots, security groups, backups          |
-| EC2         | 🚧 Partial   | Basic instance validation                               |
-| SSM         | 🚧 Partial   | Parameter store                                         |
-
-### Coming Soon
-
-- 🔜 **Lambda** - Function testing and event validation
-- 🔜 **API Gateway** - REST and HTTP API testing
-- 🔜 **VPC** - Network configuration validation
-- 🔜 **ECS/EKS** - Container orchestration testing
-- 🔜 **CloudFront** - CDN configuration validation
-
-[View full roadmap →](https://github.com/users/robmorgan/projects/1)
+We're actively expanding InfraSpec's capabilities. For more information see the
+[compatibility page](https://infraspec.sh/docs/compatibility).
 
 ## 💡 Editor Support
 
