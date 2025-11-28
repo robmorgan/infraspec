@@ -210,6 +210,7 @@ func configureVirtualCloudEndpoints(options *iacprovisioner.Options, workingDir 
 		"EC2":                      "ec2",
 		"SSM":                      "ssm",
 		"APPLICATION_AUTO_SCALING": "autoscaling",
+		"IAM":                      "iam",
 	}
 
 	// Set service-specific endpoint environment variables
