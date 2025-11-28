@@ -199,7 +199,7 @@ func configureVirtualCloudEndpoints(options *iacprovisioner.Options, workingDir 
 		"STS":                      "sts",
 		"RDS":                      "rds",
 		"S3":                       "s3",
-		"S3CONTROL":                "s3",
+		"S3_CONTROL":               "s3",
 		"EC2":                      "ec2",
 		"SSM":                      "ssm",
 		"APPLICATION_AUTO_SCALING": "autoscaling",
