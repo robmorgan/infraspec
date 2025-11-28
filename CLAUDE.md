@@ -175,6 +175,60 @@ Use these scopes when relevant:
 - Profile code for performance bottlenecks
 - Use appropriate AWS service limits
 
+## Virtual Cloud Integration
+
+InfraSpec can use Virtual Cloud (infraspec-api) instead of real AWS for fast, cost-free testing.
+
+### Running with Virtual Cloud
+
+```bash
+# Use the --virtual-cloud flag
+./infraspec features/aws/s3/s3_bucket.feature --virtual-cloud
+```
+
+### How It Works
+
+1. CLI detects `--virtual-cloud` flag
+2. Configures Terraform with custom AWS endpoints via environment variables
+3. All AWS API calls route to Virtual Cloud instead of real AWS
+4. Virtual Cloud emulates AWS responses
+
+### Service Endpoint Configuration
+
+The endpoint mapping is in `pkg/steps/terraform/terraform.go`:
+
+```go
+serviceMap := map[string]string{
+    "DYNAMODB":                 "dynamodb",
+    "STS":                      "sts",
+    "RDS":                      "rds",
+    "S3":                       "s3",
+    "S3_CONTROL":               "s3",  // Note: underscore required
+    "EC2":                      "ec2",
+    "SSM":                      "ssm",
+    "APPLICATION_AUTO_SCALING": "autoscaling",
+}
+```
+
+**Critical:** Service keys must match AWS SDK expectations exactly. For example:
+- `S3_CONTROL` (correct) - generates `AWS_ENDPOINT_URL_S3_CONTROL`
+- `S3CONTROL` (wrong) - generates incorrect env var, requests go to real AWS
+
+### Adding New Service Endpoints
+
+When adding support for a new AWS service:
+
+1. Add entry to `serviceMap` in `pkg/steps/terraform/terraform.go`
+2. Use the correct AWS SDK service identifier (check AWS docs)
+3. Ensure infraspec-api implements the service (see `infraspec-api/AGENTS.md`)
+
+### Authentication
+
+Virtual Cloud validates tokens from InfraSpec Cloud:
+- Set `INFRASPEC_CLOUD_TOKEN` environment variable with your API token
+- Token is used as `AWS_SECRET_ACCESS_KEY` for SigV4 signing
+- See `infraspec-cloud/CLAUDE.md` for token generation
+
 ## Troubleshooting
 
 ### Common Issues
@@ -182,8 +236,16 @@ Use these scopes when relevant:
 - **AWS credentials**: Check AWS configuration and permissions
 - **Go module issues**: Run `make tidy` to resolve dependencies
 - **Test failures**: Verify InfraSpec API services are running
+- **Virtual Cloud 403 errors**: Check service endpoint mapping uses correct AWS SDK identifier
+- **Virtual Cloud 404 errors**: Service operation may not be implemented in infraspec-api
 
 ### Development Tools
 - Use `make help` to see all available commands
 - Check `cover.html` for test coverage reports
 - Use Go's built-in profiling tools for performance analysis
+
+## Related Projects
+
+- **infraspec-api**: Virtual Cloud AWS emulator - see `infraspec-api/AGENTS.md`
+- **infraspec-cloud**: SaaS dashboard for API tokens - see `infraspec-cloud/CLAUDE.md`
+- **Root CLAUDE.md**: Cross-project workflows and integration guide
