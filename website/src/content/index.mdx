@@ -6,6 +6,7 @@ sidebar: false
 
 import Image from "next/image";
 import { Callout } from "nextra/components";
+import { GetStartedButton } from "../components/GetStartedModal";
 
 <div className="flex justify-center">
   <Image src="/infraspec_logo_512.png" alt="InfraSpec Logo" width={128} height={128} />
@@ -13,8 +14,12 @@ import { Callout } from "nextra/components";
 
 {<h1 className="text-center font-extrabold md:text-5xl mt-2">InfraSpec</h1>}
 
-<div className="mx-auto max-w-full w-[880px] text-center px-4 mt-4 mb-10">
+<div className="mx-auto max-w-full w-[880px] text-center px-4 mt-4 mb-6">
   {<p className="text-lg mb-2 text-gray-600 md:!text-2xl">Test your AWS infrastructure code in plain English</p>}
+</div>
+
+<div className="text-center mb-10">
+  <GetStartedButton />
 </div>
 
 InfraSpec is a CLI tool for testing your Terraform AWS infrastructure code in plain English. It combines a rich library
