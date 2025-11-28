@@ -126,10 +126,10 @@ func TestCopyTerraformFolderToTemp(t *testing.T) {
 	for path, content := range testFiles {
 		fullPath := filepath.Join(srcDir, path)
 		dir := filepath.Dir(fullPath)
-		if err := os.MkdirAll(dir, 0755); err != nil {
+		if err := os.MkdirAll(dir, 0o755); err != nil {
 			require.NoError(t, err)
 		}
-		if err := os.WriteFile(fullPath, []byte(content), 0644); err != nil {
+		if err := os.WriteFile(fullPath, []byte(content), 0o644); err != nil {
 			require.NoError(t, err)
 		}
 	}
@@ -185,7 +185,7 @@ func TestCopyTerraformFolderToDest(t *testing.T) {
 
 	// Create a test file
 	testFile := filepath.Join(srcDir, "main.tf")
-	err = os.WriteFile(testFile, []byte("resource \"null_resource\" \"test\" {}"), 0644)
+	err = os.WriteFile(testFile, []byte("resource \"null_resource\" \"test\" {}"), 0o644)
 	require.NoError(t, err)
 
 	// Create a temporary destination directory
@@ -212,7 +212,7 @@ func TestCopySymlink(t *testing.T) {
 
 	// Create a target file
 	targetFile := filepath.Join(tmpDir, "target.txt")
-	err = os.WriteFile(targetFile, []byte("target content"), 0644)
+	err = os.WriteFile(targetFile, []byte("target content"), 0o644)
 	require.NoError(t, err)
 
 	// Create a symlink

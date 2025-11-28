@@ -13,7 +13,7 @@ func TestDiscoverFeatureFiles_SingleFile(t *testing.T) {
 	// Create a temporary directory with a feature file
 	tmpDir := t.TempDir()
 	featureFile := filepath.Join(tmpDir, "test.feature")
-	err := os.WriteFile(featureFile, []byte("Feature: Test"), 0644)
+	err := os.WriteFile(featureFile, []byte("Feature: Test"), 0o644)
 	require.NoError(t, err)
 
 	files, err := DiscoverFeatureFiles(featureFile)
@@ -34,17 +34,17 @@ func TestDiscoverFeatureFiles_Directory(t *testing.T) {
 	}
 
 	// Create subdirectory
-	err := os.MkdirAll(filepath.Join(tmpDir, "subdir"), 0755)
+	err := os.MkdirAll(filepath.Join(tmpDir, "subdir"), 0o755)
 	require.NoError(t, err)
 
 	// Create feature files
 	for _, f := range files {
-		err := os.WriteFile(f, []byte("Feature: Test"), 0644)
+		err := os.WriteFile(f, []byte("Feature: Test"), 0o644)
 		require.NoError(t, err)
 	}
 
 	// Create a non-feature file that should be ignored
-	err = os.WriteFile(filepath.Join(tmpDir, "readme.md"), []byte("# README"), 0644)
+	err = os.WriteFile(filepath.Join(tmpDir, "readme.md"), []byte("# README"), 0o644)
 	require.NoError(t, err)
 
 	discovered, err := DiscoverFeatureFiles(tmpDir)
@@ -63,7 +63,7 @@ func TestDiscoverFeatureFiles_EmptyDirectory(t *testing.T) {
 func TestDiscoverFeatureFiles_NonFeatureFile(t *testing.T) {
 	tmpDir := t.TempDir()
 	textFile := filepath.Join(tmpDir, "test.txt")
-	err := os.WriteFile(textFile, []byte("text"), 0644)
+	err := os.WriteFile(textFile, []byte("text"), 0o644)
 	require.NoError(t, err)
 
 	_, err = DiscoverFeatureFiles(textFile)

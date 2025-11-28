@@ -167,6 +167,46 @@
       "name": "iam",
       "fullName": "AWS Identity and Access Management",
       "status": "planned"
+    },
+    {
+      "name": "eks",
+      "fullName": "Amazon Elastic Kubernetes Service",
+      "status": "planned"
+    },
+    {
+      "name": "ecs",
+      "fullName": "Amazon Elastic Container Service",
+      "status": "planned"
+    },
+    {
+      "name": "ssm",
+      "fullName": "AWS Systems Manager",
+      "status": "planned"
+    },
+    {
+      "name": "secretsmanager",
+      "fullName": "AWS Secrets Manager",
+      "status": "planned"
+    },
+    {
+      "name": "route53",
+      "fullName": "Amazon Route 53",
+      "status": "planned"
+    },
+    {
+      "name": "kms",
+      "fullName": "AWS Key Management Service",
+      "status": "planned"
+    },
+    {
+      "name": "ecr",
+      "fullName": "Amazon Elastic Container Registry",
+      "status": "planned"
+    },
+    {
+      "name": "cloudwatch",
+      "fullName": "Amazon CloudWatch",
+      "status": "planned"
     }
   ]
 }

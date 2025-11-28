@@ -38,7 +38,7 @@ func CopyTerraformFolderToDest(src, dest string) error {
 	}
 
 	// Create the destination folder if it doesn't exist
-	if err := os.MkdirAll(dest, 0755); err != nil {
+	if err := os.MkdirAll(dest, 0o755); err != nil {
 		return fmt.Errorf("failed to create destination directory: %w", err)
 	}
 
