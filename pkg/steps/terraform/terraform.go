@@ -132,9 +132,11 @@ func newTerraformSetVariableWithRandomSuffixStep(ctx context.Context, name, valu
 	return newTerraformSetVariableStep(ctx, name, valueWithSuffix)
 }
 
-const base62chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-const base36chars = "0123456789abcdefghijklmnopqrstuvwxyz" // Lowercase only for RDS/S3 compatibility
-const uniqueIDLength = 6                                    // Should be good for 62^6 = 56+ billion combinations
+const (
+	base62chars    = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+	base36chars    = "0123456789abcdefghijklmnopqrstuvwxyz" // Lowercase only for RDS/S3 compatibility
+	uniqueIDLength = 6                                      // Should be good for 62^6 = 56+ billion combinations
+)
 
 // uniqueId returns a unique (ish) id we can attach to resources so they don't conflict with each other.
 // Uses base 36 (lowercase alphanumeric) to generate a 6 character string that's unlikely to collide with the handful
@@ -211,6 +213,7 @@ func configureVirtualCloudEndpoints(options *iacprovisioner.Options, workingDir 
 		"SSM":                      "ssm",
 		"APPLICATION_AUTO_SCALING": "autoscaling",
 		"IAM":                      "iam",
+		"SQS":                      "sqs",
 	}
 
 	// Set service-specific endpoint environment variables
