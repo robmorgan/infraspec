@@ -60,6 +60,13 @@ func newTerraformConfigStep(ctx context.Context, path string) (context.Context, 
 		return nil, fmt.Errorf("failed to create Terraform options: %w", err)
 	}
 
+	// Force CopyToTemp when running in parallel mode to ensure isolated working directories
+	cfg := contexthelpers.GetConfig(ctx)
+	if cfg != nil && cfg.ParallelMode {
+		options.CopyToTemp = true
+		options.TempFolderPrefix = fmt.Sprintf("infraspec-%s-", uniqueId())
+	}
+
 	// Set AWS endpoint environment variables and generate provider file when virtual cloud is enabled
 	if err := configureVirtualCloudEndpoints(options, absPath); err != nil {
 		return nil, fmt.Errorf("failed to configure virtual cloud endpoints: %w", err)

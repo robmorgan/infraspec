@@ -14,7 +14,6 @@ cover.html
 .terraform.lock.hcl
 terraform.tfstate
 terraform.tfstate.backup
-providers.tf
 
 # docker-compose
 test/volume

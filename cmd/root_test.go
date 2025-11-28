@@ -20,14 +20,9 @@ func TestRootCommand(t *testing.T) {
 			name:        "no arguments",
 			args:        []string{},
 			wantErr:     true,
-			errContains: "accepts 1 arg(s), received 0",
+			errContains: "requires at least 1 arg(s)",
 		},
-		{
-			name:        "too many arguments",
-			args:        []string{"test1", "test2"},
-			wantErr:     true,
-			errContains: "accepts 1 arg(s), received 2",
-		},
+		// Note: "too many arguments" test removed - we now accept multiple feature paths/directories
 	}
 
 	for _, tt := range tests {
@@ -59,4 +54,17 @@ func TestRootCommandFlags(t *testing.T) {
 			assert.Equal(t, "false", flag.DefValue)
 		}
 	})
+}
+
+func TestParallelFlags(t *testing.T) {
+	// Check parallel flag exists with correct default
+	parallelFlag := RootCmd.PersistentFlags().Lookup("parallel")
+	assert.NotNil(t, parallelFlag)
+	assert.Equal(t, "0", parallelFlag.DefValue)
+	assert.Equal(t, "p", parallelFlag.Shorthand)
+
+	// Check timeout flag exists with correct default
+	timeoutFlag := RootCmd.PersistentFlags().Lookup("timeout")
+	assert.NotNil(t, timeoutFlag)
+	assert.Equal(t, "0", timeoutFlag.DefValue)
 }

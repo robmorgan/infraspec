@@ -25,6 +25,7 @@ type Config struct {
 	Debug           bool             `yaml:"debug"`   // Enable debug mode
 	Telemetry       TelemetryConfig  `yaml:"telemetry"`
 	VirtualCloud    bool             `yaml:"virtual_cloud"`
+	ParallelMode    bool             `yaml:"-"` // Runtime flag for parallel execution, not persisted
 }
 
 // StepDefinition defines a mapping between Gherkin steps and actions
