@@ -17,6 +17,9 @@ func RegisterSteps(sc *godog.ScenarioContext) {
 	// RDS steps
 	registerRDSSteps(sc)
 
+	// EC2 steps
+	registerEC2Steps(sc)
+
 	// Generic AWS steps
 	sc.Step(`^the AWS resource "([^"]*)" should exist$`, newAWSResourceExistsStep)
 }
