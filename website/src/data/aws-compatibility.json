@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2025-11-27T00:00:00Z",
+  "generatedAt": "2025-11-28T00:00:00Z",
   "services": [
     {
       "name": "s3",
@@ -18,20 +18,32 @@
       },
       "virtualCloud": {
         "status": "implemented",
-        "coveragePercent": 12.5,
-        "totalOperations": 120,
-        "implemented": 15,
+        "coveragePercent": 21.7,
+        "totalOperations": 106,
+        "implemented": 23,
         "operations": [
           {"name": "CreateBucket", "implemented": true, "priority": "high"},
           {"name": "DeleteBucket", "implemented": true, "priority": "high"},
-          {"name": "HeadBucket", "implemented": true, "priority": "high"},
-          {"name": "ListBuckets", "implemented": true, "priority": "high"},
-          {"name": "PutObject", "implemented": true, "priority": "high"},
+          {"name": "DeleteBucketPolicy", "implemented": true, "priority": "high"},
+          {"name": "DeletePublicAccessBlock", "implemented": true, "priority": "high"},
+          {"name": "GetBucketEncryption", "implemented": true, "priority": "high"},
+          {"name": "GetBucketLogging", "implemented": true, "priority": "high"},
+          {"name": "GetBucketPolicy", "implemented": true, "priority": "high"},
+          {"name": "GetBucketVersioning", "implemented": true, "priority": "high"},
           {"name": "GetObject", "implemented": true, "priority": "high"},
-          {"name": "DeleteObject", "implemented": true, "priority": "high"},
+          {"name": "GetPublicAccessBlock", "implemented": true, "priority": "high"},
+          {"name": "HeadBucket", "implemented": true, "priority": "high"},
+          {"name": "HeadObject", "implemented": true, "priority": "high"},
+          {"name": "ListBuckets", "implemented": true, "priority": "high"},
           {"name": "ListObjectsV2", "implemented": true, "priority": "high"},
-          {"name": "CopyObject", "implemented": false, "priority": "high"},
-          {"name": "GetBucketVersioning", "implemented": false, "priority": "high"}
+          {"name": "PutBucketEncryption", "implemented": true, "priority": "high"},
+          {"name": "PutBucketLogging", "implemented": true, "priority": "high"},
+          {"name": "PutBucketPolicy", "implemented": true, "priority": "high"},
+          {"name": "PutBucketVersioning", "implemented": true, "priority": "high"},
+          {"name": "PutObject", "implemented": true, "priority": "high"},
+          {"name": "PutPublicAccessBlock", "implemented": true, "priority": "high"},
+          {"name": "DeleteObject", "implemented": true, "priority": "medium"},
+          {"name": "CopyObject", "implemented": false, "priority": "high"}
         ]
       }
     },
@@ -57,17 +69,19 @@
       },
       "virtualCloud": {
         "status": "implemented",
-        "coveragePercent": 8.2,
-        "totalOperations": 85,
-        "implemented": 7,
+        "coveragePercent": 5.5,
+        "totalOperations": 163,
+        "implemented": 9,
         "operations": [
           {"name": "CreateDBInstance", "implemented": true, "priority": "high"},
           {"name": "DeleteDBInstance", "implemented": true, "priority": "high"},
           {"name": "DescribeDBInstances", "implemented": true, "priority": "high"},
-          {"name": "ModifyDBInstance", "implemented": true, "priority": "high"},
-          {"name": "StartDBInstance", "implemented": true, "priority": "high"},
-          {"name": "StopDBInstance", "implemented": true, "priority": "high"},
-          {"name": "RebootDBInstance", "implemented": true, "priority": "high"},
+          {"name": "ListTagsForResource", "implemented": true, "priority": "high"},
+          {"name": "AddTagsToResource", "implemented": true, "priority": "medium"},
+          {"name": "ModifyDBInstance", "implemented": true, "priority": "medium"},
+          {"name": "RebootDBInstance", "implemented": true, "priority": "medium"},
+          {"name": "StartDBInstance", "implemented": true, "priority": "medium"},
+          {"name": "StopDBInstance", "implemented": true, "priority": "medium"},
           {"name": "CreateDBSnapshot", "implemented": false, "priority": "high"},
           {"name": "DescribeDBSnapshots", "implemented": false, "priority": "high"}
         ]
@@ -88,16 +102,25 @@
       },
       "virtualCloud": {
         "status": "implemented",
-        "coveragePercent": 15.0,
-        "totalOperations": 40,
-        "implemented": 6,
+        "coveragePercent": 29.8,
+        "totalOperations": 57,
+        "implemented": 17,
         "operations": [
           {"name": "CreateTable", "implemented": true, "priority": "high"},
           {"name": "DeleteTable", "implemented": true, "priority": "high"},
+          {"name": "DescribeContinuousBackups", "implemented": true, "priority": "high"},
           {"name": "DescribeTable", "implemented": true, "priority": "high"},
-          {"name": "ListTables", "implemented": true, "priority": "high"},
-          {"name": "PutItem", "implemented": true, "priority": "high"},
+          {"name": "DescribeTimeToLive", "implemented": true, "priority": "high"},
           {"name": "GetItem", "implemented": true, "priority": "high"},
+          {"name": "ListTables", "implemented": true, "priority": "high"},
+          {"name": "ListTagsOfResource", "implemented": true, "priority": "high"},
+          {"name": "PutItem", "implemented": true, "priority": "high"},
+          {"name": "DeleteItem", "implemented": true, "priority": "high"},
+          {"name": "UpdateContinuousBackups", "implemented": true, "priority": "medium"},
+          {"name": "UpdateTable", "implemented": true, "priority": "medium"},
+          {"name": "UpdateTimeToLive", "implemented": true, "priority": "medium"},
+          {"name": "TagResource", "implemented": true, "priority": "low"},
+          {"name": "UntagResource", "implemented": true, "priority": "low"},
           {"name": "Query", "implemented": false, "priority": "high"},
           {"name": "Scan", "implemented": false, "priority": "high"}
         ]
@@ -113,13 +136,18 @@
       },
       "virtualCloud": {
         "status": "implemented",
-        "coveragePercent": 25.0,
-        "totalOperations": 8,
-        "implemented": 2,
+        "coveragePercent": 90.9,
+        "totalOperations": 11,
+        "implemented": 10,
         "operations": [
+          {"name": "GetAccessKeyInfo", "implemented": true, "priority": "high"},
           {"name": "GetCallerIdentity", "implemented": true, "priority": "high"},
-          {"name": "AssumeRole", "implemented": true, "priority": "high"},
-          {"name": "AssumeRoleWithWebIdentity", "implemented": false, "priority": "high"}
+          {"name": "GetFederationToken", "implemented": true, "priority": "high"},
+          {"name": "GetSessionToken", "implemented": true, "priority": "high"},
+          {"name": "AssumeRole", "implemented": true, "priority": "low"},
+          {"name": "AssumeRoleWithSAML", "implemented": true, "priority": "low"},
+          {"name": "AssumeRoleWithWebIdentity", "implemented": true, "priority": "low"},
+          {"name": "DecodeAuthorizationMessage", "implemented": true, "priority": "low"}
         ]
       }
     },
@@ -133,20 +161,155 @@
       },
       "virtualCloud": {
         "status": "implemented",
-        "coveragePercent": 20.0,
-        "totalOperations": 10,
-        "implemented": 2,
+        "coveragePercent": 71.4,
+        "totalOperations": 14,
+        "implemented": 10,
         "operations": [
-          {"name": "RegisterScalableTarget", "implemented": true, "priority": "high"},
+          {"name": "DeleteScalingPolicy", "implemented": true, "priority": "high"},
           {"name": "DescribeScalableTargets", "implemented": true, "priority": "high"},
-          {"name": "PutScalingPolicy", "implemented": false, "priority": "high"}
+          {"name": "DescribeScalingActivities", "implemented": true, "priority": "high"},
+          {"name": "DescribeScalingPolicies", "implemented": true, "priority": "high"},
+          {"name": "ListTagsForResource", "implemented": true, "priority": "high"},
+          {"name": "PutScalingPolicy", "implemented": true, "priority": "high"},
+          {"name": "DeregisterScalableTarget", "implemented": true, "priority": "low"},
+          {"name": "RegisterScalableTarget", "implemented": true, "priority": "low"},
+          {"name": "TagResource", "implemented": true, "priority": "low"},
+          {"name": "UntagResource", "implemented": true, "priority": "low"},
+          {"name": "DeleteScheduledAction", "implemented": false, "priority": "high"},
+          {"name": "PutScheduledAction", "implemented": false, "priority": "high"}
         ]
       }
     },
     {
       "name": "ec2",
       "fullName": "Amazon Elastic Compute Cloud",
-      "status": "planned"
+      "status": "implemented",
+      "infraspec": {
+        "status": "implemented",
+        "operations": [
+          {"name": "AssertEC2DescribeInstances", "implemented": true, "description": "Check EC2 describe instances permission"},
+          {"name": "AssertVpcExists", "implemented": true, "description": "Check if VPC exists"},
+          {"name": "AssertSecurityGroupExists", "implemented": true, "description": "Check if security group exists"}
+        ]
+      },
+      "virtualCloud": {
+        "status": "implemented",
+        "coveragePercent": 5.2,
+        "totalOperations": 749,
+        "implemented": 39,
+        "operations": [
+          {"name": "CreateInternetGateway", "implemented": true, "priority": "high"},
+          {"name": "CreateKeyPair", "implemented": true, "priority": "high"},
+          {"name": "CreateLaunchTemplate", "implemented": true, "priority": "high"},
+          {"name": "CreateSecurityGroup", "implemented": true, "priority": "high"},
+          {"name": "CreateSubnet", "implemented": true, "priority": "high"},
+          {"name": "CreateTags", "implemented": true, "priority": "high"},
+          {"name": "CreateVolume", "implemented": true, "priority": "high"},
+          {"name": "CreateVpc", "implemented": true, "priority": "high"},
+          {"name": "DeleteInternetGateway", "implemented": true, "priority": "high"},
+          {"name": "DeleteKeyPair", "implemented": true, "priority": "high"},
+          {"name": "DeleteLaunchTemplate", "implemented": true, "priority": "high"},
+          {"name": "DeleteSecurityGroup", "implemented": true, "priority": "high"},
+          {"name": "DeleteSubnet", "implemented": true, "priority": "high"},
+          {"name": "DeleteVolume", "implemented": true, "priority": "high"},
+          {"name": "DeleteVpc", "implemented": true, "priority": "high"},
+          {"name": "DescribeAvailabilityZones", "implemented": true, "priority": "high"},
+          {"name": "DescribeInstances", "implemented": true, "priority": "high"},
+          {"name": "DescribeInternetGateways", "implemented": true, "priority": "high"},
+          {"name": "DescribeKeyPairs", "implemented": true, "priority": "high"},
+          {"name": "DescribeLaunchTemplates", "implemented": true, "priority": "high"},
+          {"name": "DescribeNetworkInterfaces", "implemented": true, "priority": "high"},
+          {"name": "DescribeSecurityGroups", "implemented": true, "priority": "high"},
+          {"name": "DescribeSubnets", "implemented": true, "priority": "high"},
+          {"name": "DescribeVolumes", "implemented": true, "priority": "high"},
+          {"name": "DescribeVpcs", "implemented": true, "priority": "high"},
+          {"name": "RunInstances", "implemented": false, "priority": "high"},
+          {"name": "TerminateInstances", "implemented": false, "priority": "high"}
+        ]
+      }
+    },
+    {
+      "name": "iam",
+      "fullName": "AWS Identity and Access Management",
+      "status": "implemented",
+      "infraspec": {
+        "status": "implemented",
+        "operations": [
+          {"name": "AssertIAMDescribeRoles", "implemented": true, "description": "Check IAM describe roles permission"},
+          {"name": "AssertRoleExists", "implemented": true, "description": "Check if IAM role exists"},
+          {"name": "AssertPolicyExists", "implemented": true, "description": "Check if IAM policy exists"}
+        ]
+      },
+      "virtualCloud": {
+        "status": "implemented",
+        "coveragePercent": 11.4,
+        "totalOperations": 176,
+        "implemented": 20,
+        "operations": [
+          {"name": "CreateInstanceProfile", "implemented": true, "priority": "high"},
+          {"name": "CreatePolicy", "implemented": true, "priority": "high"},
+          {"name": "CreateRole", "implemented": true, "priority": "high"},
+          {"name": "DeleteInstanceProfile", "implemented": true, "priority": "high"},
+          {"name": "DeletePolicy", "implemented": true, "priority": "high"},
+          {"name": "DeleteRole", "implemented": true, "priority": "high"},
+          {"name": "GetInstanceProfile", "implemented": true, "priority": "high"},
+          {"name": "GetPolicy", "implemented": true, "priority": "high"},
+          {"name": "GetPolicyVersion", "implemented": true, "priority": "high"},
+          {"name": "GetRole", "implemented": true, "priority": "high"},
+          {"name": "ListAttachedRolePolicies", "implemented": true, "priority": "high"},
+          {"name": "ListInstanceProfiles", "implemented": true, "priority": "high"},
+          {"name": "ListPolicies", "implemented": true, "priority": "high"},
+          {"name": "ListPolicyVersions", "implemented": true, "priority": "high"},
+          {"name": "ListRolePolicies", "implemented": true, "priority": "high"},
+          {"name": "ListRoles", "implemented": true, "priority": "high"},
+          {"name": "AttachRolePolicy", "implemented": true, "priority": "low"},
+          {"name": "CreateUser", "implemented": false, "priority": "high"},
+          {"name": "CreateGroup", "implemented": false, "priority": "high"}
+        ]
+      }
+    },
+    {
+      "name": "sqs",
+      "fullName": "Amazon Simple Queue Service",
+      "status": "implemented",
+      "infraspec": {
+        "status": "implemented",
+        "operations": [
+          {"name": "AssertSQSDescribeQueues", "implemented": true, "description": "Check SQS describe queues permission"},
+          {"name": "AssertQueueExists", "implemented": true, "description": "Check if queue exists"},
+          {"name": "AssertQueueVisibilityTimeout", "implemented": true, "description": "Check queue visibility timeout"},
+          {"name": "AssertQueueDelaySeconds", "implemented": true, "description": "Check queue delay seconds"},
+          {"name": "AssertQueueMaxMessageSize", "implemented": true, "description": "Check queue max message size"},
+          {"name": "AssertQueueRetentionPeriod", "implemented": true, "description": "Check queue message retention period"},
+          {"name": "AssertQueueTags", "implemented": true, "description": "Check queue tags"}
+        ]
+      },
+      "virtualCloud": {
+        "status": "implemented",
+        "coveragePercent": 69.6,
+        "totalOperations": 23,
+        "implemented": 16,
+        "operations": [
+          {"name": "CreateQueue", "implemented": true, "priority": "high"},
+          {"name": "DeleteMessage", "implemented": true, "priority": "high"},
+          {"name": "DeleteMessageBatch", "implemented": true, "priority": "high"},
+          {"name": "DeleteQueue", "implemented": true, "priority": "high"},
+          {"name": "GetQueueAttributes", "implemented": true, "priority": "high"},
+          {"name": "GetQueueUrl", "implemented": true, "priority": "high"},
+          {"name": "ListQueueTags", "implemented": true, "priority": "high"},
+          {"name": "ListQueues", "implemented": true, "priority": "high"},
+          {"name": "ReceiveMessage", "implemented": true, "priority": "low"},
+          {"name": "SendMessage", "implemented": true, "priority": "low"},
+          {"name": "SendMessageBatch", "implemented": true, "priority": "low"},
+          {"name": "ChangeMessageVisibility", "implemented": true, "priority": "low"},
+          {"name": "ChangeMessageVisibilityBatch", "implemented": true, "priority": "low"},
+          {"name": "PurgeQueue", "implemented": true, "priority": "low"},
+          {"name": "SetQueueAttributes", "implemented": true, "priority": "low"},
+          {"name": "TagQueue", "implemented": true, "priority": "low"},
+          {"name": "UntagQueue", "implemented": true, "priority": "low"},
+          {"name": "ListDeadLetterSourceQueues", "implemented": false, "priority": "high"}
+        ]
+      }
     },
     {
       "name": "lambda",
@@ -154,18 +317,8 @@
       "status": "planned"
     },
     {
-      "name": "sqs",
-      "fullName": "Amazon Simple Queue Service",
-      "status": "planned"
-    },
-    {
       "name": "sns",
       "fullName": "Amazon Simple Notification Service",
-      "status": "planned"
-    },
-    {
-      "name": "iam",
-      "fullName": "AWS Identity and Access Management",
       "status": "planned"
     },
     {

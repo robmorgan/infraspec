@@ -82,25 +82,10 @@ jobs:
       - name: Make InfraSpec Binary Executable
         run: chmod +x ./infraspec
 
-      - name: Cache Terraform Providers
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.terraform.d/plugin-cache
-          key: ${{ runner.os }}-terraform-1.5.7-${{ hashFiles('examples/**/.terraform.lock.hcl') }}
-          restore-keys: |
-            ${{ runner.os }}-terraform-1.5.7-
-            ${{ runner.os }}-terraform-
-
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.5.7"
-
-      - name: Configure Terraform Plugin Cache
-        run: |
-          mkdir -p ~/.terraform.d/plugin-cache
-          echo 'plugin_cache_dir = "$HOME/.terraform.d/plugin-cache"' > ~/.terraformrc
 
       - name: Run Integration Tests
         run: |
