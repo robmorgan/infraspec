@@ -7,9 +7,9 @@ import (
 	"github.com/cucumber/godog"
 
 	"github.com/robmorgan/infraspec/internal/contexthelpers"
-	"github.com/robmorgan/infraspec/pkg/iacprovisioner"
 	"github.com/robmorgan/infraspec/pkg/assertions"
 	"github.com/robmorgan/infraspec/pkg/assertions/aws"
+	"github.com/robmorgan/infraspec/pkg/iacprovisioner"
 )
 
 // S3 Step Definitions
