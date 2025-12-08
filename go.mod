@@ -20,7 +20,7 @@ require (
 	github.com/cucumber/messages/go/v21 v21.0.1
 	github.com/denisbrodbeck/machineid v1.0.1
 	github.com/jinzhu/copier v0.4.0
-	github.com/spf13/cobra v1.10.1
+	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.11.1
