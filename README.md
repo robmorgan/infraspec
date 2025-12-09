@@ -25,7 +25,7 @@
 
 ---
 
-Testing infrastructure shouldn't require learning complex testing frameworks or writing hundreds of lines of code.
+Testing infrastructure code shouldn't require learning complex testing frameworks or writing hundreds of lines of code.
 InfraSpec lets you write infrastructure tests in **plain English** using the battle-tested Gherkin syntax.
 
 Traditional infrastructure testing solutions like Terratest require programming knowledge, so writing the tests can take
