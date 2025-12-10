@@ -23,6 +23,9 @@ func RegisterSteps(sc *godog.ScenarioContext) {
 	// IAM steps
 	registerIAMSteps(sc)
 
+	// SQS steps
+	registerSQSSteps(sc)
+
 	// Generic AWS steps
 	sc.Step(`^the AWS resource "([^"]*)" should exist$`, newAWSResourceExistsStep)
 }

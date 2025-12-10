@@ -49,6 +49,56 @@ When working with the AWS provider, prefer these environment variables:
 
 See the [Terraform AWS Provider documentation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs) for the complete list of supported environment variables.
 
+### Terraform Module Usage
+
+**Prefer community modules from `terraform-aws-modules` over plain Terraform resources.**
+
+When writing Terraform configurations for AWS infrastructure:
+
+- ✅ **DO**: Use modules from the [`terraform-aws-modules`](https://github.com/terraform-aws-modules) GitHub organization when available
+- ✅ **DO**: Check the registry at `registry.terraform.io/modules/terraform-aws-modules/` for available modules
+- ✅ **DO**: Pin module versions explicitly for reproducibility
+
+- ❌ **DON'T**: Write raw `aws_*` resources when a well-maintained module exists
+- ❌ **DON'T**: Reinvent common patterns that modules already handle
+
+**Rationale**: The `terraform-aws-modules` community modules:
+- Follow AWS and Terraform best practices
+- Handle edge cases and common configurations
+- Are actively maintained and widely used
+- Reduce boilerplate and potential misconfigurations
+- Include sensible defaults while remaining configurable
+
+**Example**:
+```hcl
+# Good: Using terraform-aws-modules
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "5.1.0"
+
+  name = "my-vpc"
+  cidr = "10.0.0.0/16"
+
+  azs             = ["us-east-1a", "us-east-1b"]
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
+  public_subnets  = ["10.0.101.0/24", "10.0.102.0/24"]
+}
+
+# Avoid: Manual resource definitions for common infrastructure
+# resource "aws_vpc" "main" { ... }
+# resource "aws_subnet" "private" { ... }
+# resource "aws_internet_gateway" "main" { ... }
+# ... many more resources
+```
+
+**Common modules to use**:
+- `terraform-aws-modules/vpc/aws` - VPC, subnets, NAT gateways
+- `terraform-aws-modules/eks/aws` - EKS clusters
+- `terraform-aws-modules/rds/aws` - RDS instances and clusters
+- `terraform-aws-modules/s3-bucket/aws` - S3 buckets
+- `terraform-aws-modules/lambda/aws` - Lambda functions
+- `terraform-aws-modules/security-group/aws` - Security groups
+
 ## Project-Specific Guidelines
 
 For other project-specific coding standards and guidelines, see [CLAUDE.md](./CLAUDE.md).
