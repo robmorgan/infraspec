@@ -1,17 +1,19 @@
 import { Resend } from 'resend';
 import { NextRequest, NextResponse } from 'next/server';
+import DOMPurify from 'isomorphic-dompurify';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-function escapeHtml(text: string): string {
-  const htmlEscapes: Record<string, string> = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;',
-  };
-  return text.replace(/[&<>"']/g, (char) => htmlEscapes[char]);
+// RFC 5322 compliant email regex
+const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
+function sanitize(text: string): string {
+  return DOMPurify.sanitize(text, { ALLOWED_TAGS: [] });
+}
+
+function isValidEmail(email: string): boolean {
+  if (!email || email.length > 254) return false;
+  return EMAIL_REGEX.test(email);
 }
 
 export async function POST(request: NextRequest) {
@@ -27,25 +29,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    // Validate email format with strict regex
+    if (!isValidEmail(email)) {
       return NextResponse.json(
         { error: 'Invalid email format' },
         { status: 400 }
       );
     }
 
-    // Escape user input to prevent XSS
-    const safeName = escapeHtml(name);
-    const safeEmail = escapeHtml(email);
-    const safeMessage = escapeHtml(message);
+    // Sanitize all user input
+    const safeName = sanitize(name);
+    const safeEmail = sanitize(email);
+    const safeMessage = sanitize(message);
 
     // Send email using Resend
     const data = await resend.emails.send({
       from: 'InfraSpec Contact Form <noreply@infraspec.sh>',
       to: 'rob@brightfame.co',
-      replyTo: email,
+      replyTo: safeEmail,
       subject: `New Contact Form Submission from ${safeName}`,
       html: `
         <h2>New Contact Form Submission</h2>
