@@ -1,0 +1,83 @@
+---
+title: Early Access
+description: Register your interest for Virtual Cloud early access
+---
+
+import EarlyAccessForm from '../components/EarlyAccessForm';
+
+# Virtual Cloud Early Access
+
+Virtual Cloud is our managed infrastructure testing service that lets you run InfraSpec tests without real AWS resources. It's currently in active development, and we're looking for early adopters to help shape the product.
+
+## What We're Building
+
+Virtual Cloud emulates AWS services locally, allowing you to test your Terraform configurations instantly without provisioning real infrastructure.
+
+<div className="grid md:grid-cols-2 gap-6 my-8">
+  <div className="p-6 border border-gray-200 dark:border-gray-700 rounded-lg">
+    <div className="flex items-center gap-3 mb-3">
+      <span className="flex-shrink-0 w-10 h-10 bg-purple-100 dark:bg-purple-900/50 rounded-full flex items-center justify-center">
+        <svg className="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+      </span>
+      <h3 className="font-bold text-lg">100x Faster</h3>
+    </div>
+    <p className="text-gray-600 dark:text-gray-400">Tests complete in milliseconds instead of minutes. No waiting for real resources to provision.</p>
+  </div>
+
+  <div className="p-6 border border-gray-200 dark:border-gray-700 rounded-lg">
+    <div className="flex items-center gap-3 mb-3">
+      <span className="flex-shrink-0 w-10 h-10 bg-purple-100 dark:bg-purple-900/50 rounded-full flex items-center justify-center">
+        <svg className="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </span>
+      <h3 className="font-bold text-lg">90% Cheaper</h3>
+    </div>
+    <p className="text-gray-600 dark:text-gray-400">Flat monthly pricing. No surprise AWS bills from test resources left running.</p>
+  </div>
+
+  <div className="p-6 border border-gray-200 dark:border-gray-700 rounded-lg">
+    <div className="flex items-center gap-3 mb-3">
+      <span className="flex-shrink-0 w-10 h-10 bg-purple-100 dark:bg-purple-900/50 rounded-full flex items-center justify-center">
+        <svg className="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+      </span>
+      <h3 className="font-bold text-lg">Zero Credentials</h3>
+    </div>
+    <p className="text-gray-600 dark:text-gray-400">No AWS keys needed in your CI/CD pipeline. Simpler setup, better security.</p>
+  </div>
+
+  <div className="p-6 border border-gray-200 dark:border-gray-700 rounded-lg">
+    <div className="flex items-center gap-3 mb-3">
+      <span className="flex-shrink-0 w-10 h-10 bg-purple-100 dark:bg-purple-900/50 rounded-full flex items-center justify-center">
+        <svg className="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+      </span>
+      <h3 className="font-bold text-lg">No Cleanup</h3>
+    </div>
+    <p className="text-gray-600 dark:text-gray-400">Resources are ephemeral and disappear automatically. No orphaned infrastructure.</p>
+  </div>
+</div>
+
+## Current Status
+
+We're actively developing Virtual Cloud with support for core AWS services. Early access users will help us prioritize which services to add next and provide feedback on the developer experience.
+
+**Currently supported services:**
+- Amazon S3
+- Amazon DynamoDB
+- Amazon RDS
+- AWS IAM
+- Amazon EC2 (partial)
+
+## Register Your Interest
+
+Leave your details below and we'll reach out when early access is available.
+
+<div className="mt-8">
+  <EarlyAccessForm />
+</div>
