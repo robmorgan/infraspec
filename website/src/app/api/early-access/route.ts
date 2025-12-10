@@ -1,20 +1,8 @@
 import { Resend } from 'resend';
 import { NextRequest, NextResponse } from 'next/server';
-import DOMPurify from 'isomorphic-dompurify';
+import { sanitize, isValidEmail, INPUT_LIMITS } from '../../../lib/validation';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-
-// RFC 5322 compliant email regex
-const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-
-function sanitize(text: string): string {
-  return DOMPurify.sanitize(text, { ALLOWED_TAGS: [] });
-}
-
-function isValidEmail(email: string): boolean {
-  if (!email || email.length > 254) return false;
-  return EMAIL_REGEX.test(email);
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,6 +13,21 @@ export async function POST(request: NextRequest) {
     if (!name || !email) {
       return NextResponse.json(
         { error: 'Name and email are required' },
+        { status: 400 }
+      );
+    }
+
+    // Validate input lengths
+    if (name.length > INPUT_LIMITS.name) {
+      return NextResponse.json(
+        { error: `Name must be ${INPUT_LIMITS.name} characters or less` },
+        { status: 400 }
+      );
+    }
+
+    if (comments && comments.length > INPUT_LIMITS.comments) {
+      return NextResponse.json(
+        { error: `Comments must be ${INPUT_LIMITS.comments} characters or less` },
         { status: 400 }
       );
     }

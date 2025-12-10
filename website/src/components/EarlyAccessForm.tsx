@@ -78,6 +78,7 @@ export default function EarlyAccessForm() {
             type="text"
             id="name"
             required
+            maxLength={100}
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent dark:bg-gray-800 dark:border-gray-600"
@@ -94,6 +95,7 @@ export default function EarlyAccessForm() {
             type="email"
             id="email"
             required
+            maxLength={254}
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent dark:bg-gray-800 dark:border-gray-600"
@@ -109,6 +111,7 @@ export default function EarlyAccessForm() {
           <textarea
             id="comments"
             rows={4}
+            maxLength={2000}
             value={formData.comments}
             onChange={(e) => setFormData({ ...formData, comments: e.target.value })}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-600 focus:border-transparent dark:bg-gray-800 dark:border-gray-600"
