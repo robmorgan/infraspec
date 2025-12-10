@@ -7,12 +7,12 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, message } = body;
+    const { name, email, comments } = body;
 
     // Validate required fields
-    if (!name || !email || !message) {
+    if (!name || !email) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: 'Name and email are required' },
         { status: 400 }
       );
     }
@@ -25,9 +25,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (message.length > INPUT_LIMITS.message) {
+    if (comments && comments.length > INPUT_LIMITS.comments) {
       return NextResponse.json(
-        { error: `Message must be ${INPUT_LIMITS.message} characters or less` },
+        { error: `Comments must be ${INPUT_LIMITS.comments} characters or less` },
         { status: 400 }
       );
     }
@@ -43,20 +43,19 @@ export async function POST(request: NextRequest) {
     // Sanitize all user input
     const safeName = sanitize(name);
     const safeEmail = sanitize(email);
-    const safeMessage = sanitize(message);
+    const safeComments = comments ? sanitize(comments) : '';
 
     // Send email using Resend
     const data = await resend.emails.send({
-      from: 'InfraSpec Contact Form <noreply@infraspec.sh>',
+      from: 'InfraSpec Early Access <noreply@infraspec.sh>',
       to: 'rob@brightfame.co',
       replyTo: safeEmail,
-      subject: `New Contact Form Submission from ${safeName}`,
+      subject: `Virtual Cloud Early Access Request from ${safeName}`,
       html: `
-        <h2>New Contact Form Submission</h2>
+        <h2>New Virtual Cloud Early Access Request</h2>
         <p><strong>Name:</strong> ${safeName}</p>
         <p><strong>Email:</strong> ${safeEmail}</p>
-        <p><strong>Message:</strong></p>
-        <p>${safeMessage.replace(/\n/g, '<br>')}</p>
+        ${safeComments ? `<p><strong>Comments:</strong></p><p>${safeComments.replace(/\n/g, '<br>')}</p>` : ''}
       `,
     });
 
@@ -65,9 +64,9 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error('Contact form error:', error);
+    console.error('Early access form error:', error);
     return NextResponse.json(
-      { error: 'Failed to send message. Please try again.' },
+      { error: 'Failed to submit request. Please try again.' },
       { status: 500 }
     );
   }

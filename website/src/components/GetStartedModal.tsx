@@ -345,10 +345,10 @@ function GetStartedModal({ isOpen, onClose }: GetStartedModalProps) {
 
             {/* CTA Button */}
             <a
-              href="https://cloud.infraspec.sh/"
+              href="/early-access"
               className="block w-full text-center bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-6 rounded-lg text-lg transition-colors"
             >
-              Sign Up for InfraSpec Cloud
+              Request Early Access
             </a>
 
             <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
@@ -366,18 +366,19 @@ function GetStartedModal({ isOpen, onClose }: GetStartedModalProps) {
 
 interface GetStartedButtonProps {
   className?: string;
+  children?: React.ReactNode;
 }
 
-export function GetStartedButton({ className = '' }: GetStartedButtonProps) {
+export function GetStartedButton({ className = '', children }: GetStartedButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className={`inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition-colors ${className}`}
+        className={className || `inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition-colors`}
       >
-        Get Started
+        {children || 'Get Started'}
       </button>
       <GetStartedModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </>
