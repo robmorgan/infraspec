@@ -1,13 +1,22 @@
-import DOMPurify from 'isomorphic-dompurify';
-
 // RFC 5322 compliant email regex
 const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
 /**
- * Sanitize user input by stripping all HTML tags
+ * HTML escape map for sanitization
+ */
+const HTML_ESCAPES: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+};
+
+/**
+ * Sanitize user input by escaping HTML special characters
  */
 export function sanitize(text: string): string {
-  return DOMPurify.sanitize(text, { ALLOWED_TAGS: [] });
+  return text.replace(/[&<>"']/g, (char) => HTML_ESCAPES[char]);
 }
 
 /**
