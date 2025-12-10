@@ -3,6 +3,17 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+function escapeHtml(text: string): string {
+  const htmlEscapes: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+  };
+  return text.replace(/[&<>"']/g, (char) => htmlEscapes[char]);
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -25,18 +36,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Escape user input to prevent XSS
+    const safeName = escapeHtml(name);
+    const safeEmail = escapeHtml(email);
+    const safeMessage = escapeHtml(message);
+
     // Send email using Resend
     const data = await resend.emails.send({
       from: 'InfraSpec Contact Form <noreply@infraspec.sh>',
       to: 'rob@brightfame.co',
       replyTo: email,
-      subject: `New Contact Form Submission from ${name}`,
+      subject: `New Contact Form Submission from ${safeName}`,
       html: `
         <h2>New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Name:</strong> ${safeName}</p>
+        <p><strong>Email:</strong> ${safeEmail}</p>
         <p><strong>Message:</strong></p>
-        <p>${message.replace(/\n/g, '<br>')}</p>
+        <p>${safeMessage.replace(/\n/g, '<br>')}</p>
       `,
     });
 
