@@ -75,7 +75,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Download InfraSpec Binary
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: infraspec-binary
 
@@ -102,7 +102,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Download InfraSpec Binary
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: infraspec-binary
 
