@@ -60,12 +60,9 @@ func newTerraformConfigStep(ctx context.Context, path string) (context.Context, 
 		return nil, fmt.Errorf("failed to create Terraform options: %w", err)
 	}
 
-	// Force CopyToTemp when running in parallel mode to ensure isolated working directories
-	cfg := contexthelpers.GetConfig(ctx)
-	if cfg != nil && cfg.ParallelMode {
-		options.CopyToTemp = true
-		options.TempFolderPrefix = fmt.Sprintf("infraspec-%s-", uniqueId())
-	}
+	// Always copy to temp directory to ensure isolated working directories and prevent state conflicts
+	options.CopyToTemp = true
+	options.TempFolderPrefix = fmt.Sprintf("infraspec-%s-", uniqueId())
 
 	// Set AWS endpoint environment variables and generate provider file when virtual cloud is enabled
 	if err := configureVirtualCloudEndpoints(options, absPath); err != nil {
@@ -100,7 +97,14 @@ func NewTerraformDestroyStep(ctx context.Context) (context.Context, error) {
 func newTerraformSetVariableStep(ctx context.Context, name, value string) (context.Context, error) {
 	options := contexthelpers.GetIacProvisionerOptions(ctx)
 	options.Vars[name] = value
-	return context.WithValue(ctx, contexthelpers.TFOptionsCtxKey{}, options), nil
+	ctx = context.WithValue(ctx, contexthelpers.TFOptionsCtxKey{}, options)
+
+	// If the variable is "region", also store it in context for assertion steps
+	if name == "region" {
+		ctx = contexthelpers.SetAwsRegion(ctx, value)
+	}
+
+	return ctx, nil
 }
 
 func newTerraformSetMapVariableStep(ctx context.Context, name string, table *godog.Table) (context.Context, error) {
