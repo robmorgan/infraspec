@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   unit-test:
     runs-on: ubuntu-latest
@@ -68,8 +72,16 @@ jobs:
           retention-days: 1
 
   integration-test-aws:
+    name: Integration Test (${{ matrix.service }})
     runs-on: ubuntu-latest
     needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [dynamodb, ec2, iam, rds, s3, sqs]
+        include:
+          - service: terraform
+            path: features/terraform/
     steps:
       - name: Checkout infraspec
         uses: actions/checkout@v6
@@ -86,13 +98,28 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.5.7"
+          terraform_wrapper: false
+
+      - name: Cache Terraform providers
+        uses: actions/cache@v4
+        with:
+          path: ~/.terraform.d/plugin-cache
+          key: terraform-providers-${{ matrix.service }}-${{ hashFiles('**/*.tf') }}
+          restore-keys: |
+            terraform-providers-${{ matrix.service }}-
+            terraform-providers-
 
       - name: Run Integration Tests
         run: |
-          ./infraspec features/aws/ features/terraform/ --virtual-cloud --parallel 4
+          if [ "${{ matrix.service }}" = "terraform" ]; then
+            ./infraspec features/terraform/ --virtual-cloud --parallel 4
+          else
+            ./infraspec features/aws/${{ matrix.service }}/ --virtual-cloud --parallel 4
+          fi
         env:
           INFRASPEC_TELEMETRY_DISABLED: "1"
           INFRASPEC_CLOUD_TOKEN: ${{ secrets.INFRASPEC_CLOUD_TOKEN }}
+          TF_PLUGIN_CACHE_DIR: ~/.terraform.d/plugin-cache
 
   integration-test-http:
     runs-on: ubuntu-latest
