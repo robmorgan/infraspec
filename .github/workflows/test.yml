@@ -112,9 +112,9 @@ jobs:
       - name: Run Integration Tests
         run: |
           if [ "${{ matrix.service }}" = "terraform" ]; then
-            ./infraspec features/terraform/ --virtual-cloud --parallel 4
+            ./infraspec features/terraform/ --parallel 4
           else
-            ./infraspec features/aws/${{ matrix.service }}/ --virtual-cloud --parallel 4
+            ./infraspec features/aws/${{ matrix.service }}/ --parallel 4
           fi
         env:
           INFRASPEC_TELEMETRY_DISABLED: "1"
