@@ -190,71 +190,49 @@ func newTerraformOutputContainsStep(ctx context.Context, outputName, expectedVal
 	return nil
 }
 
-// configureVirtualCloudEndpoints sets AWS endpoint environment variables when InfraSpec Virtual Cloud is enabled. This
-// configures Terraform/OpenTofu to use the InfraSpec Cloud API endpoints instead of real AWS.
+// configureVirtualCloudEndpoints sets AWS endpoint environment variables when the embedded
+// emulator is enabled (detected via AWS_ENDPOINT_URL environment variable).
+// This configures Terraform/OpenTofu to use the embedded emulator instead of real AWS.
 //
 // The function sets service-specific AWS_ENDPOINT_URL_* environment variables that are
-// automatically recognized by the AWS provider. Each service gets its own subdomain endpoint
-// (e.g., dynamodb.infraspec.sh, sts.infraspec.sh) for proper AWS SigV4 authentication.
+// automatically recognized by the AWS provider. All services use the same localhost endpoint.
 // See: https://search.opentofu.org/provider/opentofu/aws/v6.1.0/docs/guides/custom-service-endpoints
 func configureVirtualCloudEndpoints(options *iacprovisioner.Options, workingDir string) error {
-	if !config.UseInfraspecVirtualCloud() {
+	// Check if AWS_ENDPOINT_URL is set (indicates embedded emulator mode)
+	endpoint := os.Getenv("AWS_ENDPOINT_URL")
+	if endpoint == "" {
+		// Live mode - no endpoint configuration needed
 		return nil
 	}
 
-	config.Logging.Logger.Infof("Configuring virtual cloud endpoints for Terraform/OpenTofu")
+	config.Logging.Logger.Infof("Configuring embedded emulator endpoints for Terraform/OpenTofu")
 
-	// Map of AWS SDK service identifiers to infraspec subdomain names
-	// The AWS SDK uses specific service identifiers (e.g., APPLICATION_AUTO_SCALING)
-	// while infraspec uses simplified subdomains (e.g., autoscaling.infraspec.sh)
-	serviceMap := map[string]string{
-		"DYNAMODB":                 "dynamodb",
-		"STS":                      "sts",
-		"RDS":                      "rds",
-		"S3":                       "s3",
-		"S3_CONTROL":               "s3",
-		"EC2":                      "ec2",
-		"SSM":                      "ssm",
-		"APPLICATION_AUTO_SCALING": "autoscaling",
-		"IAM":                      "iam",
-		"SQS":                      "sqs",
+	// List of AWS services to configure endpoints for
+	// All services use the same localhost endpoint in embedded mode
+	services := []string{
+		"DYNAMODB",
+		"STS",
+		"RDS",
+		"S3",
+		"S3_CONTROL",
+		"EC2",
+		"SSM",
+		"APPLICATION_AUTO_SCALING",
+		"IAM",
+		"SQS",
+		"LAMBDA",
 	}
 
 	// Set service-specific endpoint environment variables
-	for envVarSuffix, subdomain := range serviceMap {
-		envVar := fmt.Sprintf("AWS_ENDPOINT_URL_%s", envVarSuffix)
-
-		// Check if a service-specific endpoint is already set in the environment
-		if existingServiceEndpoint := os.Getenv(envVar); existingServiceEndpoint != "" {
-			config.Logging.Logger.Debugf("%s already set to: %s", envVar, existingServiceEndpoint)
-			options.EnvVars[envVar] = existingServiceEndpoint
-			continue
-		}
-
-		// Get service-specific endpoint URL (automatically builds subdomain endpoint)
-		serviceEndpoint, ok := awshelpers.GetVirtualCloudEndpoint(subdomain)
-		if !ok {
-			continue
-		}
-		options.EnvVars[envVar] = serviceEndpoint
-		config.Logging.Logger.Debugf("Setting %s=%s", envVar, serviceEndpoint)
+	for _, svc := range services {
+		envVar := fmt.Sprintf("AWS_ENDPOINT_URL_%s", svc)
+		options.EnvVars[envVar] = endpoint
+		config.Logging.Logger.Debugf("Setting %s=%s", envVar, endpoint)
 	}
 
-	// Set credentials for InfraSpec Cloud authentication
-	// The access key and secret key are used by the AWS SDK to sign requests
-	options.EnvVars["AWS_ACCESS_KEY_ID"] = awshelpers.InfraspecCloudAccessKeyID
-
-	// Get the InfraSpec Cloud token and set it as the secret access key
-	if config.UseInfraspecVirtualCloud() {
-		token, err := config.GetInfraspecCloudToken()
-		if err != nil {
-			return fmt.Errorf("failed to get InfraSpec Cloud token: %w", err)
-		}
-		if token == "" {
-			return fmt.Errorf("virtual cloud is enabled but no token provided")
-		}
-		options.EnvVars["AWS_SECRET_ACCESS_KEY"] = token
-	}
+	// Set dummy credentials for embedded emulator
+	options.EnvVars["AWS_ACCESS_KEY_ID"] = "test"
+	options.EnvVars["AWS_SECRET_ACCESS_KEY"] = "test"
 
 	return nil
 }

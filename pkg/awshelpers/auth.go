@@ -3,6 +3,7 @@ package awshelpers
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"os"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -10,35 +11,20 @@ import (
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
-
-	"github.com/robmorgan/infraspec/internal/config"
 )
 
 const (
 	AuthAssumeRoleEnvVar = "INFRASPEC_IAM_ROLE" // OS environment variable name through which Assume Role ARN may be passed for authentication
-	// InfraspecCloudAccessKeyID is the access key ID used when authenticating with an InfraSpec Cloud token
-	InfraspecCloudAccessKeyID        = "infraspec-api"
-	InfraspecCloudDefaultEndpointURL = "https://infraspec.sh"
 )
 
 // NewAuthenticatedSession creates an AWS Config following to standard AWS authentication workflow.
-// If an InfraSpec Cloud token is configured, it uses that token as the secret access key with "infraspec-api" as the access key ID.
+// If AWS_ENDPOINT_URL points to localhost (embedded emulator mode), uses dummy credentials.
 // If `INFRASPEC_IAM_ROLE` environment variable is set, it assumes IAM role specified in it.
 // Otherwise, uses default credentials.
 func NewAuthenticatedSession(region string) (*aws.Config, error) {
-	if config.UseInfraspecVirtualCloud() {
-		config.Logging.Logger.Info("Using InfraSpec Virtual Cloud")
-
-		cloudToken, err := config.GetInfraspecCloudToken()
-		if err != nil {
-			return nil, fmt.Errorf("failed to get InfraSpec Cloud token: %w", err)
-		}
-
-		if cloudToken == "" {
-			return nil, fmt.Errorf("virtual cloud is enabled but no token provided: set INFRASPEC_CLOUD_TOKEN environment variable or configure token in config file to use virtual cloud. To use real AWS instead, don't specify virtual cloud with --virtual-cloud")
-		}
-
-		return NewAuthenticatedSessionFromInfraspecCloudToken(region, cloudToken)
+	// If endpoint is localhost (embedded emulator), use dummy credentials
+	if endpoint := os.Getenv("AWS_ENDPOINT_URL"); isLocalhost(endpoint) {
+		return NewAuthenticatedSessionWithCredentials(region, "test", "test")
 	}
 
 	// Fall back to existing behavior
@@ -47,6 +33,19 @@ func NewAuthenticatedSession(region string) (*aws.Config, error) {
 	}
 
 	return NewAuthenticatedSessionFromDefaultCredentials(region)
+}
+
+// isLocalhost checks if the given endpoint URL points to localhost.
+func isLocalhost(endpoint string) bool {
+	if endpoint == "" {
+		return false
+	}
+	u, err := url.Parse(endpoint)
+	if err != nil {
+		return false
+	}
+	host := u.Hostname()
+	return host == "localhost" || host == "127.0.0.1" || host == "::1"
 }
 
 // NewAuthenticatedSessionWithDefaultRegion creates an AWS Config with the default region.
@@ -61,16 +60,15 @@ func NewAuthenticatedSessionWithDefaultRegion() (*aws.Config, error) {
 	return NewAuthenticatedSession(region)
 }
 
-// NewAuthenticatedSessionFromInfraspecCloudToken creates an AWS Config using the InfraSpec Cloud token as the secret access key.
-
-func NewAuthenticatedSessionFromInfraspecCloudToken(region, token string) (*aws.Config, error) {
+// NewAuthenticatedSessionWithCredentials creates an AWS Config using the provided credentials.
+func NewAuthenticatedSessionWithCredentials(region, accessKeyID, secretAccessKey string) (*aws.Config, error) {
 	cfg, err := awsconfig.LoadDefaultConfig(
 		context.Background(),
 		awsconfig.WithRegion(region),
 		awsconfig.WithCredentialsProvider(credentials.StaticCredentialsProvider{
 			Value: aws.Credentials{
-				AccessKeyID:     InfraspecCloudAccessKeyID,
-				SecretAccessKey: token,
+				AccessKeyID:     accessKeyID,
+				SecretAccessKey: secretAccessKey,
 			},
 		}),
 	)
