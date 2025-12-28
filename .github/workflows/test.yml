@@ -101,7 +101,7 @@ jobs:
           terraform_wrapper: false
 
       - name: Cache Terraform providers
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.terraform.d/plugin-cache
           key: terraform-providers-${{ matrix.service }}-${{ hashFiles('**/*.tf') }}
