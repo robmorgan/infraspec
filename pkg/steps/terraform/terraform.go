@@ -195,7 +195,9 @@ func newTerraformOutputContainsStep(ctx context.Context, outputName, expectedVal
 // This configures Terraform/OpenTofu to use the embedded emulator instead of real AWS.
 //
 // The function sets service-specific AWS_ENDPOINT_URL_* environment variables that are
-// automatically recognized by the AWS provider. All services use the same localhost endpoint.
+// automatically recognized by the AWS provider. For localhost endpoints, nip.io is used
+// to enable wildcard DNS resolution for services like S3 Control that use account-ID-prefixed
+// hostnames (e.g., 123456789012.s3-control.127.0.0.1.nip.io resolves to 127.0.0.1).
 // See: https://search.opentofu.org/provider/opentofu/aws/v6.1.0/docs/guides/custom-service-endpoints
 func configureVirtualCloudEndpoints(options *iacprovisioner.Options, workingDir string) error {
 	// Check if AWS_ENDPOINT_URL is set (indicates embedded emulator mode)
@@ -207,27 +209,29 @@ func configureVirtualCloudEndpoints(options *iacprovisioner.Options, workingDir 
 
 	config.Logging.Logger.Infof("Configuring embedded emulator endpoints for Terraform/OpenTofu")
 
-	// List of AWS services to configure endpoints for
-	// All services use the same localhost endpoint in embedded mode
-	services := []string{
-		"DYNAMODB",
-		"STS",
-		"RDS",
-		"S3",
-		"S3_CONTROL",
-		"EC2",
-		"SSM",
-		"APPLICATION_AUTO_SCALING",
-		"IAM",
-		"SQS",
-		"LAMBDA",
+	// Map of AWS SDK service identifiers to subdomain names
+	// For localhost endpoints, BuildServiceEndpoint uses nip.io for wildcard DNS support
+	serviceMap := map[string]string{
+		"DYNAMODB":                 "dynamodb",
+		"STS":                      "sts",
+		"RDS":                      "rds",
+		"S3":                       "s3",
+		"S3_CONTROL":               "s3-control",
+		"EC2":                      "ec2",
+		"SSM":                      "ssm",
+		"APPLICATION_AUTO_SCALING": "autoscaling",
+		"IAM":                      "iam",
+		"SQS":                      "sqs",
+		"LAMBDA":                   "lambda",
 	}
 
 	// Set service-specific endpoint environment variables
-	for _, svc := range services {
-		envVar := fmt.Sprintf("AWS_ENDPOINT_URL_%s", svc)
-		options.EnvVars[envVar] = endpoint
-		config.Logging.Logger.Debugf("Setting %s=%s", envVar, endpoint)
+	for envVarSuffix, subdomain := range serviceMap {
+		envVar := fmt.Sprintf("AWS_ENDPOINT_URL_%s", envVarSuffix)
+		// Build service-specific endpoint (uses nip.io for localhost to enable wildcard DNS)
+		serviceEndpoint := awshelpers.BuildServiceEndpoint(endpoint, subdomain)
+		options.EnvVars[envVar] = serviceEndpoint
+		config.Logging.Logger.Debugf("Setting %s=%s", envVar, serviceEndpoint)
 	}
 
 	// Set dummy credentials for embedded emulator
