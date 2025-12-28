@@ -29,6 +29,16 @@ fmt: tidy ## tidy, format and imports
 	goimports -w `find . -type f -name '*.go' -not -path "./vendor/*"`
 	gci write --skip-generated -s standard -s default -s "prefix(github.com/robmorgan/infraspec)" .
 
+.PHONY: build
+build: ## build infraspec binary
+	@printf $(COLOR) "Building infraspec..."
+	go build -o bin/infraspec ./cmd/infraspec
+
+.PHONY: cloudmirror
+cloudmirror: ## build cloudmirror tool (maintainer-only)
+	@printf $(COLOR) "Building cloudmirror..."
+	go build -o bin/cloudmirror ./tools/cloudmirror/cmd/cloudmirror
+
 .PHONY: test
 test: ## run all unit tests
 	@printf $(COLOR) "Running tests..."
