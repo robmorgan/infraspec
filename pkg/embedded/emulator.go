@@ -112,11 +112,20 @@ func (e *Emulator) Start(ctx context.Context) error {
 	e.server = server.NewServer(e.port, e.router, nil, e.state)
 
 	// Start server in goroutine
+	errChan := make(chan error, 1)
 	go func() {
 		if err := e.server.StartWithListener(e.listener); err != nil && err != http.ErrServerClosed {
-			// Log error but don't panic - server might have been stopped
+			errChan <- err
 		}
 	}()
+
+	// Check for immediate failures
+	select {
+	case err := <-errChan:
+		return fmt.Errorf("server failed to start: %w", err)
+	case <-time.After(100 * time.Millisecond):
+		// Server likely started successfully
+	}
 
 	e.running = true
 	instance = e
