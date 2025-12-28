@@ -244,8 +244,218 @@ Virtual Cloud validates tokens from InfraSpec Cloud:
 - Check `cover.html` for test coverage reports
 - Use Go's built-in profiling tools for performance analysis
 
+## Embedded Virtual Cloud (Emulator)
+
+The Virtual Cloud AWS emulator is embedded directly in this repository under `internal/emulator/`.
+
+### Emulator Architecture
+
+```
+internal/emulator/
+├── auth/           # SigV4 authentication middleware
+├── core/           # Router, state management, types, validator
+├── graph/          # Resource relationship graph
+├── helpers/        # Utility functions
+├── metadata/       # Instance metadata service
+├── server/         # HTTP server setup and middleware
+├── services/       # AWS service implementations
+│   ├── applicationautoscaling/
+│   ├── dynamodb/
+│   ├── ec2/
+│   ├── iam/
+│   ├── lambda/
+│   ├── rds/
+│   ├── s3/
+│   ├── sqs/
+│   └── sts/
+└── testing/        # Test helpers
+```
+
+### ⛔ MANDATORY: Response Building Rules
+
+**STOP! Read this section BEFORE implementing ANY handler.**
+
+#### Banned Patterns - NEVER use these:
+
+```go
+// BANNED - manual XML construction
+responseXML := fmt.Sprintf(`<?xml version="1.0"...`, ...)
+xml.MarshalIndent(data, "    ", "  ")  // Only allowed in response_builder.go
+errorXML := fmt.Sprintf(`<ErrorResponse>...`)
+```
+
+#### Required Pattern - Always use service helpers:
+
+```go
+// For Query Protocol services (IAM, RDS, EC2, STS)
+type CreateRoleResult struct {
+    XMLName xml.Name `xml:"CreateRoleResult"`
+    Role    Role     `xml:"Role"`
+}
+
+result := CreateRoleResult{Role: role}
+return s.successResponse("CreateRole", result)
+```
+
+#### Protocol Requirements
+
+| Protocol | Services | Content-Type | Response Builder |
+|----------|----------|--------------|------------------|
+| Query | RDS, EC2, IAM, STS, SQS | `text/xml` | `BuildQueryResponse()` |
+| JSON | DynamoDB, CloudWatch | `application/x-amz-json-1.0` | `BuildJSONResponse()` |
+| REST-XML | S3 | `application/xml` | `BuildRESTXMLResponse()` |
+| REST-JSON | Lambda, API Gateway | `application/json` | `BuildRESTJSONResponse()` |
+
+#### Mandatory Verification
+
+Run this before completing any service work:
+
+```bash
+grep -rn 'fmt\.Sprintf.*<?xml\|fmt\.Sprintf.*<.*Response>\|xml\.MarshalIndent' internal/emulator/services/<service-name>/
+# Expected: NO OUTPUT. Any matches must be fixed.
+```
+
+### Adding a New AWS Service
+
+1. **Analyze with CloudMirror:**
+   ```bash
+   cd tools/cloudmirror && go build -o ../../bin/cloudmirror ./cmd/cloudmirror && cd ../..
+   ./bin/cloudmirror analyze --service=<name> --output=markdown
+   ```
+
+2. **Generate scaffold:**
+   ```bash
+   ./bin/cloudmirror scaffold --service=<name>
+   ```
+
+3. **Generate response types with correct XML tags:**
+   ```bash
+   ./bin/cloudmirror gentypes --service=<name>
+   ```
+
+4. **Implement handlers** following IAM service patterns in `internal/emulator/services/iam/`
+
+### Emulator Code Patterns
+
+#### Handler Pattern
+```go
+func (s *MyService) handleAction(ctx context.Context, params map[string]interface{}) (*emulator.AWSResponse, error) {
+    // 1. Extract and validate parameters
+    name := emulator.GetStringParam(params, "Name", "")
+    if name == "" {
+        return s.errorResponse(400, "ValidationError", "Name is required"), nil
+    }
+
+    // 2. Perform business logic and update state
+    resource := &types.Resource{Name: name}
+    s.state.Set(fmt.Sprintf("myservice:resources:%s", name), resource)
+
+    // 3. Return response using helper
+    return s.successResponse("CreateResource", CreateResourceResult{Resource: resource})
+}
+```
+
+#### State Key Pattern
+Use consistent keys: `<service>:<resource-type>:<identifier>`
+- `rds:instances:my-database`
+- `s3:buckets:my-bucket`
+- `iam:roles:my-role`
+
+#### File Naming Convention
+Use **snake_case** for handler file names:
+- `DeleteScheduledAction` → `delete_scheduled_action_handler.go`
+- `CreateDBInstance` → `create_db_instance_handler.go`
+
+### Service File Decomposition
+
+When a service file exceeds ~500 lines, decompose using this structure:
+
+```
+internal/emulator/services/<service>/
+├── service.go              (~300-500 lines - routing only)
+├── types.go                (shared types)
+├── response_types.go       (response structs)
+├── helpers.go              (parsing utilities, validation)
+├── graph_helpers.go        (resource graph methods)
+├── responses.go            (response builder methods)
+├── create_<resource>_handler.go
+├── describe_<resource>_handler.go
+└── delete_<resource>_handler.go
+```
+
+See `internal/emulator/services/ec2/` for a fully decomposed reference.
+
+### Unit Testing Requirements
+
+Every new AWS operation MUST have unit tests.
+
+```go
+func TestMyOperation_Success(t *testing.T) {
+    state := emulator.NewMemoryStateManager()
+    validator := emulator.NewSchemaValidator()
+    service := NewMyService(state, validator)
+
+    req := &emulator.AWSRequest{
+        Method:  "POST",
+        Headers: map[string]string{"Content-Type": "application/x-www-form-urlencoded"},
+        Body:    []byte("Action=MyOperation&Param1=value1"),
+        Action:  "MyOperation",
+    }
+
+    resp, err := service.HandleRequest(context.Background(), req)
+    require.NoError(t, err)
+    testhelpers.AssertResponseStatus(t, resp, 200)
+}
+```
+
+### Resource Relationship Graph
+
+The graph (`internal/emulator/graph/`) models AWS resource dependencies for:
+- **Dependency validation** - Block deletion of resources with dependents
+- **Relationship tracking** - Model containment, references, attachments
+- **Cross-service dependencies** - EC2 instances → IAM instance profiles
+
+#### Trust the Graph - Avoid Manual Dependency Checks
+
+```go
+// BAD - manual checks
+if len(profile.Roles) > 0 {
+    return s.errorResponse(409, "DeleteConflict", "...")
+}
+
+// GOOD - let graph handle it
+if err := s.unregisterResource("role", roleName); err != nil {
+    return s.errorResponse(409, "DeleteConflict", fmt.Sprintf("Cannot delete: %v", err)), nil
+}
+s.state.Delete(stateKey)  // Only after graph validation succeeds
+```
+
+#### Pre-Defined AWS Relationships (`internal/emulator/graph/aws_schema.go`)
+
+```go
+"ec2:subnet -> ec2:vpc":              {Type: RelContains, Required: true}
+"ec2:security-group -> ec2:vpc":      {Type: RelContains, Required: true}
+"ec2:instance -> ec2:subnet":         {Type: RelReferences}
+"iam:policy -> iam:role":             {Type: RelAssociatedWith}
+"iam:instance-profile -> iam:role":   {Type: RelContains}
+```
+
+### CloudMirror Commands
+
+```bash
+# Build CloudMirror
+cd tools/cloudmirror && go build -o ../../bin/cloudmirror ./cmd/cloudmirror && cd ../..
+
+# Common commands
+./bin/cloudmirror list implemented                    # List implemented services
+./bin/cloudmirror list missing                        # List unimplemented services
+./bin/cloudmirror analyze --service=<name>            # Analyze service coverage
+./bin/cloudmirror scaffold --service=<name>           # Generate service scaffold
+./bin/cloudmirror gentypes --service=<name>           # Generate Go types from Smithy models
+./bin/cloudmirror check --target=internal/emulator/services/rds/  # Code pattern analysis
+```
+
 ## Related Projects
 
-- **infraspec-api**: Virtual Cloud AWS emulator - see `infraspec-api/AGENTS.md`
 - **infraspec-cloud**: SaaS dashboard for API tokens - see `infraspec-cloud/CLAUDE.md`
 - **Root CLAUDE.md**: Cross-project workflows and integration guide
