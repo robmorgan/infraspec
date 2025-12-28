@@ -16,15 +16,15 @@ import (
 	"github.com/robmorgan/infraspec/internal/config"
 	"github.com/robmorgan/infraspec/internal/runner"
 	"github.com/robmorgan/infraspec/internal/telemetry"
-	"github.com/robmorgan/infraspec/pkg/awshelpers"
+	"github.com/robmorgan/infraspec/pkg/embedded"
 )
 
 var (
-	verbose      bool
-	format       string
-	virtualCloud bool
-	parallel     int // Number of features to run in parallel (0 = sequential)
-	timeout      int // Per-feature timeout in seconds (0 = no timeout)
+	verbose  bool
+	format   string
+	liveMode bool // If true, run against real AWS instead of embedded emulator
+	parallel int  // Number of features to run in parallel (0 = sequential)
+	timeout  int  // Per-feature timeout in seconds (0 = no timeout)
 
 	RootCmd = &cobra.Command{
 		Use:     "infraspec [features...]",
@@ -35,7 +35,10 @@ var (
 		Run: func(cmd *cobra.Command, args []string) {
 			startTime := time.Now()
 
-			cfg, err := config.LoadConfig("", virtualCloud)
+			// Default to embedded emulator (virtual cloud) unless --live is specified
+			useVirtualCloud := !liveMode
+
+			cfg, err := config.LoadConfig("", useVirtualCloud)
 			if err != nil {
 				fmt.Printf("Failed to load config: %v\n", err)
 				return
@@ -51,10 +54,29 @@ var (
 				config.Logging.Logger.Debug("Verbose mode enabled")
 			}
 
-			// Check Virtual Cloud API health if enabled
-			if err := awshelpers.CheckVirtualCloudHealth(); err != nil {
-				fmt.Printf("Virtual Cloud health check failed: %v\n", err)
-				return
+			// Start embedded emulator if not in live mode
+			var emu *embedded.Emulator
+			if !liveMode {
+				emu = embedded.New()
+				ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+				defer cancel()
+
+				if err := emu.Start(ctx); err != nil {
+					fmt.Printf("Failed to start embedded emulator: %v\n", err)
+					return
+				}
+				defer func() {
+					ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+					defer cancel()
+					emu.Stop(ctx)
+				}()
+
+				// Set endpoint for all AWS SDK calls
+				os.Setenv("AWS_ENDPOINT_URL", emu.Endpoint())
+
+				if verbose {
+					fmt.Printf("Embedded emulator started at %s\n", emu.Endpoint())
+				}
 			}
 
 			// Initialize telemetry
@@ -172,7 +194,7 @@ func init() {
 	// Global flags
 	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
 	RootCmd.PersistentFlags().StringVarP(&format, "format", "f", "default", "output format (default, text, pretty, junit, cucumber)")
-	RootCmd.PersistentFlags().BoolVar(&virtualCloud, "virtual-cloud", false, "use InfraSpec Virtual Cloud to emulate AWS-compatible APIs")
+	RootCmd.PersistentFlags().BoolVar(&liveMode, "live", false, "run tests against real AWS (default: uses embedded virtual cloud)")
 
 	// Parallel execution flags
 	RootCmd.PersistentFlags().IntVarP(&parallel, "parallel", "p", 0, "number of features to run in parallel (0 = sequential)")

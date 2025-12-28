@@ -4,22 +4,16 @@ import (
 	"net/url"
 	"os"
 	"strings"
-
-	"github.com/robmorgan/infraspec/internal/config"
 )
 
 // GetVirtualCloudEndpoint returns the endpoint URL to use for the given AWS service when
-// InfraSpec Virtual Cloud mode is enabled. The function looks for a service-specific
-// environment variable (e.g. AWS_ENDPOINT_URL_RDS) and falls back to AWS_ENDPOINT_URL,
-// finally defaulting to the InfraSpec Cloud endpoint with service-specific subdomain.
+// embedded emulator mode is enabled (detected via AWS_ENDPOINT_URL environment variable).
+// The function looks for a service-specific environment variable (e.g. AWS_ENDPOINT_URL_RDS)
+// and falls back to AWS_ENDPOINT_URL.
 //
 // If service is empty, returns the base endpoint URL without subdomain construction.
-// Otherwise, constructs a service-specific subdomain endpoint (e.g. https://dynamodb.infraspec.sh).
+// Otherwise, constructs a service-specific subdomain endpoint for non-localhost URLs.
 func GetVirtualCloudEndpoint(service string) (string, bool) {
-	if !config.UseInfraspecVirtualCloud() {
-		return "", false
-	}
-
 	// Check for service-specific environment variable first
 	if service != "" {
 		if endpoint := os.Getenv("AWS_ENDPOINT_URL_" + strings.ToUpper(service)); endpoint != "" {
@@ -27,7 +21,7 @@ func GetVirtualCloudEndpoint(service string) (string, bool) {
 		}
 	}
 
-	// Check for general AWS_ENDPOINT_URL
+	// Check for general AWS_ENDPOINT_URL (set by embedded emulator)
 	if endpoint := os.Getenv("AWS_ENDPOINT_URL"); endpoint != "" {
 		// If a service is specified, build service-specific subdomain endpoint
 		if service != "" {
@@ -36,12 +30,8 @@ func GetVirtualCloudEndpoint(service string) (string, bool) {
 		return endpoint, true
 	}
 
-	// Default to InfraSpec Cloud endpoint
-	baseEndpoint := InfraspecCloudDefaultEndpointURL
-	if service != "" {
-		return BuildServiceEndpoint(baseEndpoint, service), true
-	}
-	return baseEndpoint, true
+	// No endpoint configured - use real AWS
+	return "", false
 }
 
 // BuildServiceEndpoint constructs a service-specific endpoint URL by adding a subdomain

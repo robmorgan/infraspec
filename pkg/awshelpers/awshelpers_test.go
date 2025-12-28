@@ -17,58 +17,67 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func TestNewAuthenticatedSession_VirtualCloudWithoutToken(t *testing.T) {
+func TestNewAuthenticatedSession_LocalhostEndpoint(t *testing.T) {
 	// Save original env vars
-	originalVirtualCloud := os.Getenv("USE_INFRASPEC_VIRTUAL_CLOUD")
-	originalToken := os.Getenv("INFRASPEC_CLOUD_TOKEN")
+	originalEndpoint := os.Getenv("AWS_ENDPOINT_URL")
 	defer func() {
-		if originalVirtualCloud != "" {
-			os.Setenv("USE_INFRASPEC_VIRTUAL_CLOUD", originalVirtualCloud)
+		if originalEndpoint != "" {
+			os.Setenv("AWS_ENDPOINT_URL", originalEndpoint)
 		} else {
-			os.Unsetenv("USE_INFRASPEC_VIRTUAL_CLOUD")
-		}
-		if originalToken != "" {
-			os.Setenv("INFRASPEC_CLOUD_TOKEN", originalToken)
-		} else {
-			os.Unsetenv("INFRASPEC_CLOUD_TOKEN")
+			os.Unsetenv("AWS_ENDPOINT_URL")
 		}
 	}()
 
-	// Enable virtual cloud but don't provide token
-	os.Setenv("USE_INFRASPEC_VIRTUAL_CLOUD", "1")
-	os.Unsetenv("INFRASPEC_CLOUD_TOKEN")
+	// Set localhost endpoint (embedded emulator mode)
+	os.Setenv("AWS_ENDPOINT_URL", "http://localhost:8000")
 
-	// This should fail with clear error message
-	_, err := NewAuthenticatedSession("us-east-1")
-	require.Error(t, err)
-	assert.Contains(t, err.Error(), "virtual cloud is enabled but no token provided")
-	assert.Contains(t, err.Error(), "INFRASPEC_CLOUD_TOKEN")
-}
-
-func TestNewAuthenticatedSession_VirtualCloudWithToken(t *testing.T) {
-	// Save original env vars
-	originalVirtualCloud := os.Getenv("USE_INFRASPEC_VIRTUAL_CLOUD")
-	originalToken := os.Getenv("INFRASPEC_CLOUD_TOKEN")
-	defer func() {
-		if originalVirtualCloud != "" {
-			os.Setenv("USE_INFRASPEC_VIRTUAL_CLOUD", originalVirtualCloud)
-		} else {
-			os.Unsetenv("USE_INFRASPEC_VIRTUAL_CLOUD")
-		}
-		if originalToken != "" {
-			os.Setenv("INFRASPEC_CLOUD_TOKEN", originalToken)
-		} else {
-			os.Unsetenv("INFRASPEC_CLOUD_TOKEN")
-		}
-	}()
-
-	// Enable virtual cloud with token
-	os.Setenv("USE_INFRASPEC_VIRTUAL_CLOUD", "1")
-	os.Setenv("INFRASPEC_CLOUD_TOKEN", "test-token")
-
-	// This should succeed
+	// Should succeed with dummy credentials
 	cfg, err := NewAuthenticatedSession("us-east-1")
 	require.NoError(t, err)
 	require.NotNil(t, cfg)
 	assert.Equal(t, "us-east-1", cfg.Region)
+}
+
+func TestNewAuthenticatedSession_127001Endpoint(t *testing.T) {
+	// Save original env vars
+	originalEndpoint := os.Getenv("AWS_ENDPOINT_URL")
+	defer func() {
+		if originalEndpoint != "" {
+			os.Setenv("AWS_ENDPOINT_URL", originalEndpoint)
+		} else {
+			os.Unsetenv("AWS_ENDPOINT_URL")
+		}
+	}()
+
+	// Set 127.0.0.1 endpoint (embedded emulator mode)
+	os.Setenv("AWS_ENDPOINT_URL", "http://127.0.0.1:9000")
+
+	// Should succeed with dummy credentials
+	cfg, err := NewAuthenticatedSession("us-west-2")
+	require.NoError(t, err)
+	require.NotNil(t, cfg)
+	assert.Equal(t, "us-west-2", cfg.Region)
+}
+
+func TestIsLocalhost(t *testing.T) {
+	tests := []struct {
+		endpoint string
+		expected bool
+	}{
+		{"http://localhost:8000", true},
+		{"http://127.0.0.1:8000", true},
+		{"http://[::1]:8000", true},
+		{"https://localhost", true},
+		{"https://example.com", false},
+		{"http://api.example.com:8000", false},
+		{"", false},
+		{"://invalid", false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.endpoint, func(t *testing.T) {
+			result := isLocalhost(tt.endpoint)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
 }
