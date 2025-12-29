@@ -78,7 +78,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        service: [dynamodb, ec2, iam, rds, s3, sqs]
+        service: [dynamodb, ec2, iam, lambda, rds, s3, sqs]
         include:
           - service: terraform
             path: features/terraform/
