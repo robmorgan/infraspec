@@ -2,8 +2,8 @@ package aws
 
 import (
 	"context"
+	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/lambda"
@@ -77,11 +77,10 @@ func (a *AWSAsserter) AssertFunctionNotExists(functionName string) error {
 
 	// Check if the error is a ResourceNotFoundException
 	var notFoundErr *types.ResourceNotFoundException
-	if !strings.Contains(err.Error(), "ResourceNotFoundException") {
+	if !errors.As(err, &notFoundErr) {
 		// If it's a different error, return it
 		return fmt.Errorf("unexpected error checking Lambda function %s: %w", functionName, err)
 	}
-	_ = notFoundErr // Silence unused variable warning
 
 	return nil
 }
@@ -93,8 +92,13 @@ func (a *AWSAsserter) AssertFunctionRuntime(functionName, runtime string) error 
 		return err
 	}
 
-	if string(config.Runtime) != runtime {
-		return fmt.Errorf("expected runtime %s, but got %s", runtime, config.Runtime)
+	actualRuntime := string(config.Runtime)
+	if actualRuntime == "" {
+		return fmt.Errorf("Lambda function %s has no runtime configured", functionName)
+	}
+
+	if actualRuntime != runtime {
+		return fmt.Errorf("expected runtime %s, but got %s", runtime, actualRuntime)
 	}
 
 	return nil

@@ -3,7 +3,6 @@ package aws
 import (
 	"context"
 	"fmt"
-	"strconv"
 
 	"github.com/cucumber/godog"
 
@@ -317,6 +316,3 @@ func newEventSourceMappingFromOutputExistsStep(ctx context.Context, outputName s
 	}
 	return newEventSourceMappingExistsStep(ctx, uuid)
 }
-
-// Silence unused import warning for strconv
-var _ = strconv.Itoa
