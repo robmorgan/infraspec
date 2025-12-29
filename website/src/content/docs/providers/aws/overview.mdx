@@ -6,17 +6,31 @@ sidebarTitle: AWS
 # AWS Provider Overview
 
 InfraSpec's AWS provider allows you to validate AWS cloud resources easily using natural language scenarios written in
-Gherkin syntax. You can test your infrastructure directly in AWS or as part of Terraform-managed deployments.
+Gherkin syntax. You can test your infrastructure using the embedded AWS emulator (default) or against real AWS.
 
 ## Supported Services
 
-The AWS provider currently supports testing for three core AWS services:
+InfraSpec emulates **9 AWS services** with varying levels of API coverage:
 
-- **S3** - Simple Storage Service buckets
-- **RDS** - Relational Database Service instances
-- **DynamoDB** - NoSQL database tables
+| Service | Operations | Coverage | Description |
+|---------|------------|----------|-------------|
+| **STS** | 10/11 | 90% | Security Token Service - identity and credentials |
+| **SQS** | 16/23 | 69% | Simple Queue Service - message queuing |
+| **IAM** | 105/176 | 59% | Identity and Access Management - roles, policies, users |
+| **DynamoDB** | 33/57 | 57% | NoSQL database tables and items |
+| **S3** | 23/106 | 21% | Simple Storage Service - buckets and objects |
+| **Lambda** | 56/85 | 65% | Serverless functions, versions, aliases, URLs, layers |
+| **EC2** | 47/749 | 6% | Elastic Compute Cloud - instances, VPCs, security groups |
+| **RDS** | 9/163 | 5% | Relational Database Service - database instances |
+| **Auto Scaling** | 14/18 | 77% | Application Auto Scaling - scaling policies and targets |
 
-Each service provides comprehensive assertions for existence, configuration, security settings, and compliance checks.
+### Service Highlights
+
+- **Lambda** - Full support for functions, versions, aliases, function URLs, layers, event source mappings, and concurrency
+- **IAM** - Comprehensive support including 25+ AWS managed policies, roles, users, groups, and instance profiles
+- **DynamoDB** - Complete table operations, item CRUD, queries, scans, and GSI/LSI support
+- **S3** - Bucket operations, object storage, versioning, encryption, and public access blocks
+- **EC2** - Core instance lifecycle, VPCs, subnets, security groups, and key pairs
 
 ## Configuring AWS Credentials
 
