@@ -156,7 +156,7 @@ func (a *AWSAsserter) createS3Client() (*s3.Client, error) {
 
 	if endpoint, ok := awshelpers.GetVirtualCloudEndpoint("s3"); ok {
 		// When using virtual cloud, use virtual-hosted style URLs
-		// (e.g., http://bucket.s3.infraspec.sh/key or http://bucket.s3.localhost:8000/key)
+		// (e.g., http://bucket.s3.infraspec.sh/key or http://bucket.s3.localhost:3687/key)
 		// instead of path-style (e.g., http://s3.infraspec.sh/bucket/key)
 		opts = append(opts, func(o *s3.Options) {
 			o.EndpointResolver = s3.EndpointResolverFromURL(endpoint)

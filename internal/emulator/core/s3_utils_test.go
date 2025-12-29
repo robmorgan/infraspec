@@ -26,7 +26,7 @@ func TestParseS3Host(t *testing.T) {
 		},
 		{
 			name:           "virtual-hosted with port",
-			host:           "my-bucket.s3.localhost:8000",
+			host:           "my-bucket.s3.localhost:3687",
 			wantVirtual:    true,
 			wantBucketName: "my-bucket",
 		},
@@ -38,7 +38,7 @@ func TestParseS3Host(t *testing.T) {
 		},
 		{
 			name:           "legacy virtual-hosted with port",
-			host:           "my-bucket.localhost:8000",
+			host:           "my-bucket.localhost:3687",
 			wantVirtual:    true,
 			wantBucketName: "my-bucket",
 		},
@@ -57,7 +57,7 @@ func TestParseS3Host(t *testing.T) {
 		},
 		{
 			name:           "virtual-hosted with nip.io and port",
-			host:           "my-bucket.s3.127.0.0.1.nip.io:8000",
+			host:           "my-bucket.s3.127.0.0.1.nip.io:3687",
 			wantVirtual:    true,
 			wantBucketName: "my-bucket",
 		},
@@ -75,7 +75,7 @@ func TestParseS3Host(t *testing.T) {
 		},
 		{
 			name:           "path-style with nip.io and port",
-			host:           "s3.127.0.0.1.nip.io:8000",
+			host:           "s3.127.0.0.1.nip.io:3687",
 			wantVirtual:    false,
 			wantBucketName: "",
 		},
@@ -94,7 +94,7 @@ func TestParseS3Host(t *testing.T) {
 		},
 		{
 			name:           "path-style s3.localhost with port",
-			host:           "s3.localhost:8000",
+			host:           "s3.localhost:3687",
 			wantVirtual:    false,
 			wantBucketName: "",
 		},
@@ -113,7 +113,7 @@ func TestParseS3Host(t *testing.T) {
 		},
 		{
 			name:           "localhost with port",
-			host:           "localhost:8000",
+			host:           "localhost:3687",
 			wantVirtual:    false,
 			wantBucketName: "",
 		},
@@ -193,17 +193,17 @@ func TestIsS3Request(t *testing.T) {
 		{"legacy bucket.localhost", "my-bucket.localhost", true},
 		{"path-style s3.domain", "s3.infraspec.sh", true},
 		{"path-style s3.localhost", "s3.localhost", true},
-		{"path-style with port", "s3.localhost:8000", true},
+		{"path-style with port", "s3.localhost:3687", true},
 		// nip.io DNS service patterns
 		{"virtual-hosted nip.io", "my-bucket.s3.127.0.0.1.nip.io", true},
-		{"virtual-hosted nip.io with port", "my-bucket.s3.127.0.0.1.nip.io:8000", true},
+		{"virtual-hosted nip.io with port", "my-bucket.s3.127.0.0.1.nip.io:3687", true},
 		{"virtual-hosted sslip.io", "my-bucket.s3.127.0.0.1.sslip.io", true},
 		{"path-style nip.io", "s3.127.0.0.1.nip.io", true},
-		{"path-style nip.io with port", "s3.127.0.0.1.nip.io:8000", true},
+		{"path-style nip.io with port", "s3.127.0.0.1.nip.io:3687", true},
 		// Non-S3 requests
 		{"empty", "", false},
 		{"plain localhost", "localhost", false},
-		{"localhost with port", "localhost:8000", false},
+		{"localhost with port", "localhost:3687", false},
 		{"other service dynamodb", "dynamodb.infraspec.sh", false},
 		{"other service rds", "rds.infraspec.sh", false},
 	}
@@ -227,9 +227,9 @@ func TestExtractBucketNameFromHost(t *testing.T) {
 		{"virtual-hosted bucket.s3.domain", "my-bucket.s3.infraspec.sh", "my-bucket"},
 		{"virtual-hosted bucket.s3.localhost", "my-bucket.s3.localhost", "my-bucket"},
 		{"legacy bucket.localhost", "my-bucket.localhost", "my-bucket"},
-		{"with port", "my-bucket.s3.localhost:8000", "my-bucket"},
+		{"with port", "my-bucket.s3.localhost:3687", "my-bucket"},
 		{"virtual-hosted nip.io", "my-bucket.s3.127.0.0.1.nip.io", "my-bucket"},
-		{"virtual-hosted nip.io with port", "my-bucket.s3.127.0.0.1.nip.io:8000", "my-bucket"},
+		{"virtual-hosted nip.io with port", "my-bucket.s3.127.0.0.1.nip.io:3687", "my-bucket"},
 		{"virtual-hosted sslip.io", "my-bucket.s3.127.0.0.1.sslip.io", "my-bucket"},
 		{"path-style s3.domain", "s3.infraspec.sh", ""},
 		{"path-style s3.localhost", "s3.localhost", ""},

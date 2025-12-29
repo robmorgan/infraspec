@@ -232,7 +232,7 @@ Virtual Cloud validates tokens from InfraSpec Cloud:
 ## Troubleshooting
 
 ### Common Issues
-- **InfraSpec API connectivity**: Ensure InfraSpec API is running and accessible on port 8000
+- **InfraSpec API connectivity**: Ensure InfraSpec API is running and accessible on port 3687
 - **AWS credentials**: Check AWS configuration and permissions
 - **Go module issues**: Run `make tidy` to resolve dependencies
 - **Test failures**: Verify InfraSpec API services are running

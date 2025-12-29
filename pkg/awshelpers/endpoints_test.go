@@ -27,7 +27,7 @@ func TestGetVirtualCloudEndpoint(t *testing.T) {
 		{
 			name:                  "service-specific env var takes precedence",
 			service:               "dynamodb",
-			awsEndpointURL:        "http://localhost:8000",
+			awsEndpointURL:        "http://localhost:3687",
 			awsServiceEndpointURL: "http://custom-dynamodb:9000",
 			expectedEndpoint:      "http://custom-dynamodb:9000",
 			expectedOk:            true,
@@ -35,8 +35,8 @@ func TestGetVirtualCloudEndpoint(t *testing.T) {
 		{
 			name:             "builds nip.io endpoint for localhost",
 			service:          "rds",
-			awsEndpointURL:   "http://localhost:8000",
-			expectedEndpoint: "http://rds.127.0.0.1.nip.io:8000",
+			awsEndpointURL:   "http://localhost:3687",
+			expectedEndpoint: "http://rds.127.0.0.1.nip.io:3687",
 			expectedOk:       true,
 		},
 		{
@@ -49,8 +49,8 @@ func TestGetVirtualCloudEndpoint(t *testing.T) {
 		{
 			name:             "returns base endpoint when service is empty",
 			service:          "",
-			awsEndpointURL:   "http://localhost:8000",
-			expectedEndpoint: "http://localhost:8000",
+			awsEndpointURL:   "http://localhost:3687",
+			expectedEndpoint: "http://localhost:3687",
 			expectedOk:       true,
 		},
 		{
@@ -111,21 +111,21 @@ func TestBuildServiceEndpoint(t *testing.T) {
 		},
 		{
 			name:         "builds nip.io for localhost",
-			baseEndpoint: "http://localhost:8000",
+			baseEndpoint: "http://localhost:3687",
 			subdomain:    "rds",
-			expected:     "http://rds.127.0.0.1.nip.io:8000",
+			expected:     "http://rds.127.0.0.1.nip.io:3687",
 		},
 		{
 			name:         "builds nip.io for 127.0.0.1",
-			baseEndpoint: "http://127.0.0.1:8000",
+			baseEndpoint: "http://127.0.0.1:3687",
 			subdomain:    "s3",
-			expected:     "http://s3.127.0.0.1.nip.io:8000",
+			expected:     "http://s3.127.0.0.1.nip.io:3687",
 		},
 		{
 			name:         "builds nip.io for ::1",
-			baseEndpoint: "http://[::1]:8000",
+			baseEndpoint: "http://[::1]:3687",
 			subdomain:    "sts",
-			expected:     "http://sts.127.0.0.1.nip.io:8000",
+			expected:     "http://sts.127.0.0.1.nip.io:3687",
 		},
 		{
 			name:         "builds nip.io for localhost without port",
