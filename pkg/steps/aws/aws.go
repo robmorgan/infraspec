@@ -26,6 +26,9 @@ func RegisterSteps(sc *godog.ScenarioContext) {
 	// SQS steps
 	registerSQSSteps(sc)
 
+	// Lambda steps
+	registerLambdaSteps(sc)
+
 	// Generic AWS steps
 	sc.Step(`^the AWS resource "([^"]*)" should exist$`, newAWSResourceExistsStep)
 }
