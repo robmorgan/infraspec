@@ -24,7 +24,7 @@ that generated implementations work correctly.
 
 Examples:
   cloudmirror validate
-  cloudmirror validate --emulator-endpoint=http://localhost:8000
+  cloudmirror validate --emulator-endpoint=http://localhost:3687
   cloudmirror validate --filter=rds
   cloudmirror validate --tests-path=terraform/tests`,
 	Run: runValidate,
@@ -33,7 +33,7 @@ Examples:
 func init() {
 	rootCmd.AddCommand(validateCmd)
 
-	validateCmd.Flags().StringVar(&validateEmulatorEndpoint, "emulator-endpoint", "http://localhost:8000", "Emulator endpoint URL")
+	validateCmd.Flags().StringVar(&validateEmulatorEndpoint, "emulator-endpoint", "http://localhost:3687", "Emulator endpoint URL")
 	validateCmd.Flags().StringVar(&validateTestsPath, "tests-path", "terraform/tests", "Path to Terraform tests")
 	validateCmd.Flags().StringVar(&validateFilter, "filter", "", "Filter tests by service or operation")
 }

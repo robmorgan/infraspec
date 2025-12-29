@@ -39,8 +39,8 @@ func GetVirtualCloudEndpoint(service string) (string, bool) {
 // to the base endpoint. For example:
 //   - Base: "https://infraspec.sh" + Subdomain: "s3" = "https://s3.infraspec.sh"
 //   - Base: "https://infraspec.sh" + Subdomain: "dynamodb" = "https://dynamodb.infraspec.sh"
-//   - Base: "http://localhost:8000" + Subdomain: "s3" = "http://s3.127.0.0.1.nip.io:8000"
-//   - Base: "http://127.0.0.1:8000" + Subdomain: "s3" = "http://s3.127.0.0.1.nip.io:8000"
+//   - Base: "http://localhost:3687" + Subdomain: "s3" = "http://s3.127.0.0.1.nip.io:3687"
+//   - Base: "http://127.0.0.1:3687" + Subdomain: "s3" = "http://s3.127.0.0.1.nip.io:3687"
 //
 // For localhost/127.0.0.1, nip.io is used to enable wildcard DNS resolution for virtual-hosted
 // style S3 addressing (e.g., bucket.s3.127.0.0.1.nip.io resolves to 127.0.0.1).

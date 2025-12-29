@@ -34,7 +34,7 @@ func SetupAwsTestEnvironment() {
 	// Only set AWS_ENDPOINT_URL to localhost if Virtual Cloud mode is NOT enabled
 	// When Virtual Cloud is enabled, we want to use the InfraSpec Cloud API
 	if os.Getenv("USE_INFRASPEC_VIRTUAL_CLOUD") != "1" {
-		envVars["AWS_ENDPOINT_URL"] = "http://localhost:8000"
+		envVars["AWS_ENDPOINT_URL"] = "http://localhost:3687"
 	}
 
 	for key, value := range envVars {

@@ -5,9 +5,9 @@ services:
       context: ../../infraspec-api
       dockerfile: Dockerfile
     ports:
-      - "127.0.0.1:8000:8000"            # InfraSpec API endpoint
+      - "127.0.0.1:3687:3687"            # InfraSpec API endpoint
     environment:
-      - PORT=8000
+      - PORT=3687
       - DEBUG=${DEBUG:-0}
 
   httpbin:

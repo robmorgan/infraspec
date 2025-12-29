@@ -29,7 +29,7 @@ func TestNewAuthenticatedSession_LocalhostEndpoint(t *testing.T) {
 	}()
 
 	// Set localhost endpoint (embedded emulator mode)
-	os.Setenv("AWS_ENDPOINT_URL", "http://localhost:8000")
+	os.Setenv("AWS_ENDPOINT_URL", "http://localhost:3687")
 
 	// Should succeed with dummy credentials
 	cfg, err := NewAuthenticatedSession("us-east-1")
@@ -64,12 +64,12 @@ func TestIsLocalhost(t *testing.T) {
 		endpoint string
 		expected bool
 	}{
-		{"http://localhost:8000", true},
-		{"http://127.0.0.1:8000", true},
-		{"http://[::1]:8000", true},
+		{"http://localhost:3687", true},
+		{"http://127.0.0.1:3687", true},
+		{"http://[::1]:3687", true},
 		{"https://localhost", true},
 		{"https://example.com", false},
-		{"http://api.example.com:8000", false},
+		{"http://api.example.com:3687", false},
 		{"", false},
 		{"://invalid", false},
 	}

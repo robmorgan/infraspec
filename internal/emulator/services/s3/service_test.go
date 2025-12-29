@@ -17,7 +17,7 @@ func createTestBucket(t *testing.T, service *S3Service, bucketName string) {
 		Path:   "/" + bucketName,
 		Headers: map[string]string{
 			"Content-Type": "application/xml",
-			"Host":         "s3.localhost:8000",
+			"Host":         "s3.localhost:3687",
 		},
 		Body:   []byte{},
 		Action: "CreateBucket",
@@ -42,7 +42,7 @@ func TestCreateBucket_Success(t *testing.T) {
 		Path:   "/test-bucket",
 		Headers: map[string]string{
 			"Content-Type": "application/xml",
-			"Host":         "s3.localhost:8000",
+			"Host":         "s3.localhost:3687",
 		},
 		Body:   []byte{},
 		Action: "CreateBucket",
@@ -71,7 +71,7 @@ func TestCreateBucket_AlreadyExists(t *testing.T) {
 		Path:   "/test-bucket",
 		Headers: map[string]string{
 			"Content-Type": "application/xml",
-			"Host":         "s3.localhost:8000",
+			"Host":         "s3.localhost:3687",
 		},
 		Body:   []byte{},
 		Action: "CreateBucket",
@@ -103,7 +103,7 @@ func TestDeleteBucket_Success(t *testing.T) {
 		Method: "DELETE",
 		Path:   "/test-bucket",
 		Headers: map[string]string{
-			"Host": "s3.localhost:8000",
+			"Host": "s3.localhost:3687",
 		},
 		Action: "DeleteBucket",
 	}
@@ -125,7 +125,7 @@ func TestDeleteBucket_NotFound(t *testing.T) {
 		Method: "DELETE",
 		Path:   "/nonexistent-bucket",
 		Headers: map[string]string{
-			"Host": "s3.localhost:8000",
+			"Host": "s3.localhost:3687",
 		},
 		Action: "DeleteBucket",
 	}
@@ -152,7 +152,7 @@ func TestListBuckets_Empty(t *testing.T) {
 		Method: "GET",
 		Path:   "/",
 		Headers: map[string]string{
-			"Host": "s3.localhost:8000",
+			"Host": "s3.localhost:3687",
 		},
 		Action: "ListBuckets",
 	}
@@ -189,7 +189,7 @@ func TestListBuckets_WithBuckets(t *testing.T) {
 		Method: "GET",
 		Path:   "/",
 		Headers: map[string]string{
-			"Host": "s3.localhost:8000",
+			"Host": "s3.localhost:3687",
 		},
 		Action: "ListBuckets",
 	}
@@ -231,7 +231,7 @@ func TestListBuckets_XMLSafe(t *testing.T) {
 		Method: "GET",
 		Path:   "/",
 		Headers: map[string]string{
-			"Host": "s3.localhost:8000",
+			"Host": "s3.localhost:3687",
 		},
 		Action: "ListBuckets",
 	}
@@ -265,7 +265,7 @@ func TestHeadBucket_Success(t *testing.T) {
 		Method: "HEAD",
 		Path:   "/test-bucket",
 		Headers: map[string]string{
-			"Host": "s3.localhost:8000",
+			"Host": "s3.localhost:3687",
 		},
 		Action: "HeadBucket",
 	}
@@ -287,7 +287,7 @@ func TestHeadBucket_NotFound(t *testing.T) {
 		Method: "HEAD",
 		Path:   "/nonexistent-bucket",
 		Headers: map[string]string{
-			"Host": "s3.localhost:8000",
+			"Host": "s3.localhost:3687",
 		},
 		Action: "HeadBucket",
 	}
@@ -315,7 +315,7 @@ func TestPutObject_Success(t *testing.T) {
 		Method: "PUT",
 		Path:   "/test-bucket/test-key",
 		Headers: map[string]string{
-			"Host":         "s3.localhost:8000",
+			"Host":         "s3.localhost:3687",
 			"Content-Type": "text/plain",
 		},
 		Body:   []byte("Hello, World!"),
@@ -342,7 +342,7 @@ func TestGetObject_Success(t *testing.T) {
 		Method: "PUT",
 		Path:   "/test-bucket/test-key",
 		Headers: map[string]string{
-			"Host":         "s3.localhost:8000",
+			"Host":         "s3.localhost:3687",
 			"Content-Type": "text/plain",
 		},
 		Body:   []byte("Hello, World!"),
@@ -355,7 +355,7 @@ func TestGetObject_Success(t *testing.T) {
 		Method: "GET",
 		Path:   "/test-bucket/test-key",
 		Headers: map[string]string{
-			"Host": "s3.localhost:8000",
+			"Host": "s3.localhost:3687",
 		},
 		Action: "GetObject",
 	}
@@ -382,7 +382,7 @@ func TestGetObject_NotFound(t *testing.T) {
 		Method: "GET",
 		Path:   "/test-bucket/nonexistent-key",
 		Headers: map[string]string{
-			"Host": "s3.localhost:8000",
+			"Host": "s3.localhost:3687",
 		},
 		Action: "GetObject",
 	}
@@ -411,7 +411,7 @@ func TestPutBucketVersioning_Success(t *testing.T) {
 		Method: "PUT",
 		Path:   "/test-bucket?versioning",
 		Headers: map[string]string{
-			"Host":         "s3.localhost:8000",
+			"Host":         "s3.localhost:3687",
 			"Content-Type": "application/xml",
 		},
 		Body:   []byte(`<VersioningConfiguration><Status>Enabled</Status></VersioningConfiguration>`),
@@ -438,7 +438,7 @@ func TestGetBucketVersioning_Success(t *testing.T) {
 		Method: "PUT",
 		Path:   "/test-bucket?versioning",
 		Headers: map[string]string{
-			"Host":         "s3.localhost:8000",
+			"Host":         "s3.localhost:3687",
 			"Content-Type": "application/xml",
 		},
 		Body:   []byte(`<VersioningConfiguration><Status>Enabled</Status></VersioningConfiguration>`),
@@ -451,7 +451,7 @@ func TestGetBucketVersioning_Success(t *testing.T) {
 		Method: "GET",
 		Path:   "/test-bucket?versioning",
 		Headers: map[string]string{
-			"Host": "s3.localhost:8000",
+			"Host": "s3.localhost:3687",
 		},
 		Action: "GetBucketVersioning",
 	}
@@ -478,7 +478,7 @@ func TestErrorResponse_XMLFormat(t *testing.T) {
 		Method: "GET",
 		Path:   "/nonexistent-bucket/some-key",
 		Headers: map[string]string{
-			"Host": "s3.localhost:8000",
+			"Host": "s3.localhost:3687",
 		},
 		Action: "GetObject",
 	}
@@ -517,7 +517,7 @@ func TestListObjectsV2_EmptyBucket(t *testing.T) {
 		Method: "GET",
 		Path:   "/test-bucket?list-type=2",
 		Headers: map[string]string{
-			"Host": "s3.localhost:8000",
+			"Host": "s3.localhost:3687",
 		},
 		Action: "ListObjectsV2",
 	}
@@ -545,7 +545,7 @@ func TestListObjectsV2_WithObjects(t *testing.T) {
 			Method: "PUT",
 			Path:   "/test-bucket/" + key,
 			Headers: map[string]string{
-				"Host":         "s3.localhost:8000",
+				"Host":         "s3.localhost:3687",
 				"Content-Type": "text/plain",
 			},
 			Body:   []byte("content"),
@@ -558,7 +558,7 @@ func TestListObjectsV2_WithObjects(t *testing.T) {
 		Method: "GET",
 		Path:   "/test-bucket?list-type=2",
 		Headers: map[string]string{
-			"Host": "s3.localhost:8000",
+			"Host": "s3.localhost:3687",
 		},
 		Action: "ListObjectsV2",
 	}
@@ -590,7 +590,7 @@ func TestPutPublicAccessBlock_Success(t *testing.T) {
 		Method: "PUT",
 		Path:   "/test-bucket?publicAccessBlock",
 		Headers: map[string]string{
-			"Host":         "s3.localhost:8000",
+			"Host":         "s3.localhost:3687",
 			"Content-Type": "application/xml",
 		},
 		Body: []byte(`<PublicAccessBlockConfiguration>
@@ -623,7 +623,7 @@ func TestGetPublicAccessBlock_Success(t *testing.T) {
 		Method: "PUT",
 		Path:   "/test-bucket?publicAccessBlock",
 		Headers: map[string]string{
-			"Host":         "s3.localhost:8000",
+			"Host":         "s3.localhost:3687",
 			"Content-Type": "application/xml",
 		},
 		Body: []byte(`<PublicAccessBlockConfiguration>
@@ -638,7 +638,7 @@ func TestGetPublicAccessBlock_Success(t *testing.T) {
 		Method: "GET",
 		Path:   "/test-bucket?publicAccessBlock",
 		Headers: map[string]string{
-			"Host": "s3.localhost:8000",
+			"Host": "s3.localhost:3687",
 		},
 		Action: "GetPublicAccessBlock",
 	}
@@ -667,7 +667,7 @@ func TestPutBucketEncryption_Success(t *testing.T) {
 		Method: "PUT",
 		Path:   "/test-bucket?encryption",
 		Headers: map[string]string{
-			"Host":         "test-bucket.s3.localhost:8000",
+			"Host":         "test-bucket.s3.localhost:3687",
 			"Content-Type": "application/xml",
 		},
 		Body: []byte(`<?xml version="1.0" encoding="UTF-8"?>
@@ -702,7 +702,7 @@ func TestGetBucketEncryption_Success(t *testing.T) {
 		Method: "PUT",
 		Path:   "/test-bucket?encryption",
 		Headers: map[string]string{
-			"Host":         "test-bucket.s3.localhost:8000",
+			"Host":         "test-bucket.s3.localhost:3687",
 			"Content-Type": "application/xml",
 		},
 		Body: []byte(`<?xml version="1.0" encoding="UTF-8"?>
@@ -723,7 +723,7 @@ func TestGetBucketEncryption_Success(t *testing.T) {
 		Method: "GET",
 		Path:   "/test-bucket?encryption",
 		Headers: map[string]string{
-			"Host": "test-bucket.s3.localhost:8000",
+			"Host": "test-bucket.s3.localhost:3687",
 		},
 		Action: "GetBucketEncryption",
 	}
@@ -755,7 +755,7 @@ func TestGetBucketEncryption_NotFound(t *testing.T) {
 		Method: "GET",
 		Path:   "/test-bucket?encryption",
 		Headers: map[string]string{
-			"Host": "test-bucket.s3.localhost:8000",
+			"Host": "test-bucket.s3.localhost:3687",
 		},
 		Action: "GetBucketEncryption",
 	}
@@ -781,7 +781,7 @@ func TestBucketEncryption_BucketKeyEnabledFalse(t *testing.T) {
 		Method: "PUT",
 		Path:   "/test-bucket?encryption",
 		Headers: map[string]string{
-			"Host":         "test-bucket.s3.localhost:8000",
+			"Host":         "test-bucket.s3.localhost:3687",
 			"Content-Type": "application/xml",
 		},
 		Body: []byte(`<?xml version="1.0" encoding="UTF-8"?>
@@ -802,7 +802,7 @@ func TestBucketEncryption_BucketKeyEnabledFalse(t *testing.T) {
 		Method: "GET",
 		Path:   "/test-bucket?encryption",
 		Headers: map[string]string{
-			"Host": "test-bucket.s3.localhost:8000",
+			"Host": "test-bucket.s3.localhost:3687",
 		},
 		Action: "GetBucketEncryption",
 	}
@@ -835,7 +835,7 @@ func TestInvalidAction(t *testing.T) {
 		Method: "POST",
 		Path:   "/",
 		Headers: map[string]string{
-			"Host": "s3.localhost:8000",
+			"Host": "s3.localhost:3687",
 		},
 		Action: "NonExistentAction",
 	}

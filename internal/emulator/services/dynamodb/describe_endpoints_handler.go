@@ -16,7 +16,7 @@ func (s *DynamoDBService) describeEndpoints(ctx context.Context) (*emulator.AWSR
 	response := map[string]interface{}{
 		"Endpoints": []map[string]interface{}{
 			{
-				"Address":              "localhost:8000",
+				"Address":              "localhost:3687",
 				"CachePeriodInMinutes": 1440,
 			},
 		},

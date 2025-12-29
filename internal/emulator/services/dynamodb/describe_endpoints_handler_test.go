@@ -42,7 +42,7 @@ func TestDescribeEndpoints_Success(t *testing.T) {
 
 	endpoint, ok := endpoints[0].(map[string]interface{})
 	require.True(t, ok, "Endpoint should be an object")
-	assert.Equal(t, "localhost:8000", endpoint["Address"])
+	assert.Equal(t, "localhost:3687", endpoint["Address"])
 	assert.Equal(t, float64(1440), endpoint["CachePeriodInMinutes"])
 }
 
