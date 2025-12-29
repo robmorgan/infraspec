@@ -298,9 +298,7 @@ func (s *RDSService) deleteDBInstance(ctx context.Context, params map[string]int
 	}
 
 	// Schedule removal of the instance after delay
-	// Use 120 seconds to allow Terraform's polling to complete
-	// Terraform polls every 10s and may take 60-90s to complete delete wait
-	s.removeDBInstanceAfterDelay(identifier, 120*time.Second)
+	s.removeDBInstanceAfterDelay(identifier, 5*time.Second)
 
 	return s.successResponse("DeleteDBInstance", DeleteDBInstanceResult{DBInstance: &instance})
 }
