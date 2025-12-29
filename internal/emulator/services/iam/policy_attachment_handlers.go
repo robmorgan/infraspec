@@ -26,12 +26,16 @@ func (s *IAMService) attachRolePolicy(ctx context.Context, params map[string]int
 		return s.errorResponse(404, "NoSuchEntity", fmt.Sprintf("The role with name %s cannot be found.", roleName)), nil
 	}
 
-	// Verify policy exists
 	policyName := extractPolicyNameFromArn(policyArn)
-	policyKey := fmt.Sprintf("iam:policy:%s:%s", defaultAccountID, policyName)
-	var policy XMLPolicy
-	if err := s.state.Get(policyKey, &policy); err != nil {
-		return s.errorResponse(404, "NoSuchEntity", fmt.Sprintf("Policy %s does not exist.", policyArn)), nil
+	isAWSManaged := isAWSManagedPolicyArn(policyArn)
+
+	// Verify policy exists (skip for AWS managed policies - they always exist)
+	if !isAWSManaged {
+		policyKey := fmt.Sprintf("iam:policy:%s:%s", defaultAccountID, policyName)
+		var policy XMLPolicy
+		if err := s.state.Get(policyKey, &policy); err != nil {
+			return s.errorResponse(404, "NoSuchEntity", fmt.Sprintf("Policy %s does not exist.", policyArn)), nil
+		}
 	}
 
 	// Add to role attachments
@@ -56,23 +60,27 @@ func (s *IAMService) attachRolePolicy(ctx context.Context, params map[string]int
 
 	// Add relationship in graph: policy -> role (policy attachment depends on role)
 	// This edge direction means: deleting the role will fail if policies are attached
-	if err := s.addRelationship("policy", policyName, "role", roleName, graph.RelAssociatedWith); err != nil {
-		if s.isStrictMode() {
-			// Rollback: remove the policy from attachments
-			attachments.PolicyArns = attachments.PolicyArns[:len(attachments.PolicyArns)-1]
-			s.state.Set(attachKey, &attachments)
-			return s.errorResponse(500, "InternalFailure", fmt.Sprintf("Failed to create role-policy relationship: %v", err)), nil
+	// Skip graph relationship for AWS managed policies (they're not in the graph)
+	if !isAWSManaged {
+		if err := s.addRelationship("policy", policyName, "role", roleName, graph.RelAssociatedWith); err != nil {
+			if s.isStrictMode() {
+				// Rollback: remove the policy from attachments
+				attachments.PolicyArns = attachments.PolicyArns[:len(attachments.PolicyArns)-1]
+				s.state.Set(attachKey, &attachments)
+				return s.errorResponse(500, "InternalFailure", fmt.Sprintf("Failed to create role-policy relationship: %v", err)), nil
+			}
+			log.Printf("Warning: failed to add role-policy relationship in graph: %v", err)
 		}
-		log.Printf("Warning: failed to add role-policy relationship in graph: %v", err)
-	}
 
-	// Increment attachment count on policy atomically
-	var policyToUpdate XMLPolicy
-	if err := s.state.Update(policyKey, &policyToUpdate, func() error {
-		policyToUpdate.AttachmentCount++
-		return nil
-	}); err != nil {
-		return s.errorResponse(500, "InternalFailure", "Failed to update policy attachment count"), nil
+		// Increment attachment count on policy atomically (only for customer-managed policies)
+		policyKey := fmt.Sprintf("iam:policy:%s:%s", defaultAccountID, policyName)
+		var policyToUpdate XMLPolicy
+		if err := s.state.Update(policyKey, &policyToUpdate, func() error {
+			policyToUpdate.AttachmentCount++
+			return nil
+		}); err != nil {
+			return s.errorResponse(500, "InternalFailure", "Failed to update policy attachment count"), nil
+		}
 	}
 
 	return s.successResponse("AttachRolePolicy", EmptyResult{})
@@ -122,22 +130,27 @@ func (s *IAMService) detachRolePolicy(ctx context.Context, params map[string]int
 		return s.errorResponse(500, "InternalFailure", "Failed to detach policy"), nil
 	}
 
-	// Remove relationship in graph: policy -> role
 	policyName := extractPolicyNameFromArn(policyArn)
-	if err := s.removeRelationship("policy", policyName, "role", roleName, graph.RelAssociatedWith); err != nil {
-		log.Printf("Warning: failed to remove role-policy relationship in graph: %v", err)
-	}
+	isAWSManaged := isAWSManagedPolicyArn(policyArn)
 
-	// Decrement attachment count on policy atomically
-	policyKey := fmt.Sprintf("iam:policy:%s:%s", defaultAccountID, policyName)
-	var policyToUpdate XMLPolicy
-	// Use Update for atomic decrement; ignore error if policy was deleted
-	_ = s.state.Update(policyKey, &policyToUpdate, func() error {
-		if policyToUpdate.AttachmentCount > 0 {
-			policyToUpdate.AttachmentCount--
+	// Skip graph and attachment count updates for AWS managed policies
+	if !isAWSManaged {
+		// Remove relationship in graph: policy -> role
+		if err := s.removeRelationship("policy", policyName, "role", roleName, graph.RelAssociatedWith); err != nil {
+			log.Printf("Warning: failed to remove role-policy relationship in graph: %v", err)
 		}
-		return nil
-	})
+
+		// Decrement attachment count on policy atomically
+		policyKey := fmt.Sprintf("iam:policy:%s:%s", defaultAccountID, policyName)
+		var policyToUpdate XMLPolicy
+		// Use Update for atomic decrement; ignore error if policy was deleted
+		_ = s.state.Update(policyKey, &policyToUpdate, func() error {
+			if policyToUpdate.AttachmentCount > 0 {
+				policyToUpdate.AttachmentCount--
+			}
+			return nil
+		})
+	}
 
 	return s.successResponse("DetachRolePolicy", EmptyResult{})
 }

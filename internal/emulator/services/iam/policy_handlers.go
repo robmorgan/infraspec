@@ -93,6 +93,12 @@ func (s *IAMService) getPolicy(ctx context.Context, params map[string]interface{
 		return s.errorResponse(400, "InvalidInput", "Invalid PolicyArn format"), nil
 	}
 
+	// Check if this is an AWS managed policy
+	if managedPolicy := getAWSManagedPolicy(policyArn); managedPolicy != nil {
+		result := GetPolicyResult{Policy: managedPolicy.toXMLPolicy()}
+		return s.successResponse("GetPolicy", result)
+	}
+
 	var policy XMLPolicy
 	stateKey := fmt.Sprintf("iam:policy:%s:%s", defaultAccountID, policyName)
 	if err := s.state.Get(stateKey, &policy); err != nil {
@@ -117,6 +123,16 @@ func (s *IAMService) getPolicyVersion(ctx context.Context, params map[string]int
 	policyName := extractPolicyNameFromArn(policyArn)
 	if policyName == "" {
 		return s.errorResponse(400, "InvalidInput", "Invalid PolicyArn format"), nil
+	}
+
+	// Check if this is an AWS managed policy
+	if managedPolicy := getAWSManagedPolicy(policyArn); managedPolicy != nil {
+		// AWS managed policies only have v1
+		if versionId != "v1" {
+			return s.errorResponse(404, "NoSuchEntity", fmt.Sprintf("Policy version %s does not exist.", versionId)), nil
+		}
+		result := GetPolicyVersionResult{PolicyVersion: managedPolicy.toXMLPolicyVersion()}
+		return s.successResponse("GetPolicyVersion", result)
 	}
 
 	var version XMLPolicyVersion
