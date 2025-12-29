@@ -1,390 +1,5236 @@
 {
-  "generatedAt": "2025-12-19T00:00:00Z",
+  "generatedAt": "2025-12-29T11:12:33.508179Z",
   "services": [
     {
-      "name": "s3",
-      "fullName": "Amazon Simple Storage Service",
+      "name": "applicationautoscaling",
+      "fullName": "Application Auto Scaling",
       "status": "implemented",
-      "infraspec": {
-        "status": "implemented",
-        "operations": [
-          {"name": "AssertS3DescribeBuckets", "implemented": true, "description": "Check S3 describe buckets permission"},
-          {"name": "AssertBucketExists", "implemented": true, "description": "Check if bucket exists"},
-          {"name": "AssertBucketVersioning", "implemented": true, "description": "Check bucket versioning configuration"},
-          {"name": "AssertBucketEncryption", "implemented": true, "description": "Check bucket encryption configuration"},
-          {"name": "AssertBucketPublicAccessBlock", "implemented": true, "description": "Check bucket public access block"},
-          {"name": "AssertBucketServerAccessLogging", "implemented": true, "description": "Check bucket server access logging"}
-        ]
-      },
       "virtualCloud": {
         "status": "implemented",
-        "coveragePercent": 21.7,
-        "totalOperations": 106,
-        "implemented": 23,
+        "coveragePercent": 100,
+        "totalOperations": 14,
+        "implemented": 14,
         "operations": [
-          {"name": "CreateBucket", "implemented": true, "priority": "high"},
-          {"name": "DeleteBucket", "implemented": true, "priority": "high"},
-          {"name": "DeleteBucketPolicy", "implemented": true, "priority": "high"},
-          {"name": "DeletePublicAccessBlock", "implemented": true, "priority": "high"},
-          {"name": "GetBucketEncryption", "implemented": true, "priority": "high"},
-          {"name": "GetBucketLogging", "implemented": true, "priority": "high"},
-          {"name": "GetBucketPolicy", "implemented": true, "priority": "high"},
-          {"name": "GetBucketVersioning", "implemented": true, "priority": "high"},
-          {"name": "GetObject", "implemented": true, "priority": "high"},
-          {"name": "GetPublicAccessBlock", "implemented": true, "priority": "high"},
-          {"name": "HeadBucket", "implemented": true, "priority": "high"},
-          {"name": "HeadObject", "implemented": true, "priority": "high"},
-          {"name": "ListBuckets", "implemented": true, "priority": "high"},
-          {"name": "ListObjectsV2", "implemented": true, "priority": "high"},
-          {"name": "PutBucketEncryption", "implemented": true, "priority": "high"},
-          {"name": "PutBucketLogging", "implemented": true, "priority": "high"},
-          {"name": "PutBucketPolicy", "implemented": true, "priority": "high"},
-          {"name": "PutBucketVersioning", "implemented": true, "priority": "high"},
-          {"name": "PutObject", "implemented": true, "priority": "high"},
-          {"name": "PutPublicAccessBlock", "implemented": true, "priority": "high"},
-          {"name": "DeleteObject", "implemented": true, "priority": "medium"},
-          {"name": "CopyObject", "implemented": false, "priority": "high"}
-        ]
-      }
-    },
-    {
-      "name": "rds",
-      "fullName": "Amazon Relational Database Service",
-      "status": "implemented",
-      "infraspec": {
-        "status": "implemented",
-        "operations": [
-          {"name": "AssertRDSServiceAccess", "implemented": true, "description": "Check RDS service access permission"},
-          {"name": "AssertRDSDescribeInstances", "implemented": true, "description": "Check RDS describe instances permission"},
-          {"name": "AssertDBInstanceExists", "implemented": true, "description": "Check if DB instance exists"},
-          {"name": "AssertDBInstanceStatus", "implemented": true, "description": "Check DB instance status"},
-          {"name": "AssertDBInstanceClass", "implemented": true, "description": "Check DB instance class"},
-          {"name": "AssertDBInstanceEngine", "implemented": true, "description": "Check DB instance engine"},
-          {"name": "AssertDBInstanceStorage", "implemented": true, "description": "Check DB instance storage"},
-          {"name": "AssertDBInstanceMultiAZ", "implemented": true, "description": "Check DB instance Multi-AZ setting"},
-          {"name": "AssertDBInstanceEncryption", "implemented": true, "description": "Check DB instance encryption"},
-          {"name": "AssertDBInstancePubliclyAccessible", "implemented": true, "description": "Check DB instance public accessibility"},
-          {"name": "AssertDBInstanceTags", "implemented": true, "description": "Check DB instance tags"}
-        ]
-      },
-      "virtualCloud": {
-        "status": "implemented",
-        "coveragePercent": 5.5,
-        "totalOperations": 163,
-        "implemented": 9,
-        "operations": [
-          {"name": "CreateDBInstance", "implemented": true, "priority": "high"},
-          {"name": "DeleteDBInstance", "implemented": true, "priority": "high"},
-          {"name": "DescribeDBInstances", "implemented": true, "priority": "high"},
-          {"name": "ListTagsForResource", "implemented": true, "priority": "high"},
-          {"name": "AddTagsToResource", "implemented": true, "priority": "medium"},
-          {"name": "ModifyDBInstance", "implemented": true, "priority": "medium"},
-          {"name": "RebootDBInstance", "implemented": true, "priority": "medium"},
-          {"name": "StartDBInstance", "implemented": true, "priority": "medium"},
-          {"name": "StopDBInstance", "implemented": true, "priority": "medium"},
-          {"name": "CreateDBSnapshot", "implemented": false, "priority": "high"},
-          {"name": "DescribeDBSnapshots", "implemented": false, "priority": "high"}
+          {
+            "name": "DeleteScalingPolicy",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteScheduledAction",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeregisterScalableTarget",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "DescribeScalableTargets",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeScalingActivities",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeScalingPolicies",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeScheduledActions",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetPredictiveScalingForecast",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListTagsForResource",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "PutScalingPolicy",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "PutScheduledAction",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "RegisterScalableTarget",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "TagResource",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "UntagResource",
+            "implemented": true,
+            "priority": "low"
+          }
         ]
       }
     },
     {
       "name": "dynamodb",
-      "fullName": "Amazon DynamoDB",
+      "fullName": "DynamoDB",
       "status": "implemented",
       "infraspec": {
         "status": "implemented",
         "operations": [
-          {"name": "AssertTableExists", "implemented": true, "description": "Check if table exists"},
-          {"name": "AssertTableTags", "implemented": true, "description": "Check table tags"},
-          {"name": "AssertBillingMode", "implemented": true, "description": "Check table billing mode"},
-          {"name": "AssertCapacity", "implemented": true, "description": "Check table capacity"}
+          {
+            "name": "AssertTableExists",
+            "implemented": true,
+            "description": "Check table exists"
+          },
+          {
+            "name": "AssertTableTags",
+            "implemented": true,
+            "description": "Check table tags"
+          },
+          {
+            "name": "AssertBillingMode",
+            "implemented": true,
+            "description": "Check billing mode"
+          },
+          {
+            "name": "AssertCapacity",
+            "implemented": true,
+            "description": "Check capacity"
+          }
         ]
       },
       "virtualCloud": {
         "status": "implemented",
-        "coveragePercent": 49.1,
+        "coveragePercent": 57.89473684210527,
         "totalOperations": 57,
-        "implemented": 28,
+        "implemented": 33,
         "operations": [
-          {"name": "CreateBackup", "implemented": true, "priority": "high"},
-          {"name": "CreateGlobalTable", "implemented": true, "priority": "high"},
-          {"name": "CreateTable", "implemented": true, "priority": "high"},
-          {"name": "DeleteBackup", "implemented": true, "priority": "high"},
-          {"name": "DeleteItem", "implemented": true, "priority": "high"},
-          {"name": "DeleteTable", "implemented": true, "priority": "high"},
-          {"name": "DescribeBackup", "implemented": true, "priority": "high"},
-          {"name": "DescribeContinuousBackups", "implemented": true, "priority": "high"},
-          {"name": "DescribeContributorInsights", "implemented": true, "priority": "high"},
-          {"name": "DescribeEndpoints", "implemented": true, "priority": "high"},
-          {"name": "DescribeExport", "implemented": true, "priority": "high"},
-          {"name": "DescribeGlobalTable", "implemented": true, "priority": "high"},
-          {"name": "DescribeGlobalTableSettings", "implemented": true, "priority": "high"},
-          {"name": "DescribeImport", "implemented": true, "priority": "high"},
-          {"name": "DescribeTable", "implemented": true, "priority": "high"},
-          {"name": "DescribeTimeToLive", "implemented": true, "priority": "high"},
-          {"name": "GetItem", "implemented": true, "priority": "high"},
-          {"name": "ListBackups", "implemented": true, "priority": "high"},
-          {"name": "ListGlobalTables", "implemented": true, "priority": "high"},
-          {"name": "ListTables", "implemented": true, "priority": "high"},
-          {"name": "ListTagsOfResource", "implemented": true, "priority": "high"},
-          {"name": "PutItem", "implemented": true, "priority": "high"},
-          {"name": "TagResource", "implemented": true, "priority": "low"},
-          {"name": "UntagResource", "implemented": true, "priority": "low"},
-          {"name": "UpdateContinuousBackups", "implemented": true, "priority": "medium"},
-          {"name": "UpdateTable", "implemented": true, "priority": "medium"},
-          {"name": "UpdateTimeToLive", "implemented": true, "priority": "medium"},
-          {"name": "Query", "implemented": false, "priority": "high"},
-          {"name": "Scan", "implemented": false, "priority": "high"}
-        ]
-      }
-    },
-    {
-      "name": "sts",
-      "fullName": "AWS Security Token Service",
-      "status": "implemented",
-      "infraspec": {
-        "status": "unsupported",
-        "operations": []
-      },
-      "virtualCloud": {
-        "status": "implemented",
-        "coveragePercent": 90.9,
-        "totalOperations": 11,
-        "implemented": 10,
-        "operations": [
-          {"name": "GetAccessKeyInfo", "implemented": true, "priority": "high"},
-          {"name": "GetCallerIdentity", "implemented": true, "priority": "high"},
-          {"name": "GetFederationToken", "implemented": true, "priority": "high"},
-          {"name": "GetSessionToken", "implemented": true, "priority": "high"},
-          {"name": "AssumeRole", "implemented": true, "priority": "low"},
-          {"name": "AssumeRoleWithSAML", "implemented": true, "priority": "low"},
-          {"name": "AssumeRoleWithWebIdentity", "implemented": true, "priority": "low"},
-          {"name": "DecodeAuthorizationMessage", "implemented": true, "priority": "low"}
-        ]
-      }
-    },
-    {
-      "name": "applicationautoscaling",
-      "fullName": "AWS Application Auto Scaling",
-      "status": "implemented",
-      "infraspec": {
-        "status": "unsupported",
-        "operations": []
-      },
-      "virtualCloud": {
-        "status": "implemented",
-        "coveragePercent": 100.0,
-        "totalOperations": 14,
-        "implemented": 14,
-        "operations": [
-          {"name": "DeleteScalingPolicy", "implemented": true, "priority": "high"},
-          {"name": "DeleteScheduledAction", "implemented": true, "priority": "high"},
-          {"name": "DeregisterScalableTarget", "implemented": true, "priority": "high"},
-          {"name": "DescribeScalableTargets", "implemented": true, "priority": "high"},
-          {"name": "DescribeScalingActivities", "implemented": true, "priority": "high"},
-          {"name": "DescribeScalingPolicies", "implemented": true, "priority": "high"},
-          {"name": "DescribeScheduledActions", "implemented": true, "priority": "high"},
-          {"name": "ListTagsForResource", "implemented": true, "priority": "high"},
-          {"name": "PutScalingPolicy", "implemented": true, "priority": "high"},
-          {"name": "PutScheduledAction", "implemented": true, "priority": "high"},
-          {"name": "RegisterScalableTarget", "implemented": true, "priority": "high"},
-          {"name": "TagResource", "implemented": true, "priority": "low"},
-          {"name": "UntagResource", "implemented": true, "priority": "low"}
+          {
+            "name": "CreateBackup",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateGlobalTable",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateTable",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteBackup",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteItem",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteResourcePolicy",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteTable",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeBackup",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeContinuousBackups",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeContributorInsights",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeEndpoints",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeExport",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeGlobalTable",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeGlobalTableSettings",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeImport",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeKinesisStreamingDestination",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeLimits",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeTable",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeTableReplicaAutoScaling",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeTimeToLive",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetItem",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetResourcePolicy",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListBackups",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListTables",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListTagsOfResource",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "PutItem",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "Query",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "Scan",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "TagResource",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "UntagResource",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "UpdateContinuousBackups",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "UpdateTable",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "UpdateTimeToLive",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "ListContributorInsights",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListExports",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListGlobalTables",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListImports",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutResourcePolicy",
+            "implemented": false,
+            "priority": "high"
+          }
         ]
       }
     },
     {
       "name": "ec2",
-      "fullName": "Amazon Elastic Compute Cloud",
+      "fullName": "EC2",
       "status": "implemented",
       "infraspec": {
         "status": "implemented",
         "operations": [
-          {"name": "AssertEC2DescribeInstances", "implemented": true, "description": "Check EC2 describe instances permission"},
-          {"name": "AssertVpcExists", "implemented": true, "description": "Check if VPC exists"},
-          {"name": "AssertSecurityGroupExists", "implemented": true, "description": "Check if security group exists"}
+          {
+            "name": "AssertEC2InstanceExists",
+            "implemented": true,
+            "description": "Instance assertions"
+          },
+          {
+            "name": "AssertEC2InstanceState",
+            "implemented": true,
+            "description": "Check e c2 instance state"
+          },
+          {
+            "name": "AssertEC2InstanceType",
+            "implemented": true,
+            "description": "Check e c2 instance type"
+          },
+          {
+            "name": "AssertEC2InstanceAMI",
+            "implemented": true,
+            "description": "Check e c2 instance a m i"
+          },
+          {
+            "name": "AssertEC2InstanceSubnet",
+            "implemented": true,
+            "description": "Check e c2 instance subnet"
+          },
+          {
+            "name": "AssertEC2InstanceVPC",
+            "implemented": true,
+            "description": "Check e c2 instance v p c"
+          },
+          {
+            "name": "AssertEC2InstanceSecurityGroups",
+            "implemented": true,
+            "description": "Check e c2 instance security groups"
+          },
+          {
+            "name": "AssertEC2InstanceTags",
+            "implemented": true,
+            "description": "Check e c2 instance tags"
+          },
+          {
+            "name": "AssertVPCExists",
+            "implemented": true,
+            "description": "VPC assertions"
+          },
+          {
+            "name": "AssertVPCState",
+            "implemented": true,
+            "description": "Check v p c state"
+          },
+          {
+            "name": "AssertVPCCIDR",
+            "implemented": true,
+            "description": "Check v p c c i d r"
+          },
+          {
+            "name": "AssertVPCIsDefault",
+            "implemented": true,
+            "description": "Check v p c is default"
+          },
+          {
+            "name": "AssertVPCTags",
+            "implemented": true,
+            "description": "Check v p c tags"
+          },
+          {
+            "name": "AssertSubnetExists",
+            "implemented": true,
+            "description": "Subnet assertions"
+          },
+          {
+            "name": "AssertSubnetState",
+            "implemented": true,
+            "description": "Check subnet state"
+          },
+          {
+            "name": "AssertSubnetCIDR",
+            "implemented": true,
+            "description": "Check subnet c i d r"
+          },
+          {
+            "name": "AssertSubnetVPC",
+            "implemented": true,
+            "description": "Check subnet v p c"
+          },
+          {
+            "name": "AssertSubnetAvailabilityZone",
+            "implemented": true,
+            "description": "Check subnet availability zone"
+          },
+          {
+            "name": "AssertSubnetTags",
+            "implemented": true,
+            "description": "Check subnet tags"
+          },
+          {
+            "name": "AssertSecurityGroupExists",
+            "implemented": true,
+            "description": "Security Group assertions"
+          },
+          {
+            "name": "AssertSecurityGroupName",
+            "implemented": true,
+            "description": "Check security group name"
+          },
+          {
+            "name": "AssertSecurityGroupVPC",
+            "implemented": true,
+            "description": "Check security group v p c"
+          },
+          {
+            "name": "AssertSecurityGroupDescription",
+            "implemented": true,
+            "description": "Check security group description"
+          },
+          {
+            "name": "AssertSecurityGroupTags",
+            "implemented": true,
+            "description": "Check security group tags"
+          },
+          {
+            "name": "AssertInternetGatewayExists",
+            "implemented": true,
+            "description": "Internet Gateway assertions"
+          },
+          {
+            "name": "AssertInternetGatewayAttachedToVPC",
+            "implemented": true,
+            "description": "Check internet gateway attached to v p c"
+          },
+          {
+            "name": "AssertInternetGatewayTags",
+            "implemented": true,
+            "description": "Check internet gateway tags"
+          },
+          {
+            "name": "AssertEBSVolumeExists",
+            "implemented": true,
+            "description": "EBS Volume assertions"
+          },
+          {
+            "name": "AssertEBSVolumeState",
+            "implemented": true,
+            "description": "Check e b s volume state"
+          },
+          {
+            "name": "AssertEBSVolumeSize",
+            "implemented": true,
+            "description": "Check e b s volume size"
+          },
+          {
+            "name": "AssertEBSVolumeType",
+            "implemented": true,
+            "description": "Check e b s volume type"
+          },
+          {
+            "name": "AssertEBSVolumeTags",
+            "implemented": true,
+            "description": "Check e b s volume tags"
+          },
+          {
+            "name": "AssertKeyPairExists",
+            "implemented": true,
+            "description": "Key Pair assertions"
+          }
         ]
       },
       "virtualCloud": {
         "status": "implemented",
-        "coveragePercent": 6.3,
+        "coveragePercent": 6.275033377837117,
         "totalOperations": 749,
         "implemented": 47,
         "operations": [
-          {"name": "CreateInternetGateway", "implemented": true, "priority": "high"},
-          {"name": "CreateKeyPair", "implemented": true, "priority": "high"},
-          {"name": "CreateLaunchTemplate", "implemented": true, "priority": "high"},
-          {"name": "CreateSecurityGroup", "implemented": true, "priority": "high"},
-          {"name": "CreateSubnet", "implemented": true, "priority": "high"},
-          {"name": "CreateTags", "implemented": true, "priority": "high"},
-          {"name": "CreateVolume", "implemented": true, "priority": "high"},
-          {"name": "CreateVpc", "implemented": true, "priority": "high"},
-          {"name": "DeleteInternetGateway", "implemented": true, "priority": "high"},
-          {"name": "DeleteKeyPair", "implemented": true, "priority": "high"},
-          {"name": "DeleteLaunchTemplate", "implemented": true, "priority": "high"},
-          {"name": "DeleteSecurityGroup", "implemented": true, "priority": "high"},
-          {"name": "DeleteSubnet", "implemented": true, "priority": "high"},
-          {"name": "DeleteVolume", "implemented": true, "priority": "high"},
-          {"name": "DeleteVpc", "implemented": true, "priority": "high"},
-          {"name": "DescribeAvailabilityZones", "implemented": true, "priority": "high"},
-          {"name": "DescribeImages", "implemented": true, "priority": "high"},
-          {"name": "DescribeInstanceAttribute", "implemented": true, "priority": "high"},
-          {"name": "DescribeInstanceCreditSpecifications", "implemented": true, "priority": "high"},
-          {"name": "DescribeInstances", "implemented": true, "priority": "high"},
-          {"name": "DescribeInstanceTypes", "implemented": true, "priority": "high"},
-          {"name": "DescribeInternetGateways", "implemented": true, "priority": "high"},
-          {"name": "DescribeKeyPairs", "implemented": true, "priority": "high"},
-          {"name": "DescribeLaunchTemplates", "implemented": true, "priority": "high"},
-          {"name": "DescribeNetworkInterfaces", "implemented": true, "priority": "high"},
-          {"name": "DescribeRouteTables", "implemented": true, "priority": "high"},
-          {"name": "DescribeSecurityGroups", "implemented": true, "priority": "high"},
-          {"name": "DescribeSubnets", "implemented": true, "priority": "high"},
-          {"name": "DescribeVolumes", "implemented": true, "priority": "high"},
-          {"name": "DescribeVpcs", "implemented": true, "priority": "high"},
-          {"name": "RunInstances", "implemented": true, "priority": "high"},
-          {"name": "TerminateInstances", "implemented": true, "priority": "high"}
+          {
+            "name": "AttachInternetGateway",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "AttachVolume",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "AuthorizeSecurityGroupEgress",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "AuthorizeSecurityGroupIngress",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "CreateInternetGateway",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateKeyPair",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateLaunchTemplate",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateSecurityGroup",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateSubnet",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateTags",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateVolume",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateVpc",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteInternetGateway",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteKeyPair",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteLaunchTemplate",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteSecurityGroup",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteSubnet",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteTags",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteVolume",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteVpc",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeImages",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeInstanceAttribute",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeInstanceCreditSpecifications",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeInstanceTypes",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeInstances",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeInternetGateways",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeKeyPairs",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeLaunchTemplates",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeNetworkAcls",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeNetworkInterfaces",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeRouteTables",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeSecurityGroups",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeSubnets",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeTags",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVolumes",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVpcAttribute",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVpcs",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DetachInternetGateway",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "DetachVolume",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "ImportKeyPair",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "ModifyVpcAttribute",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "RevokeSecurityGroupEgress",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "RevokeSecurityGroupIngress",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "RunInstances",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "StartInstances",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "StopInstances",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "TerminateInstances",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "CreateCapacityManagerDataExport",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateCapacityReservation",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateCapacityReservationBySplitting",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateCapacityReservationFleet",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateCarrierGateway",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateClientVpnEndpoint",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateClientVpnRoute",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateCoipCidr",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateCoipPool",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateCustomerGateway",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateDefaultSubnet",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateDefaultVpc",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateDelegateMacVolumeOwnershipTask",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateDhcpOptions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateEgressOnlyInternetGateway",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateFleet",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateFlowLogs",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateFpgaImage",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateImage",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateImageUsageReport",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateInstanceConnectEndpoint",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateInstanceEventWindow",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateInstanceExportTask",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateInterruptibleCapacityReservationAllocation",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateIpam",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateIpamExternalResourceVerificationToken",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateIpamPolicy",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateIpamPool",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateIpamPrefixListResolver",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateIpamPrefixListResolverTarget",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateIpamResourceDiscovery",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateIpamScope",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateLaunchTemplateVersion",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateLocalGatewayRoute",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateLocalGatewayRouteTable",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateLocalGatewayRouteTableVirtualInterfaceGroupAssociation",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateLocalGatewayRouteTableVpcAssociation",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateLocalGatewayVirtualInterface",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateLocalGatewayVirtualInterfaceGroup",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateMacSystemIntegrityProtectionModificationTask",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateManagedPrefixList",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateNatGateway",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateNetworkAcl",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateNetworkAclEntry",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateNetworkInsightsAccessScope",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateNetworkInsightsPath",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateNetworkInterface",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateNetworkInterfacePermission",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreatePlacementGroup",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreatePublicIpv4Pool",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateReplaceRootVolumeTask",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateReservedInstancesListing",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateRestoreImageTask",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateRoute",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateRouteServer",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateRouteServerEndpoint",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateRouteServerPeer",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateRouteTable",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateSnapshot",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateSnapshots",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateSpotDatafeedSubscription",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateStoreImageTask",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateSubnetCidrReservation",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateTrafficMirrorFilter",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateTrafficMirrorFilterRule",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateTrafficMirrorSession",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateTrafficMirrorTarget",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateTransitGateway",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateTransitGatewayConnect",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateTransitGatewayConnectPeer",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateTransitGatewayMeteringPolicy",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateTransitGatewayMeteringPolicyEntry",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateTransitGatewayMulticastDomain",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateTransitGatewayPeeringAttachment",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateTransitGatewayPolicyTable",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateTransitGatewayPrefixListReference",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateTransitGatewayRoute",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateTransitGatewayRouteTable",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateTransitGatewayRouteTableAnnouncement",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateTransitGatewayVpcAttachment",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateVerifiedAccessEndpoint",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateVerifiedAccessGroup",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateVerifiedAccessInstance",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateVerifiedAccessTrustProvider",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateVpcBlockPublicAccessExclusion",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateVpcEncryptionControl",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateVpcEndpoint",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateVpcEndpointConnectionNotification",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateVpcEndpointServiceConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateVpcPeeringConnection",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateVpnConcentrator",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateVpnConnection",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateVpnConnectionRoute",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateVpnGateway",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteCapacityManagerDataExport",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteCarrierGateway",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteClientVpnEndpoint",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteClientVpnRoute",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteCoipCidr",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteCoipPool",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteCustomerGateway",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteDhcpOptions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteEgressOnlyInternetGateway",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteFleets",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteFlowLogs",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteFpgaImage",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteImageUsageReport",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteInstanceConnectEndpoint",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteInstanceEventWindow",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteIpam",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteIpamExternalResourceVerificationToken",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteIpamPolicy",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteIpamPool",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteIpamPrefixListResolver",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteIpamPrefixListResolverTarget",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteIpamResourceDiscovery",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteIpamScope",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteLaunchTemplateVersions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteLocalGatewayRoute",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteLocalGatewayRouteTable",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteLocalGatewayRouteTableVirtualInterfaceGroupAssociation",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteLocalGatewayRouteTableVpcAssociation",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteLocalGatewayVirtualInterface",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteLocalGatewayVirtualInterfaceGroup",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteManagedPrefixList",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteNatGateway",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteNetworkAcl",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteNetworkAclEntry",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteNetworkInsightsAccessScope",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteNetworkInsightsAccessScopeAnalysis",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteNetworkInsightsAnalysis",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteNetworkInsightsPath",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteNetworkInterface",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteNetworkInterfacePermission",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeletePlacementGroup",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeletePublicIpv4Pool",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteQueuedReservedInstances",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteRoute",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteRouteServer",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteRouteServerEndpoint",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteRouteServerPeer",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteRouteTable",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteSnapshot",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteSpotDatafeedSubscription",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteSubnetCidrReservation",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteTrafficMirrorFilter",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteTrafficMirrorFilterRule",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteTrafficMirrorSession",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteTrafficMirrorTarget",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteTransitGateway",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteTransitGatewayConnect",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteTransitGatewayConnectPeer",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteTransitGatewayMeteringPolicy",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteTransitGatewayMeteringPolicyEntry",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteTransitGatewayMulticastDomain",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteTransitGatewayPeeringAttachment",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteTransitGatewayPolicyTable",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteTransitGatewayPrefixListReference",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteTransitGatewayRoute",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteTransitGatewayRouteTable",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteTransitGatewayRouteTableAnnouncement",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteTransitGatewayVpcAttachment",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteVerifiedAccessEndpoint",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteVerifiedAccessGroup",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteVerifiedAccessInstance",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteVerifiedAccessTrustProvider",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteVpcBlockPublicAccessExclusion",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteVpcEncryptionControl",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteVpcEndpointConnectionNotifications",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteVpcEndpointServiceConfigurations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteVpcEndpoints",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteVpcPeeringConnection",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteVpnConcentrator",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteVpnConnection",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteVpnConnectionRoute",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteVpnGateway",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeAccountAttributes",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeAddressTransfers",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeAddresses",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeAddressesAttribute",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeAggregateIdFormat",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeAvailabilityZones",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeAwsNetworkPerformanceMetricSubscriptions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeBundleTasks",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeByoipCidrs",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeCapacityBlockExtensionHistory",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeCapacityBlockExtensionOfferings",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeCapacityBlockOfferings",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeCapacityBlockStatus",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeCapacityBlocks",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeCapacityManagerDataExports",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeCapacityReservationBillingRequests",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeCapacityReservationFleets",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeCapacityReservationTopology",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeCapacityReservations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeCarrierGateways",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeClassicLinkInstances",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeClientVpnAuthorizationRules",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeClientVpnConnections",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeClientVpnEndpoints",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeClientVpnRoutes",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeClientVpnTargetNetworks",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeCoipPools",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeConversionTasks",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeCustomerGateways",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDeclarativePoliciesReports",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDhcpOptions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeEgressOnlyInternetGateways",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeElasticGpus",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeExportImageTasks",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeExportTasks",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeFastLaunchImages",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeFastSnapshotRestores",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeFleetHistory",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeFleetInstances",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeFleets",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeFlowLogs",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeFpgaImageAttribute",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeFpgaImages",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeHostReservationOfferings",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeHostReservations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeHosts",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeIamInstanceProfileAssociations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeIdFormat",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeIdentityIdFormat",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeImageAttribute",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeImageReferences",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeImageUsageReportEntries",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeImageUsageReports",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeImportImageTasks",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeImportSnapshotTasks",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeInstanceConnectEndpoints",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeInstanceEventNotificationAttributes",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeInstanceEventWindows",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeInstanceImageMetadata",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeInstanceSqlHaHistoryStates",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeInstanceSqlHaStates",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeInstanceStatus",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeInstanceTopology",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeInstanceTypeOfferings",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeIpamByoasn",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeIpamExternalResourceVerificationTokens",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeIpamPolicies",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeIpamPools",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeIpamPrefixListResolverTargets",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeIpamPrefixListResolvers",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeIpamResourceDiscoveries",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeIpamResourceDiscoveryAssociations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeIpamScopes",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeIpams",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeIpv6Pools",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeLaunchTemplateVersions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeLocalGatewayRouteTableVpcAssociations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeLocalGatewayRouteTables",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeLocalGatewayVirtualInterfaceGroups",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeLocalGatewayVirtualInterfaces",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeLocalGateways",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeLockedSnapshots",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeMacHosts",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeMacModificationTasks",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeManagedPrefixLists",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeMovingAddresses",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeNatGateways",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeNetworkInsightsAccessScopeAnalyses",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeNetworkInsightsAccessScopes",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeNetworkInsightsAnalyses",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeNetworkInsightsPaths",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeNetworkInterfaceAttribute",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeNetworkInterfacePermissions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeOutpostLags",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribePlacementGroups",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribePrefixLists",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribePrincipalIdFormat",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribePublicIpv4Pools",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeRegions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeReplaceRootVolumeTasks",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeReservedInstances",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeReservedInstancesListings",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeReservedInstancesModifications",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeReservedInstancesOfferings",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeRouteServerEndpoints",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeRouteServerPeers",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeRouteServers",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeScheduledInstanceAvailability",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeScheduledInstances",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeSecurityGroupReferences",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeSecurityGroupRules",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeSecurityGroupVpcAssociations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeServiceLinkVirtualInterfaces",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeSnapshotAttribute",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeSnapshotTierStatus",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeSnapshots",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeSpotDatafeedSubscription",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeSpotFleetInstances",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeSpotFleetRequestHistory",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeSpotFleetRequests",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeSpotInstanceRequests",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeSpotPriceHistory",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeStaleSecurityGroups",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeStoreImageTasks",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeTrafficMirrorFilterRules",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeTrafficMirrorFilters",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeTrafficMirrorSessions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeTrafficMirrorTargets",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeTransitGatewayAttachments",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeTransitGatewayConnectPeers",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeTransitGatewayConnects",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeTransitGatewayMeteringPolicies",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeTransitGatewayMulticastDomains",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeTransitGatewayPeeringAttachments",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeTransitGatewayPolicyTables",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeTransitGatewayRouteTableAnnouncements",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeTransitGatewayRouteTables",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeTransitGatewayVpcAttachments",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeTransitGateways",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeTrunkInterfaceAssociations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVerifiedAccessEndpoints",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVerifiedAccessGroups",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVerifiedAccessInstanceLoggingConfigurations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVerifiedAccessInstances",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVerifiedAccessTrustProviders",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVolumeAttribute",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVolumeStatus",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVolumesModifications",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVpcBlockPublicAccessExclusions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVpcBlockPublicAccessOptions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVpcClassicLink",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVpcClassicLinkDnsSupport",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVpcEncryptionControls",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVpcEndpointAssociations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVpcEndpointConnectionNotifications",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVpcEndpointConnections",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVpcEndpointServiceConfigurations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVpcEndpointServicePermissions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVpcEndpointServices",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVpcEndpoints",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVpcPeeringConnections",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVpnConcentrators",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVpnConnections",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeVpnGateways",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetActiveVpnTunnelStatus",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetAllowedImagesSettings",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetAssociatedEnclaveCertificateIamRoles",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetAssociatedIpv6PoolCidrs",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetAwsNetworkPerformanceData",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetCapacityManagerAttributes",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetCapacityManagerMetricData",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetCapacityManagerMetricDimensions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetCapacityReservationUsage",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetCoipPoolUsage",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetConsoleOutput",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetConsoleScreenshot",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetDeclarativePoliciesReportSummary",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetDefaultCreditSpecification",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetEbsDefaultKmsKeyId",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetEbsEncryptionByDefault",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetEnabledIpamPolicy",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetFlowLogsIntegrationTemplate",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetGroupsForCapacityReservation",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetHostReservationPurchasePreview",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetImageAncestry",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetImageBlockPublicAccessState",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetInstanceMetadataDefaults",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetInstanceTpmEkPub",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetInstanceTypesFromInstanceRequirements",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetInstanceUefiData",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetIpamAddressHistory",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetIpamDiscoveredAccounts",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetIpamDiscoveredPublicAddresses",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetIpamDiscoveredResourceCidrs",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetIpamPolicyAllocationRules",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetIpamPolicyOrganizationTargets",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetIpamPoolAllocations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetIpamPoolCidrs",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetIpamPrefixListResolverRules",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetIpamPrefixListResolverVersionEntries",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetIpamPrefixListResolverVersions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetIpamResourceCidrs",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetLaunchTemplateData",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetManagedPrefixListAssociations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetManagedPrefixListEntries",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetNetworkInsightsAccessScopeAnalysisFindings",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetNetworkInsightsAccessScopeContent",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetPasswordData",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetReservedInstancesExchangeQuote",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetRouteServerAssociations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetRouteServerPropagations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetRouteServerRoutingDatabase",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetSecurityGroupsForVpc",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetSerialConsoleAccessStatus",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetSnapshotBlockPublicAccessState",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetSpotPlacementScores",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetSubnetCidrReservations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetTransitGatewayAttachmentPropagations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetTransitGatewayMeteringPolicyEntries",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetTransitGatewayMulticastDomainAssociations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetTransitGatewayPolicyTableAssociations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetTransitGatewayPolicyTableEntries",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetTransitGatewayPrefixListReferences",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetTransitGatewayRouteTableAssociations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetTransitGatewayRouteTablePropagations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetVerifiedAccessEndpointPolicy",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetVerifiedAccessEndpointTargets",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetVerifiedAccessGroupPolicy",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetVpcResourcesBlockingEncryptionEnforcement",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetVpnConnectionDeviceSampleConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetVpnConnectionDeviceTypes",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetVpnTunnelReplacementStatus",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListImagesInRecycleBin",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListSnapshotsInRecycleBin",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListVolumesInRecycleBin",
+            "implemented": false,
+            "priority": "high"
+          }
         ]
       }
     },
     {
       "name": "iam",
-      "fullName": "AWS Identity and Access Management",
+      "fullName": "IAM",
       "status": "implemented",
       "infraspec": {
         "status": "implemented",
         "operations": [
-          {"name": "AssertIAMDescribeRoles", "implemented": true, "description": "Check IAM describe roles permission"},
-          {"name": "AssertRoleExists", "implemented": true, "description": "Check if IAM role exists"},
-          {"name": "AssertPolicyExists", "implemented": true, "description": "Check if IAM policy exists"}
+          {
+            "name": "AssertIAMDescribeRoles",
+            "implemented": true,
+            "description": "Check i a m describe roles"
+          },
+          {
+            "name": "AssertRoleExists",
+            "implemented": true,
+            "description": "Check role exists"
+          },
+          {
+            "name": "AssertRolePath",
+            "implemented": true,
+            "description": "Check role path"
+          },
+          {
+            "name": "AssertRoleMaxSessionDuration",
+            "implemented": true,
+            "description": "Check role max session duration"
+          },
+          {
+            "name": "AssertRoleTags",
+            "implemented": true,
+            "description": "Check role tags"
+          },
+          {
+            "name": "AssertPolicyExists",
+            "implemented": true,
+            "description": "Check policy exists"
+          },
+          {
+            "name": "AssertPolicyAttachedToRole",
+            "implemented": true,
+            "description": "Check policy attached to role"
+          },
+          {
+            "name": "AssertInstanceProfileExists",
+            "implemented": true,
+            "description": "Check instance profile exists"
+          },
+          {
+            "name": "AssertInstanceProfileHasRole",
+            "implemented": true,
+            "description": "Check instance profile has role"
+          }
         ]
       },
       "virtualCloud": {
         "status": "implemented",
-        "coveragePercent": 14.2,
+        "coveragePercent": 59.65909090909091,
         "totalOperations": 176,
-        "implemented": 25,
+        "implemented": 105,
         "operations": [
-          {"name": "AddRoleToInstanceProfile", "implemented": true, "priority": "high"},
-          {"name": "AttachRolePolicy", "implemented": true, "priority": "high"},
-          {"name": "CreateInstanceProfile", "implemented": true, "priority": "high"},
-          {"name": "CreatePolicy", "implemented": true, "priority": "high"},
-          {"name": "CreateRole", "implemented": true, "priority": "high"},
-          {"name": "DeleteInstanceProfile", "implemented": true, "priority": "high"},
-          {"name": "DeletePolicy", "implemented": true, "priority": "high"},
-          {"name": "DeleteRole", "implemented": true, "priority": "high"},
-          {"name": "DeleteRolePolicy", "implemented": true, "priority": "high"},
-          {"name": "DetachRolePolicy", "implemented": true, "priority": "high"},
-          {"name": "GetInstanceProfile", "implemented": true, "priority": "high"},
-          {"name": "GetPolicy", "implemented": true, "priority": "high"},
-          {"name": "GetPolicyVersion", "implemented": true, "priority": "high"},
-          {"name": "GetRole", "implemented": true, "priority": "high"},
-          {"name": "GetRolePolicy", "implemented": true, "priority": "high"},
-          {"name": "ListAttachedRolePolicies", "implemented": true, "priority": "high"},
-          {"name": "ListInstanceProfiles", "implemented": true, "priority": "high"},
-          {"name": "ListInstanceProfilesForRole", "implemented": true, "priority": "high"},
-          {"name": "ListPolicies", "implemented": true, "priority": "high"},
-          {"name": "ListPolicyVersions", "implemented": true, "priority": "high"},
-          {"name": "ListRolePolicies", "implemented": true, "priority": "high"},
-          {"name": "ListRoles", "implemented": true, "priority": "high"},
-          {"name": "PutRolePolicy", "implemented": true, "priority": "high"},
-          {"name": "RemoveRoleFromInstanceProfile", "implemented": true, "priority": "high"},
-          {"name": "TagRole", "implemented": true, "priority": "low"},
-          {"name": "CreateUser", "implemented": false, "priority": "high"},
-          {"name": "CreateGroup", "implemented": false, "priority": "high"}
-        ]
-      }
-    },
-    {
-      "name": "sqs",
-      "fullName": "Amazon Simple Queue Service",
-      "status": "implemented",
-      "infraspec": {
-        "status": "implemented",
-        "operations": [
-          {"name": "AssertSQSDescribeQueues", "implemented": true, "description": "Check SQS describe queues permission"},
-          {"name": "AssertQueueExists", "implemented": true, "description": "Check if queue exists"},
-          {"name": "AssertQueueVisibilityTimeout", "implemented": true, "description": "Check queue visibility timeout"},
-          {"name": "AssertQueueDelaySeconds", "implemented": true, "description": "Check queue delay seconds"},
-          {"name": "AssertQueueMaxMessageSize", "implemented": true, "description": "Check queue max message size"},
-          {"name": "AssertQueueRetentionPeriod", "implemented": true, "description": "Check queue message retention period"},
-          {"name": "AssertQueueTags", "implemented": true, "description": "Check queue tags"}
-        ]
-      },
-      "virtualCloud": {
-        "status": "implemented",
-        "coveragePercent": 69.6,
-        "totalOperations": 23,
-        "implemented": 16,
-        "operations": [
-          {"name": "CreateQueue", "implemented": true, "priority": "high"},
-          {"name": "DeleteMessage", "implemented": true, "priority": "high"},
-          {"name": "DeleteMessageBatch", "implemented": true, "priority": "high"},
-          {"name": "DeleteQueue", "implemented": true, "priority": "high"},
-          {"name": "GetQueueAttributes", "implemented": true, "priority": "high"},
-          {"name": "GetQueueUrl", "implemented": true, "priority": "high"},
-          {"name": "ListQueueTags", "implemented": true, "priority": "high"},
-          {"name": "ListQueues", "implemented": true, "priority": "high"},
-          {"name": "ReceiveMessage", "implemented": true, "priority": "low"},
-          {"name": "SendMessage", "implemented": true, "priority": "low"},
-          {"name": "SendMessageBatch", "implemented": true, "priority": "low"},
-          {"name": "ChangeMessageVisibility", "implemented": true, "priority": "low"},
-          {"name": "ChangeMessageVisibilityBatch", "implemented": true, "priority": "low"},
-          {"name": "PurgeQueue", "implemented": true, "priority": "low"},
-          {"name": "SetQueueAttributes", "implemented": true, "priority": "low"},
-          {"name": "TagQueue", "implemented": true, "priority": "low"},
-          {"name": "UntagQueue", "implemented": true, "priority": "low"},
-          {"name": "ListDeadLetterSourceQueues", "implemented": false, "priority": "high"}
+          {
+            "name": "AddRoleToInstanceProfile",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "AddUserToGroup",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "AttachGroupPolicy",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "AttachRolePolicy",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "AttachUserPolicy",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "CreateAccessKey",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateAccountAlias",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateGroup",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateInstanceProfile",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateLoginProfile",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateOpenIDConnectProvider",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreatePolicy",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateRole",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateSAMLProvider",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateServiceLinkedRole",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateUser",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateVirtualMFADevice",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeactivateMFADevice",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "DeleteAccessKey",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteAccountAlias",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteAccountPasswordPolicy",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteGroup",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteGroupPolicy",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteInstanceProfile",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteLoginProfile",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteOpenIDConnectProvider",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeletePolicy",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteRole",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteRolePolicy",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteSAMLProvider",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteSSHPublicKey",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteServerCertificate",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteServiceLinkedRole",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteUser",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteUserPolicy",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteVirtualMFADevice",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DetachGroupPolicy",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "DetachRolePolicy",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "DetachUserPolicy",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "EnableMFADevice",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "GetAccessKeyLastUsed",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetAccountPasswordPolicy",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetGroup",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetGroupPolicy",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetInstanceProfile",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetLoginProfile",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetOpenIDConnectProvider",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetPolicy",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetPolicyVersion",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetRole",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetRolePolicy",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetSAMLProvider",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetSSHPublicKey",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetServerCertificate",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetServiceLinkedRoleDeletionStatus",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetUser",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetUserPolicy",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListAccessKeys",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListAccountAliases",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListAttachedGroupPolicies",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListAttachedRolePolicies",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListAttachedUserPolicies",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListGroupPolicies",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListGroups",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListGroupsForUser",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListInstanceProfiles",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListInstanceProfilesForRole",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListMFADevices",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListOpenIDConnectProviders",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListPolicies",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListPolicyVersions",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListRolePolicies",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListRoleTags",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListRoles",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListSAMLProviders",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListSSHPublicKeys",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListServerCertificates",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListUserPolicies",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListUserTags",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListUsers",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListVirtualMFADevices",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "PutGroupPolicy",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "PutRolePolicy",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "PutUserPolicy",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "RemoveRoleFromInstanceProfile",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "RemoveUserFromGroup",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "ResyncMFADevice",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "TagRole",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "TagUser",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "UntagRole",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "UntagUser",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "UpdateAccessKey",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "UpdateAccountPasswordPolicy",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "UpdateAssumeRolePolicy",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "UpdateGroup",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "UpdateLoginProfile",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "UpdateOpenIDConnectProviderThumbprint",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "UpdateRole",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "UpdateRoleDescription",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "UpdateSAMLProvider",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "UpdateSSHPublicKey",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "UpdateServerCertificate",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "UpdateUser",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "UploadSSHPublicKey",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "UploadServerCertificate",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "CreateDelegationRequest",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreatePolicyVersion",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateServiceSpecificCredential",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeletePolicyVersion",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteRolePermissionsBoundary",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteServiceSpecificCredential",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteSigningCertificate",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteUserPermissionsBoundary",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetAccountAuthorizationDetails",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetAccountSummary",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetContextKeysForCustomPolicy",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetContextKeysForPrincipalPolicy",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetCredentialReport",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetDelegationRequest",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetHumanReadableSummary",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetMFADevice",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetOrganizationsAccessReport",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetOutboundWebIdentityFederationInfo",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetServiceLastAccessedDetails",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetServiceLastAccessedDetailsWithEntities",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListDelegationRequests",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListEntitiesForPolicy",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListInstanceProfileTags",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListMFADeviceTags",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListOpenIDConnectProviderTags",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListOrganizationsFeatures",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListPoliciesGrantingServiceAccess",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListPolicyTags",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListSAMLProviderTags",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListServerCertificateTags",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListServiceSpecificCredentials",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListSigningCertificates",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutRolePermissionsBoundary",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutUserPermissionsBoundary",
+            "implemented": false,
+            "priority": "high"
+          }
         ]
       }
     },
     {
       "name": "lambda",
-      "fullName": "AWS Lambda",
-      "status": "planned"
+      "fullName": "Lambda",
+      "status": "implemented",
+      "infraspec": {
+        "status": "implemented",
+        "operations": [
+          {
+            "name": "AssertFunctionExists",
+            "implemented": true,
+            "description": "Basic"
+          },
+          {
+            "name": "AssertFunctionNotExists",
+            "implemented": true,
+            "description": "Check function not exists"
+          },
+          {
+            "name": "AssertFunctionRuntime",
+            "implemented": true,
+            "description": "Configuration"
+          },
+          {
+            "name": "AssertFunctionHandler",
+            "implemented": true,
+            "description": "Check function handler"
+          },
+          {
+            "name": "AssertFunctionTimeout",
+            "implemented": true,
+            "description": "Check function timeout"
+          },
+          {
+            "name": "AssertFunctionMemory",
+            "implemented": true,
+            "description": "Check function memory"
+          },
+          {
+            "name": "AssertFunctionEnvironmentVariable",
+            "implemented": true,
+            "description": "Check function environment variable"
+          },
+          {
+            "name": "AssertFunctionVersionExists",
+            "implemented": true,
+            "description": "Versions \u0026 Aliases"
+          },
+          {
+            "name": "AssertFunctionAliasExists",
+            "implemented": true,
+            "description": "Check function alias exists"
+          },
+          {
+            "name": "AssertFunctionAliasPointsToVersion",
+            "implemented": true,
+            "description": "Check function alias points to version"
+          },
+          {
+            "name": "AssertFunctionURLExists",
+            "implemented": true,
+            "description": "Function URLs"
+          },
+          {
+            "name": "AssertFunctionURLAuthType",
+            "implemented": true,
+            "description": "Check function u r l auth type"
+          },
+          {
+            "name": "AssertFunctionHasLayer",
+            "implemented": true,
+            "description": "Layers"
+          },
+          {
+            "name": "AssertEventSourceMappingExists",
+            "implemented": true,
+            "description": "Event Source Mappings"
+          }
+        ]
+      },
+      "virtualCloud": {
+        "status": "implemented",
+        "coveragePercent": 0,
+        "totalOperations": 85,
+        "implemented": 0,
+        "operations": [
+          {
+            "name": "CreateAlias",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateCapacityProvider",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateCodeSigningConfig",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateEventSourceMapping",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateFunction",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateFunctionUrlConfig",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteAlias",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteCapacityProvider",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteCodeSigningConfig",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteEventSourceMapping",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteFunction",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteFunctionCodeSigningConfig",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteFunctionConcurrency",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteFunctionEventInvokeConfig",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteFunctionUrlConfig",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteLayerVersion",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteProvisionedConcurrencyConfig",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetAccountSettings",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetAlias",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetCapacityProvider",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetCodeSigningConfig",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetDurableExecution",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetDurableExecutionHistory",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetDurableExecutionState",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetEventSourceMapping",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetFunction",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetFunctionCodeSigningConfig",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetFunctionConcurrency",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetFunctionConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetFunctionEventInvokeConfig",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetFunctionRecursionConfig",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetFunctionScalingConfig",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetFunctionUrlConfig",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetLayerVersion",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetLayerVersionByArn",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetLayerVersionPolicy",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetPolicy",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetProvisionedConcurrencyConfig",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetRuntimeManagementConfig",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListAliases",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListCapacityProviders",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListCodeSigningConfigs",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListDurableExecutionsByFunction",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListEventSourceMappings",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListFunctionEventInvokeConfigs",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListFunctionUrlConfigs",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListFunctionVersionsByCapacityProvider",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListFunctions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListFunctionsByCodeSigningConfig",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListLayerVersions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListLayers",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListProvisionedConcurrencyConfigs",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListTags",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListVersionsByFunction",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutFunctionCodeSigningConfig",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutFunctionConcurrency",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutFunctionEventInvokeConfig",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutFunctionRecursionConfig",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutFunctionScalingConfig",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutProvisionedConcurrencyConfig",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutRuntimeManagementConfig",
+            "implemented": false,
+            "priority": "high"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rds",
+      "fullName": "RDS",
+      "status": "implemented",
+      "infraspec": {
+        "status": "implemented",
+        "operations": [
+          {
+            "name": "AssertRDSServiceAccess",
+            "implemented": true,
+            "description": "Check r d s service access"
+          },
+          {
+            "name": "AssertRDSDescribeInstances",
+            "implemented": true,
+            "description": "Check r d s describe instances"
+          },
+          {
+            "name": "AssertDBInstanceExists",
+            "implemented": true,
+            "description": "Check d b instance exists"
+          },
+          {
+            "name": "AssertDBInstanceStatus",
+            "implemented": true,
+            "description": "Check d b instance status"
+          },
+          {
+            "name": "AssertDBInstanceClass",
+            "implemented": true,
+            "description": "Check d b instance class"
+          },
+          {
+            "name": "AssertDBInstanceEngine",
+            "implemented": true,
+            "description": "Check d b instance engine"
+          },
+          {
+            "name": "AssertDBInstanceStorage",
+            "implemented": true,
+            "description": "Check d b instance storage"
+          },
+          {
+            "name": "AssertDBInstanceMultiAZ",
+            "implemented": true,
+            "description": "Check d b instance multi a z"
+          },
+          {
+            "name": "AssertDBInstanceEncryption",
+            "implemented": true,
+            "description": "Check d b instance encryption"
+          },
+          {
+            "name": "AssertDBInstancePubliclyAccessible",
+            "implemented": true,
+            "description": "Check d b instance publicly accessible"
+          },
+          {
+            "name": "AssertDBInstanceTags",
+            "implemented": true,
+            "description": "Check d b instance tags"
+          }
+        ]
+      },
+      "virtualCloud": {
+        "status": "implemented",
+        "coveragePercent": 5.521472392638037,
+        "totalOperations": 163,
+        "implemented": 9,
+        "operations": [
+          {
+            "name": "AddTagsToResource",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "CreateDBInstance",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteDBInstance",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBInstances",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListTagsForResource",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ModifyDBInstance",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "RebootDBInstance",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "StartDBInstance",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "StopDBInstance",
+            "implemented": true,
+            "priority": "medium"
+          },
+          {
+            "name": "CreateBlueGreenDeployment",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateCustomDBEngineVersion",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateDBCluster",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateDBClusterEndpoint",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateDBClusterParameterGroup",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateDBClusterSnapshot",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateDBInstanceReadReplica",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateDBParameterGroup",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateDBProxy",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateDBProxyEndpoint",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateDBSecurityGroup",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateDBShardGroup",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateDBSnapshot",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateDBSubnetGroup",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateEventSubscription",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateGlobalCluster",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateIntegration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateOptionGroup",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "CreateTenantDatabase",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteBlueGreenDeployment",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteCustomDBEngineVersion",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteDBCluster",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteDBClusterAutomatedBackup",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteDBClusterEndpoint",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteDBClusterParameterGroup",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteDBClusterSnapshot",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteDBInstanceAutomatedBackup",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteDBParameterGroup",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteDBProxy",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteDBProxyEndpoint",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteDBSecurityGroup",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteDBShardGroup",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteDBSnapshot",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteDBSubnetGroup",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteEventSubscription",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteGlobalCluster",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteIntegration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteOptionGroup",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteTenantDatabase",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeAccountAttributes",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeBlueGreenDeployments",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeCertificates",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBClusterAutomatedBackups",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBClusterBacktracks",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBClusterEndpoints",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBClusterParameterGroups",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBClusterParameters",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBClusterSnapshotAttributes",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBClusterSnapshots",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBClusters",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBEngineVersions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBInstanceAutomatedBackups",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBLogFiles",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBMajorEngineVersions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBParameterGroups",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBParameters",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBProxies",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBProxyEndpoints",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBProxyTargetGroups",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBProxyTargets",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBRecommendations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBSecurityGroups",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBShardGroups",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBSnapshotAttributes",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBSnapshotTenantDatabases",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBSnapshots",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeDBSubnetGroups",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeEngineDefaultClusterParameters",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeEngineDefaultParameters",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeEventCategories",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeEventSubscriptions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeEvents",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeExportTasks",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeGlobalClusters",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeIntegrations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeOptionGroupOptions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeOptionGroups",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeOrderableDBInstanceOptions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribePendingMaintenanceActions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeReservedDBInstances",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeReservedDBInstancesOfferings",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeSourceRegions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeTenantDatabases",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DescribeValidDBInstanceModifications",
+            "implemented": false,
+            "priority": "high"
+          }
+        ]
+      }
+    },
+    {
+      "name": "s3",
+      "fullName": "S3",
+      "status": "implemented",
+      "infraspec": {
+        "status": "implemented",
+        "operations": [
+          {
+            "name": "AssertS3DescribeBuckets",
+            "implemented": true,
+            "description": "Check s3 describe buckets"
+          },
+          {
+            "name": "AssertBucketExists",
+            "implemented": true,
+            "description": "Check bucket exists"
+          },
+          {
+            "name": "AssertBucketVersioning",
+            "implemented": true,
+            "description": "Check bucket versioning"
+          },
+          {
+            "name": "AssertBucketEncryption",
+            "implemented": true,
+            "description": "Check bucket encryption"
+          },
+          {
+            "name": "AssertBucketPublicAccessBlock",
+            "implemented": true,
+            "description": "Check bucket public access block"
+          },
+          {
+            "name": "AssertBucketServerAccessLogging",
+            "implemented": true,
+            "description": "Check bucket server access logging"
+          }
+        ]
+      },
+      "virtualCloud": {
+        "status": "implemented",
+        "coveragePercent": 21.69811320754717,
+        "totalOperations": 106,
+        "implemented": 23,
+        "operations": [
+          {
+            "name": "CreateBucket",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateBucketMetadataConfiguration",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateBucketMetadataTableConfiguration",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateMultipartUpload",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "CreateSession",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteBucket",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteBucketPolicy",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeletePublicAccessBlock",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketEncryption",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketLogging",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketPolicy",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketVersioning",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetObject",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetPublicAccessBlock",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "HeadBucket",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "ListBuckets",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListObjectsV2",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "PutBucketEncryption",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "PutBucketLogging",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "PutBucketPolicy",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "PutBucketVersioning",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "PutObject",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "PutPublicAccessBlock",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteBucketAnalyticsConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteBucketCors",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteBucketEncryption",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteBucketIntelligentTieringConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteBucketInventoryConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteBucketLifecycle",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteBucketMetadataConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteBucketMetadataTableConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteBucketMetricsConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteBucketOwnershipControls",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteBucketReplication",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteBucketTagging",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteBucketWebsite",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteObject",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteObjectTagging",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteObjects",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketAbac",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketAccelerateConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketAcl",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketAnalyticsConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketCors",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketIntelligentTieringConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketInventoryConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketLifecycleConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketLocation",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketMetadataConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketMetadataTableConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketMetricsConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketNotificationConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketOwnershipControls",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketPolicyStatus",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketReplication",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketRequestPayment",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketTagging",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetBucketWebsite",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetObjectAcl",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetObjectAttributes",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetObjectLegalHold",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetObjectLockConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetObjectRetention",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetObjectTagging",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "GetObjectTorrent",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListBucketAnalyticsConfigurations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListBucketIntelligentTieringConfigurations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListBucketInventoryConfigurations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListBucketMetricsConfigurations",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListDirectoryBuckets",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListMultipartUploads",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListObjectVersions",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListObjects",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListParts",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutBucketAbac",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutBucketAccelerateConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutBucketAcl",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutBucketAnalyticsConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutBucketCors",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutBucketIntelligentTieringConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutBucketInventoryConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutBucketLifecycleConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutBucketMetricsConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutBucketNotificationConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutBucketOwnershipControls",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutBucketReplication",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutBucketRequestPayment",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutBucketTagging",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutBucketWebsite",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutObjectAcl",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutObjectLegalHold",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutObjectLockConfiguration",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutObjectRetention",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "PutObjectTagging",
+            "implemented": false,
+            "priority": "high"
+          }
+        ]
+      }
+    },
+    {
+      "name": "sqs",
+      "fullName": "SQS",
+      "status": "implemented",
+      "infraspec": {
+        "status": "implemented",
+        "operations": [
+          {
+            "name": "AssertSQSDescribeQueues",
+            "implemented": true,
+            "description": "Check s q s describe queues"
+          },
+          {
+            "name": "AssertQueueExists",
+            "implemented": true,
+            "description": "Check queue exists"
+          },
+          {
+            "name": "AssertQueueVisibilityTimeout",
+            "implemented": true,
+            "description": "Check queue visibility timeout"
+          },
+          {
+            "name": "AssertQueueDelaySeconds",
+            "implemented": true,
+            "description": "Check queue delay seconds"
+          },
+          {
+            "name": "AssertQueueMaxMessageSize",
+            "implemented": true,
+            "description": "Check queue max message size"
+          },
+          {
+            "name": "AssertQueueMessageRetentionPeriod",
+            "implemented": true,
+            "description": "Check queue message retention period"
+          },
+          {
+            "name": "AssertQueueReceiveMessageWaitTime",
+            "implemented": true,
+            "description": "Check queue receive message wait time"
+          },
+          {
+            "name": "AssertQueueIsFifo",
+            "implemented": true,
+            "description": "Check queue is fifo"
+          },
+          {
+            "name": "AssertQueueHasDeadLetterQueue",
+            "implemented": true,
+            "description": "Check queue has dead letter queue"
+          },
+          {
+            "name": "AssertQueueTags",
+            "implemented": true,
+            "description": "Check queue tags"
+          },
+          {
+            "name": "AssertQueueEncryption",
+            "implemented": true,
+            "description": "Check queue encryption"
+          }
+        ]
+      },
+      "virtualCloud": {
+        "status": "implemented",
+        "coveragePercent": 69.56521739130434,
+        "totalOperations": 23,
+        "implemented": 16,
+        "operations": [
+          {
+            "name": "ChangeMessageVisibility",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "CreateQueue",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteMessage",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteMessageBatch",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "DeleteQueue",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetQueueAttributes",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetQueueUrl",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListQueueTags",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "ListQueues",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "PurgeQueue",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "ReceiveMessage",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "SendMessage",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "SendMessageBatch",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "SetQueueAttributes",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "TagQueue",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "UntagQueue",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "ListDeadLetterSourceQueues",
+            "implemented": false,
+            "priority": "high"
+          },
+          {
+            "name": "ListMessageMoveTasks",
+            "implemented": false,
+            "priority": "high"
+          }
+        ]
+      }
+    },
+    {
+      "name": "sts",
+      "fullName": "STS",
+      "status": "implemented",
+      "virtualCloud": {
+        "status": "implemented",
+        "coveragePercent": 90.9090909090909,
+        "totalOperations": 11,
+        "implemented": 10,
+        "operations": [
+          {
+            "name": "AssumeRole",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "AssumeRoleWithSAML",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "AssumeRoleWithWebIdentity",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "AssumeRoot",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "DecodeAuthorizationMessage",
+            "implemented": true,
+            "priority": "low"
+          },
+          {
+            "name": "GetAccessKeyInfo",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetCallerIdentity",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetDelegatedAccessToken",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetFederationToken",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetSessionToken",
+            "implemented": true,
+            "priority": "high"
+          },
+          {
+            "name": "GetWebIdentityToken",
+            "implemented": false,
+            "priority": "high"
+          }
+        ]
+      }
     },
     {
       "name": "sns",
       "fullName": "Amazon Simple Notification Service",
-      "status": "planned"
-    },
-    {
-      "name": "eks",
-      "fullName": "Amazon Elastic Kubernetes Service",
-      "status": "planned"
-    },
-    {
-      "name": "ecs",
-      "fullName": "Amazon Elastic Container Service",
-      "status": "planned"
-    },
-    {
-      "name": "ssm",
-      "fullName": "AWS Systems Manager",
-      "status": "planned"
-    },
-    {
-      "name": "secretsmanager",
-      "fullName": "AWS Secrets Manager",
-      "status": "planned"
-    },
-    {
-      "name": "route53",
-      "fullName": "Amazon Route 53",
-      "status": "planned"
-    },
-    {
-      "name": "kms",
-      "fullName": "AWS Key Management Service",
-      "status": "planned"
-    },
-    {
-      "name": "ecr",
-      "fullName": "Amazon Elastic Container Registry",
-      "status": "planned"
-    },
-    {
-      "name": "cloudwatch",
-      "fullName": "Amazon CloudWatch",
       "status": "planned"
     }
   ]

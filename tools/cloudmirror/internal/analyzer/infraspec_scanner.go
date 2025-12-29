@@ -6,7 +6,6 @@ import (
 	"go/token"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/models"
@@ -141,17 +140,22 @@ func generateDescription(methodName string) string {
 	// Remove "Assert" prefix
 	name := strings.TrimPrefix(methodName, "Assert")
 
-	// Split camelCase into words
-	re := regexp.MustCompile(`([A-Z][a-z]+|[A-Z]+(?=[A-Z][a-z])|[A-Z]+$)`)
-	words := re.FindAllString(name, -1)
+	// Split camelCase into words using a Go-compatible approach
+	// Insert space before each uppercase letter, then split
+	var result strings.Builder
+	for i, r := range name {
+		if i > 0 && r >= 'A' && r <= 'Z' {
+			result.WriteRune(' ')
+		}
+		result.WriteRune(r)
+	}
 
-	if len(words) == 0 {
+	words := result.String()
+	if words == "" {
 		return name
 	}
 
-	// Join words and convert to sentence case
-	result := strings.Join(words, " ")
-	return "Check " + strings.ToLower(result)
+	return "Check " + strings.ToLower(words)
 }
 
 // GetAssertionsPath returns the path to InfraSpec assertions
