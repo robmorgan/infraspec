@@ -177,21 +177,26 @@ Use these scopes when relevant:
 
 ## Virtual Cloud Integration
 
-InfraSpec can use Virtual Cloud (infraspec-api) instead of real AWS for fast, cost-free testing.
+InfraSpec uses Virtual Cloud (the embedded AWS emulator) by default for fast, cost-free testing.
 
-### Running with Virtual Cloud
+**Note:** Emulation is the default behavior. Use `--live` flag to test against real AWS.
+
+### Running Tests
 
 ```bash
-# Use the --virtual-cloud flag
-./infraspec features/aws/s3/s3_bucket.feature --virtual-cloud
+# Default: Uses embedded emulator (no flag needed)
+./infraspec features/aws/s3/s3_bucket.feature
+
+# To test against real AWS, use --live
+./infraspec features/aws/s3/s3_bucket.feature --live
 ```
 
 ### How It Works
 
-1. CLI detects `--virtual-cloud` flag
+1. CLI starts the embedded AWS emulator by default
 2. Configures Terraform with custom AWS endpoints via environment variables
-3. All AWS API calls route to Virtual Cloud instead of real AWS
-4. Virtual Cloud emulates AWS responses
+3. All AWS API calls route to the emulator instead of real AWS
+4. Emulator returns AWS-compatible responses
 
 ### Service Endpoint Configuration
 
