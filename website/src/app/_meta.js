@@ -8,20 +8,6 @@ export default {
     title: "Docs",
     type: "page",
   },
-  "virtual-cloud": {
-    title: "Virtual Cloud",
-    type: "page",
-    theme: {
-      toc: false,
-    },
-  },
-  pricing: {
-    title: "Pricing",
-    type: "page",
-    theme: {
-      toc: false,
-    },
-  },
   support: {
     title: "Support",
     type: "page",
@@ -33,13 +19,5 @@ export default {
     title: "Contact",
     type: "page",
     display: "hidden",
-  },
-  "vs-localstack": {
-    title: "InfraSpec vs LocalStack",
-    type: "page",
-    display: "hidden",
-    theme: {
-      toc: false,
-    },
   },
 };

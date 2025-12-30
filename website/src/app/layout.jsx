@@ -66,9 +66,6 @@ const navbar = (
     }
     projectLink="https://github.com/robmorgan/infraspec"
   >
-    <a href="/early-access" className="hidden sm:inline-block text-sm hover:text-purple-600 transition-colors">
-      Early Access
-    </a>
     <GetStartedButton className="hidden sm:inline-block bg-purple-600 hover:bg-purple-700 text-white font-semibold py-1.5 px-4 rounded-lg text-sm transition-colors">
       Get Started
     </GetStartedButton>

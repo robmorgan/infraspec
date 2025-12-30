@@ -1,37 +1,14 @@
 # Roadmap
 
 InfraSpec is evolving rapidly, with support for major AWS products and services. Below you'll find a high-level roadmap,
-showing the implementation status for each major product or service.
+of the planned features.
 
-## Provider & Service Support Matrix
-
-| Provider      | Service       | Status | Notes                                      |
-| ------------- | ------------- | ------ | ------------------------------------------ |
-| **AWS**       | S3            | ✅     | Extensive assertions for buckets           |
-|               | DynamoDB      | ✅     | Test table configs, tags, capacity         |
-|               | RDS           | ✅     | Instance state, attributes, tags           |
-|               | IAM           | ⏳     | Planned for role and policy assertions     |
-|               | Lambda        | 🚧     |                                            |
-|               | EC2           | 🚧     |                                            |
-| **Terraform** | AWS resources | ✅     | Native HCL loading, AWS resource detection |
-|               | Generic       | ✅     | Plan and Apply Terraform Configurations    |
-
-### Status Legend
-
-- **✅ Supported**: Full or near-full coverage and validation.
-- **⏳ Partially Supported**: Early, limited, or experimental support.
-- **🚧 Planned**: On the roadmap, implementation not yet started.
-
----
-
-## Near-Term Roadmap
-
-### AWS (Amazon Web Services)
+## AWS (Amazon Web Services)
 
 - **Expand Coverage:** Add support for IAM (roles, policies), Lambda, and EC2 resources.
 - **Cross-account Testing:** Allow specifying assumed roles for multi-account checks.
 
-### General
+## General
 
 - **UI Test Runner:** Interactive test result UI.
 - **Provider Plugins:** Community-contributed logic for new platforms.
