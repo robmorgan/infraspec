@@ -284,9 +284,6 @@ make test
 make build
 ```
 
-**Note:** Our tests use [InfraSpec Virtual Cloud](https://infraspec.sh/virtual-cloud), a high-fidelity AWS emulator, to
-save time and costs during development. The Virtual Cloud API is available as a paid service for production use.
-
 See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ## 📞 Community & Support
