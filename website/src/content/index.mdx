@@ -15,35 +15,35 @@ import { GetStartedButton } from "../components/GetStartedModal";
 {<h1 className="text-center font-extrabold md:text-5xl mt-2">InfraSpec</h1>}
 
 <div className="mx-auto max-w-full w-[880px] text-center px-4 mt-4 mb-6">
-  {<p className="text-lg mb-2 text-gray-600 md:!text-2xl">Test your AWS infrastructure code in plain English</p>}
+  {<p className="text-lg mb-2 text-gray-600 md:!text-2xl">Test your AWS infrastructure code in plain English using virtual or real AWS APIs</p>}
 </div>
 
 <div className="text-center mb-10">
   <GetStartedButton />
 </div>
 
-InfraSpec is a CLI tool for testing your Terraform AWS infrastructure code in plain English. It combines a rich library
-of testing patterns with a domain-specific language for testing cloud infrastructure.
+Testing infrastructure code shouldn't require learning complex testing frameworks or writing hundreds of lines of code.
+InfraSpec lets you write infrastructure tests in **plain English** using the battle-tested Gherkin syntax.
 
-Tests are written using easy-to-learn [Gherkin](https://cucumber.io/docs/gherkin/) syntax, which is suitable for both
-technical and non-technical team members. This approach constrasts sharply with existing tools which require significant
-programming expertise.
+Traditional infrastructure testing solutions like Terratest require programming knowledge, so writing tests can take
+as long as writing the infrastructure itself. InfraSpec focuses on **intent**. Tests read like documentation, are easy
+to review, and remain understandable over time. This makes collaboration possible not just for engineers, but also for
+platform, security, and compliance stakeholders.
 
-Developers can optionally use [InfraSpec Virtual Cloud](/virtual-cloud) to rapidly test against a high-fidelity AWS
-emulator, without worry about incurring AWS costs or cleaning up after themselves.
+InfraSpec runs tests against a [built-in virtual cloud emulator](/docs/virtual-cloud) for fast, deterministic local and CI workflows, or
+against real AWS APIs for end-to-end validation. Pre-built testing patterns and natural-language specifications ensure
+tests remain readable, maintainable, and executable from day one.
 
 ## Features
 
-- 🗣️ **Plain English syntax.** Write tests that read like sentences, not code. InfraSpec uses easy-to-learn Gherkin
-  syntax for defining test steps
-- 👥 **Team-friendly.** Non-technical stakeholders can read and even author tests, improving collaboration on
-  infrastructure requirements
-- 🚀 **Minimal setup.** No complex frameworks to integrate. InfraSpec works with your existing Terraform configurations
-  and AWS resources.
-- 📚 **Rich Grammar Library.** Comes with hundreds of built-in test steps (patterns) for common scenarios (e.g. resource
-  existence, security settings, networking rules) so you don't have to write low-level assertions
-- ⚡️ **Fast feedback.** Catch infrastructure issues early, before they reach production, by running these tests in
-  CI/CD or locally as part of your workflow.
+- 🗣️ **Plain English syntax** - Write tests that read like documentation using Gherkin
+- ⚡️ **Fast feedback** - 10-100x faster than creating real AWS infrastructure
+- 👥 **Team-friendly** - Non-technical stakeholders can read, review, and contribute
+- 🚀 **Zero boilerplate** - Works with your existing Terraform configurations out of the box
+- 📚 **Rich assertion library** - Hundreds of pre-built assertions for AWS resources
+- 🔄 **CI/CD ready** - Integrates seamlessly with your existing pipelines
+- 💰 **Cost effective** - Built-in emulator eliminates AWS testing costs
+- 🧪 **Flexible testing** - Test against real AWS or the Virtual Cloud emulator
 
 ## Quick start
 
