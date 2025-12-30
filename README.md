@@ -57,6 +57,8 @@ infraspec features/s3_bucket.feature
 
 That's it! No code to write, no frameworks to learn. InfraSpec handles the rest.
 
+→ [**Check out our example features**](https://github.com/robmorgan/infraspec/tree/main/features)
+
 ## ✨ Features
 
 - 🗣️ **Plain English syntax** - Write tests that read like documentation using Gherkin
