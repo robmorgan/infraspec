@@ -60,12 +60,12 @@ That's it! No code to write, no frameworks to learn. InfraSpec handles the rest.
 ## ✨ Features
 
 - 🗣️ **Plain English syntax** - Write tests that read like documentation using Gherkin
+- ⚡️ **Fast feedback** - 10-100x faster than creating real AWS infrastructure
 - 👥 **Team-friendly** - Non-technical stakeholders can read, review, and contribute
 - 🚀 **Zero boilerplate** - Works with your existing Terraform configurations out of the box
 - 📚 **Rich assertion library** - Hundreds of pre-built assertions for AWS resources
-- ⚡ **Fast feedback** - Catch infrastructure issues before they reach production
 - 🔄 **CI/CD ready** - Integrates seamlessly with your existing pipelines
-- 💰 **Cost effective** - Use Virtual Cloud to eliminate AWS testing costs
+- 💰 **Cost effective** - Built-in emulator eliminates AWS testing costs
 - 🧪 **Flexible testing** - Test against real AWS or the Virtual Cloud emulator
 
 ## 🚀 Installation

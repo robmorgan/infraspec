@@ -5,10 +5,11 @@ This document provides guidance for AI coding assistants working on the InfraSpe
 ## Project Overview
 
 **InfraSpec** is a tool for testing your cloud infrastructure written in Go that allows users to write infrastructure
-tests in plain English using Gherkin syntax. The project tests infrastructure code for Terraform, Docker, and
-Kubernetes without requiring users to write traditional test code using frameworks like Terratest.
+tests in plain English using Gherkin syntax. The project tests infrastructure code for Terraform, Docker, and Kubernetes
+without requiring users to write traditional test code using frameworks like Terratest.
 
 ### Key Technologies
+
 - **Language**: Go 1.24.4
 - **Testing Framework**: Cucumber/Godog for BDD testing
 - **Cloud Integration**: AWS SDK v2 (DynamoDB, RDS, S3, EC2, SSM)
@@ -16,6 +17,7 @@ Kubernetes without requiring users to write traditional test code using framewor
 - **CLI**: Cobra for command-line interface
 
 ### Project Structure
+
 - `cmd/` - CLI commands and main entry point
 - `pkg/` - Public packages (assertions, helpers, provisioners)
 - `internal/` - Private packages (config, runners, generators)
@@ -27,11 +29,13 @@ Kubernetes without requiring users to write traditional test code using framewor
 ## Development Setup
 
 ### Prerequisites
+
 - Go 1.24.4 or later
 - Make (for build automation)
 - InfraSpec API (for AWS emulation during testing)
 
 ### Getting Started
+
 1. Clone the repository.
 2. Fix a bug, improve documentation, or add a new feature.
 3. Install dependencies: `make deps`.
@@ -40,6 +44,7 @@ Kubernetes without requiring users to write traditional test code using framewor
 6. Lint code: `make lint`.
 
 ### Build Commands
+
 - `make deps` - Install all dependencies and development tools
 - `make tidy` - Run `go mod tidy`
 - `make fmt` - Format code using gofumpt, goimports, and gci
@@ -49,18 +54,21 @@ Kubernetes without requiring users to write traditional test code using framewor
 ## Coding Standards
 
 ### Go Code Style
+
 - **Formatting**: Use `gofumpt` for stricter formatting than `gofmt`
 - **Imports**: Organize imports with `gci` in the order: standard, default, project-specific
 - **Import Organization**: `goimports` for automatic import management
 - **Linting**: All code must pass `golangci-lint` with project configuration
 
 ### Code Organization
+
 - Follow Go project layout standards
 - Use meaningful package names and avoid generic names like `utils`
 - Keep public APIs in `pkg/` and internal logic in `internal/`
 - Maintain clear separation between CLI, core logic, and cloud providers
 
 ### Testing Patterns
+
 - Use `github.com/stretchr/testify` for assertions
 - Write integration tests that work with InfraSpec API
 - Follow BDD patterns with Gherkin feature files
@@ -68,6 +76,7 @@ Kubernetes without requiring users to write traditional test code using framewor
 - Include retry logic for flaky cloud operations
 
 ### Error Handling
+
 - Provide clear, actionable error messages
 - Log appropriately using `go.uber.org/zap`
 - Handle AWS SDK errors gracefully
@@ -85,6 +94,7 @@ This project uses **Conventional Commits** specification. All commit messages mu
 ```
 
 ### Commit Types
+
 - `feat`: New features
 - `fix`: Bug fixes
 - `docs`: Documentation changes
@@ -96,6 +106,7 @@ This project uses **Conventional Commits** specification. All commit messages mu
 - `ci`: CI/CD changes
 
 ### Examples
+
 ```
 feat(s3): add bucket encryption validation
 fix(dynamodb): handle missing table gracefully
@@ -104,7 +115,9 @@ test(rds): add integration tests for MySQL instances
 ```
 
 ### Scopes
+
 Use these scopes when relevant:
+
 - `s3`, `dynamodb`, `rds` - AWS service specific changes
 - `terraform` - Terraform-related changes
 - `cli` - Command-line interface changes
@@ -114,10 +127,13 @@ Use these scopes when relevant:
 ## Architecture Guidelines
 
 ## Adding New Assertion Functions
-1. Create provider specific assertion functions below `pkg/assertions`. (e.g Create AWS service-specific assertion functions in `pkg/assertions/aws`).
+
+1. Create provider specific assertion functions below `pkg/assertions`. (e.g Create AWS service-specific assertion
+   functions in `pkg/assertions/aws`).
 2. All assertion function names should begin with `Assert`.
 
 ### Adding New AWS Cloud Services
+
 1. Create AWS service-specific assertion functions in `pkg/assertions/aws/`
 2. Add corresponding step definitions in `pkg/steps/aws/`
 3. Create feature examples in `examples/aws/`
@@ -125,12 +141,14 @@ Use these scopes when relevant:
 5. Update documentation and roadmap
 
 ### Testing Philosophy
+
 - **BDD First**: Write Gherkin scenarios before implementation
 - **InfraSpec API Integration**: Use InfraSpec API for AWS service emulation
 - **Real-world Examples**: Include practical Terraform configurations
 - **Error Scenarios**: Test both success and failure paths
 
 ### CLI Design
+
 - Use Cobra for consistent command structure
 - Provide helpful error messages and suggestions
 - Support both interactive and CI/CD usage
@@ -139,12 +157,14 @@ Use these scopes when relevant:
 ## Dependencies Management
 
 ### Go Modules
+
 - Keep dependencies minimal and well-maintained
 - Prefer AWS SDK v2 over v1
 - Use official libraries when possible
 - Regular dependency updates with testing
 
 ### Key Dependencies
+
 - `github.com/cucumber/godog` - BDD testing framework
 - `github.com/aws/aws-sdk-go-v2` - AWS SDK
 - `github.com/spf13/cobra` - CLI framework
@@ -216,6 +236,7 @@ serviceMap := map[string]string{
 ```
 
 **Critical:** Service keys must match AWS SDK expectations exactly. For example:
+
 - `S3_CONTROL` (correct) - generates `AWS_ENDPOINT_URL_S3_CONTROL`
 - `S3CONTROL` (wrong) - generates incorrect env var, requests go to real AWS
 
@@ -225,26 +246,21 @@ When adding support for a new AWS service:
 
 1. Add entry to `serviceMap` in `pkg/steps/terraform/terraform.go`
 2. Use the correct AWS SDK service identifier (check AWS docs)
-3. Ensure infraspec-api implements the service (see `infraspec-api/AGENTS.md`)
-
-### Authentication
-
-Virtual Cloud validates tokens from InfraSpec Cloud:
-- Set `INFRASPEC_CLOUD_TOKEN` environment variable with your API token
-- Token is used as `AWS_SECRET_ACCESS_KEY` for SigV4 signing
-- See `infraspec-cloud/CLAUDE.md` for token generation
+3. Ensure the builtin AWS emulator implements the service.
 
 ## Troubleshooting
 
 ### Common Issues
+
 - **InfraSpec API connectivity**: Ensure InfraSpec API is running and accessible on port 3687
 - **AWS credentials**: Check AWS configuration and permissions
 - **Go module issues**: Run `make tidy` to resolve dependencies
 - **Test failures**: Verify InfraSpec API services are running
 - **Virtual Cloud 403 errors**: Check service endpoint mapping uses correct AWS SDK identifier
-- **Virtual Cloud 404 errors**: Service operation may not be implemented in infraspec-api
+- **Virtual Cloud 404 errors**: Service operation may not be implemented in the AWS emulator
 
 ### Development Tools
+
 - Use `make help` to see all available commands
 - Check `cover.html` for test coverage reports
 - Use Go's built-in profiling tools for performance analysis
@@ -304,12 +320,12 @@ return s.successResponse("CreateRole", result)
 
 #### Protocol Requirements
 
-| Protocol | Services | Content-Type | Response Builder |
-|----------|----------|--------------|------------------|
-| Query | RDS, EC2, IAM, STS, SQS | `text/xml` | `BuildQueryResponse()` |
-| JSON | DynamoDB, CloudWatch | `application/x-amz-json-1.0` | `BuildJSONResponse()` |
-| REST-XML | S3 | `application/xml` | `BuildRESTXMLResponse()` |
-| REST-JSON | Lambda, API Gateway | `application/json` | `BuildRESTJSONResponse()` |
+| Protocol  | Services                | Content-Type                 | Response Builder          |
+| --------- | ----------------------- | ---------------------------- | ------------------------- |
+| Query     | RDS, EC2, IAM, STS, SQS | `text/xml`                   | `BuildQueryResponse()`    |
+| JSON      | DynamoDB, CloudWatch    | `application/x-amz-json-1.0` | `BuildJSONResponse()`     |
+| REST-XML  | S3                      | `application/xml`            | `BuildRESTXMLResponse()`  |
+| REST-JSON | Lambda, API Gateway     | `application/json`           | `BuildRESTJSONResponse()` |
 
 #### Mandatory Verification
 
@@ -323,17 +339,20 @@ grep -rn 'fmt\.Sprintf.*<?xml\|fmt\.Sprintf.*<.*Response>\|xml\.MarshalIndent' i
 ### Adding a New AWS Service
 
 1. **Analyze with CloudMirror:**
+
    ```bash
    cd tools/cloudmirror && go build -o ../../bin/cloudmirror ./cmd/cloudmirror && cd ../..
    ./bin/cloudmirror analyze --service=<name> --output=markdown
    ```
 
 2. **Generate scaffold:**
+
    ```bash
    ./bin/cloudmirror scaffold --service=<name>
    ```
 
 3. **Generate response types with correct XML tags:**
+
    ```bash
    ./bin/cloudmirror gentypes --service=<name>
    ```
@@ -343,6 +362,7 @@ grep -rn 'fmt\.Sprintf.*<?xml\|fmt\.Sprintf.*<.*Response>\|xml\.MarshalIndent' i
 ### Emulator Code Patterns
 
 #### Handler Pattern
+
 ```go
 func (s *MyService) handleAction(ctx context.Context, params map[string]interface{}) (*emulator.AWSResponse, error) {
     // 1. Extract and validate parameters
@@ -361,13 +381,17 @@ func (s *MyService) handleAction(ctx context.Context, params map[string]interfac
 ```
 
 #### State Key Pattern
+
 Use consistent keys: `<service>:<resource-type>:<identifier>`
+
 - `rds:instances:my-database`
 - `s3:buckets:my-bucket`
 - `iam:roles:my-role`
 
 #### File Naming Convention
+
 Use **snake_case** for handler file names:
+
 - `DeleteScheduledAction` → `delete_scheduled_action_handler.go`
 - `CreateDBInstance` → `create_db_instance_handler.go`
 
@@ -416,6 +440,7 @@ func TestMyOperation_Success(t *testing.T) {
 ### Resource Relationship Graph
 
 The graph (`internal/emulator/graph/`) models AWS resource dependencies for:
+
 - **Dependency validation** - Block deletion of resources with dependents
 - **Relationship tracking** - Model containment, references, attachments
 - **Cross-service dependencies** - EC2 instances → IAM instance profiles
@@ -459,8 +484,3 @@ cd tools/cloudmirror && go build -o ../../bin/cloudmirror ./cmd/cloudmirror && c
 ./bin/cloudmirror gentypes --service=<name>           # Generate Go types from Smithy models
 ./bin/cloudmirror check --target=internal/emulator/services/rds/  # Code pattern analysis
 ```
-
-## Related Projects
-
-- **infraspec-cloud**: SaaS dashboard for API tokens - see `infraspec-cloud/CLAUDE.md`
-- **Root CLAUDE.md**: Cross-project workflows and integration guide
