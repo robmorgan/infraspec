@@ -1,0 +1,17 @@
+# Live Testing on AWS
+
+InfraSpec can run tests against real AWS APIs, allowing you to test your infrastructure code against a live AWS
+environment. This is useful for testing your infrastructure code in a live environment, or for testing your
+infrastructure code against a live environment.
+
+## Getting started
+
+To get started, you need to have a valid AWS account and credentials. You can use the `AWS_ACCESS_KEY_ID` and
+`AWS_SECRET_ACCESS_KEY` environment variables to configure your AWS credentials. For other configuration options, see
+the [Configuring AWS Credentials](/docs/providers/aws/configure) page.
+
+## Cleaning Up
+
+While InfraSpec attempts to clean up all resources after test execution including failures, unexpected errors or network
+interruptions may leave residual infrastructure. Running [cloud-nuke](https://github.com/gruntwork-io/cloud-nuke)
+nightly in a dedicated test AWS account provides a reliable backstop for removing any orphaned resources.

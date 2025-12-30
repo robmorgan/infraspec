@@ -4,7 +4,7 @@
   <br>InfraSpec
 </h1>
   <p align="center">
-    <strong>✅ Test your AWS infrastructure code in plain English.</strong>
+    <strong>✅ Test your AWS infrastructure code in plain English against virtual or real AWS APIs.</strong>
   </p>
 </p>
 
@@ -15,25 +15,19 @@
   <a href="https://github.com/robmorgan/infraspec/releases"><img src="https://img.shields.io/github/v/release/robmorgan/infraspec" alt="Release"></a>
 </p>
 
-<p align="center">
-  <a href="https://infraspec.sh/virtual-cloud">
-    <img src="https://img.shields.io/badge/🚀%20Try-InfraSpec%20Virtual%20Cloud-5B47ED?style=for-the-badge" alt="Try Virtual Cloud">
-  </a>
-  <br>
-  <sub>100x faster tests • 90% cost savings • Zero cleanup</sub>
-</p>
-
 ---
 
 Testing infrastructure code shouldn't require learning complex testing frameworks or writing hundreds of lines of code.
 InfraSpec lets you write infrastructure tests in **plain English** using the battle-tested Gherkin syntax.
 
 Traditional infrastructure testing solutions like Terratest require programming knowledge, so writing the tests can take
-as long as writing the infrastructure itself. They also limit collaboration so non-technical stakeholders can’t review
-or contribute, and tests often become difficult to maintain or understand over time.
+as long as writing the infrastructure itself. InfraSpec focuses on **intent**. Tests read like documentation, are easy
+to review, and remain understandable over time. This makes collaboration possible not just for engineers, but also for
+platform, security, and compliance stakeholders.
 
-InfraSpec combines a rich library of pre-built testing patterns with natural language specifications. Write tests that
-read like documentation and are executable from day one.
+InfraSpec runs tests against a built-in virtual cloud emulator for fast, deterministic local and CI workflows, or
+against real AWS APIs for end-to-end validation. Pre-built testing patterns and natural-language specifications ensure
+tests remain readable, maintainable, and executable from day one.
 
 ## ⚡ Quick Example
 
@@ -72,7 +66,7 @@ That's it! No code to write, no frameworks to learn. InfraSpec handles the rest.
 - ⚡ **Fast feedback** - Catch infrastructure issues before they reach production
 - 🔄 **CI/CD ready** - Integrates seamlessly with your existing pipelines
 - 💰 **Cost effective** - Use Virtual Cloud to eliminate AWS testing costs
-- 🧪 **Flexible testing** - Test against real AWS or Virtual Cloud emulator
+- 🧪 **Flexible testing** - Test against real AWS or the Virtual Cloud emulator
 
 ## 🚀 Installation
 
@@ -144,13 +138,13 @@ Or run all tests:
 infraspec features/
 ```
 
-Optionally use [InfraSpec Virtual Cloud](https://infraspec.sh/virtual-cloud) for rapid testing with zero cleanup:
+Optionally use the `--live` flag to run against real AWS APIs (be sure to cleanup any dangling resources):
 
 ```bash
-infraspec --virtual-cloud features/
+infraspec --live features/
 ```
 
-→ [**Learn more about InfraSpec Virtual Cloud**](https://infraspec.sh/virtual-cloud)
+→ [**Learn more about live testing on AWS**](https://infraspec.sh/docs/guides/live-testing)
 
 ### 4. Integrate with CI/CD
 
