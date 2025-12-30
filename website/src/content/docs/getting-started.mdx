@@ -56,23 +56,37 @@ infraspec init # This will create a ./features directory if it doesn't already e
 Copy and paste the following into a Terraform configuration:
 
 ```hcl filename="main.tf" copy
-provider "aws" {
-  region = "us-east-1"
+output "hello_world" {
+  description = "Hello World"
+  value       = "Hello, World!"
 }
 ```
 
 ### Create Your First Test
 
-Create your first infrastructure test:
+Create your first test scenario:
 
 ```sh
-infraspec new dynamodb.feature
+infraspec new terraform.feature
+```
+
+### Copy the feature code
+
+Copy and paste the following into the `terraform.feature`:
+
+```gherkin filename="terraform.feature" copy
+Feature: Terraform Hello World
+
+  Scenario: Run a simple test
+    Given the Terraform module at "../examples/terraform/hello-world"
+    When I run terraform apply
+    Then the "hello_world" output is "Hello, World!"
 ```
 
 ### Run it!
 
 ```sh
-infraspec features/dynamodb.feature
+infraspec features/terraform.feature
 ```
 
 You should see some output.
