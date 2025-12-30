@@ -4,7 +4,7 @@
   <br>InfraSpec
 </h1>
   <p align="center">
-    <strong>✅ Test your AWS infrastructure code in plain English against virtual or real AWS APIs.</strong>
+    <strong>✅ Test your AWS infrastructure code in plain English using virtual or real AWS APIs.</strong>
   </p>
 </p>
 
