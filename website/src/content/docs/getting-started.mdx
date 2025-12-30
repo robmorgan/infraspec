@@ -17,8 +17,8 @@ Then the S3 bucket "my-bucket" should have an encryption configuration
 InfraSpec automatically:
 
 - Generates the underlying test code to connect to AWS
-- Parses the S3 bucket configuration
-- Validates encryption settings against AWS APIs
+- Parses the S3 bucket configuration from Terraform/OpenTofu outputs
+- Validates encryption settings against virtual or real AWS APIs
 - Provides clear, actionable error messages if validation fails
 
 This means you can focus on **what** to test rather than **how** to test it. The tool handles all the complexity of API
@@ -51,15 +51,145 @@ Initialize a Git repo containing your infrastructure code:
 infraspec init # This will create a ./features directory if it doesn't already exist
 ```
 
-### Create a Simple Terraform Example
+### Create a Simple AWS Terraform/OpenTofu Infrastructure Example
 
-Copy and paste the following into a Terraform configuration:
+Copy and paste the following into a Terraform/OpenTofu configuration that deploys an EC2 instance to AWS:
 
 ```hcl filename="main.tf" copy
-output "hello_world" {
-  description = "Hello World"
-  value       = "Hello, World!"
+terraform {
+  required_version = ">= 1.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.72.1"
+    }
+  }
 }
+
+provider "aws" {
+  region = var.region
+}
+
+variable "region" {
+  description = "The AWS region to deploy to"
+  type        = string
+  default     = "us-east-1"
+}
+
+variable "name" {
+  description = "The name of the EC2 instance"
+  type        = string
+}
+
+variable "instance_type" {
+  description = "The instance type"
+  type        = string
+  default     = "t3.micro"
+}
+
+variable "ami_id" {
+  description = "The AMI ID to use for the instance"
+  type        = string
+  default     = "ami-12345678"
+}
+
+variable "tags" {
+  description = "A map of tags to apply to the resources"
+  type        = map(string)
+  default     = {}
+}
+
+# VPC for the instance
+resource "aws_vpc" "main" {
+  cidr_block           = "10.0.0.0/16"
+  enable_dns_hostnames = true
+  enable_dns_support   = true
+
+  tags = {
+    Name = "${var.name}-vpc"
+  }
+}
+
+# Subnet for the instance
+resource "aws_subnet" "main" {
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = "10.0.1.0/24"
+  availability_zone = "${var.region}a"
+
+  tags = {
+    Name = "${var.name}-subnet"
+  }
+}
+
+# Security Group for the instance
+resource "aws_security_group" "main" {
+  name        = "${var.name}-sg"
+  description = "Security group for ${var.name}"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    description = "SSH"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${var.name}-sg"
+  }
+}
+
+# EC2 Instance
+resource "aws_instance" "main" {
+  ami           = var.ami_id
+  instance_type = var.instance_type
+  subnet_id     = aws_subnet.main.id
+
+  vpc_security_group_ids = [aws_security_group.main.id]
+
+  tags = merge(
+    var.tags,
+    {
+      Name = var.name
+    }
+  )
+}
+
+# Outputs
+output "instance_id" {
+  description = "The ID of the EC2 instance"
+  value       = aws_instance.main.id
+}
+
+output "instance_type" {
+  description = "The instance type"
+  value       = aws_instance.main.instance_type
+}
+
+output "vpc_id" {
+  description = "The ID of the VPC"
+  value       = aws_vpc.main.id
+}
+
+output "subnet_id" {
+  description = "The ID of the subnet"
+  value       = aws_subnet.main.id
+}
+
+output "security_group_id" {
+  description = "The ID of the security group"
+  value       = aws_security_group.main.id
+}
+
 ```
 
 ### Create Your First Test
@@ -67,20 +197,38 @@ output "hello_world" {
 Create your first test scenario:
 
 ```sh
-infraspec new terraform.feature
+infraspec new ec2.feature
 ```
 
 ### Copy the feature code
 
-Copy and paste the following into the `terraform.feature`:
+Copy and paste the following into the `ec2.feature`:
 
 ```gherkin filename="terraform.feature" copy
-Feature: Terraform Hello World
+Feature: EC2 Instance Creation
+  As a DevOps engineer
+  I want to create EC2 instances with specific configurations
+  So that I can ensure my compute infrastructure meets requirements
 
-  Scenario: Run a simple test
-    Given the Terraform module at "../examples/terraform/hello-world"
-    When I run terraform apply
-    Then the "hello_world" output is "Hello, World!"
+  Scenario: Create an EC2 instance with basic configuration
+    Given I have a Terraform configuration in "../../../examples/aws/ec2/instance"
+    And I set the variable "region" to "us-east-1"
+    And I set the variable "name" to "test-instance" with a random suffix
+    And I set the variable "instance_type" to "t3.micro"
+    And I set the variable "ami_id" to "ami-12345678"
+    And I set the variable "tags" to
+      | Key         | Value     |
+      | Environment | test      |
+      | Project     | infratest |
+    When I run Terraform apply
+    Then the EC2 instance from output "instance_id" should exist
+    And the EC2 instance from output "instance_id" state should be "running"
+    And the EC2 instance from output "instance_id" instance type should be "t3.micro"
+    And the EC2 instance from output "instance_id" AMI should be "ami-12345678"
+    And the EC2 instance from output "instance_id" should have the tags
+      | Key         | Value     |
+      | Environment | test      |
+      | Project     | infratest |
 ```
 
 ### Run it!
@@ -89,6 +237,6 @@ Feature: Terraform Hello World
 infraspec features/terraform.feature
 ```
 
-You should see some output.
+By default, InfraSpec will run the test against the builtin AWS emulator. You should see some output.
 
 </Steps>

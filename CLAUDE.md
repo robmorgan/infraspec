@@ -70,7 +70,7 @@ without requiring users to write traditional test code using frameworks like Ter
 ### Testing Patterns
 
 - Use `github.com/stretchr/testify` for assertions
-- Write integration tests that work with InfraSpec API
+- Write integration tests that work with the builtin AWS emulator
 - Follow BDD patterns with Gherkin feature files
 - Test both positive and negative scenarios
 - Include retry logic for flaky cloud operations
@@ -252,10 +252,9 @@ When adding support for a new AWS service:
 
 ### Common Issues
 
-- **InfraSpec API connectivity**: Ensure InfraSpec API is running and accessible on port 3687
+- **InfraSpec emulator connectivity**: Ensure the InfraSpec emulator API runs on port 3687 during tests
 - **AWS credentials**: Check AWS configuration and permissions
 - **Go module issues**: Run `make tidy` to resolve dependencies
-- **Test failures**: Verify InfraSpec API services are running
 - **Virtual Cloud 403 errors**: Check service endpoint mapping uses correct AWS SDK identifier
 - **Virtual Cloud 404 errors**: Service operation may not be implemented in the AWS emulator
 
