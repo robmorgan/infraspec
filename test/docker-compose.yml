@@ -1,15 +1,4 @@
 services:
-  infraspec-api:
-    container_name: "${INFRASPEC_API_DOCKER_NAME:-infraspec-api}"
-    build:
-      context: ../../infraspec-api
-      dockerfile: Dockerfile
-    ports:
-      - "127.0.0.1:3687:3687"            # InfraSpec API endpoint
-    environment:
-      - PORT=3687
-      - DEBUG=${DEBUG:-0}
-
   httpbin:
     container_name: "${HTTPBIN_DOCKER_NAME:-httpbin-infraspec}"
     image: kennethreitz/httpbin:latest
