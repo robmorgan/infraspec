@@ -1,10 +1,10 @@
 export default {
-  "intro": "What is InfraSpec?",
+  intro: "What is InfraSpec?",
   "getting-started": "Getting Started",
-  "compatibility": "AWS Compatibility",
-  "cloudmirror": "CloudMirror",
-  "guides": "Guides",
-  "providers": "Providers",
-  "roadmap": "Roadmap",
-  "telemetry": "Telemetry"
-}
+  compatibility: "AWS Compatibility",
+  "virtual-cloud": "Virtual Cloud",
+  guides: "Guides",
+  providers: "Providers",
+  roadmap: "Roadmap",
+  telemetry: "Telemetry",
+};

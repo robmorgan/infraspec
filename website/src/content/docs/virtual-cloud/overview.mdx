@@ -1,0 +1,196 @@
+import { Callout, Steps, Tabs } from "nextra/components";
+
+# Virtual Cloud Emulator
+
+InfraSpec includes a **built-in AWS emulator** called Virtual Cloud that lets you test your infrastructure code
+instantly without provisioning real AWS resources. It runs locally, requires no setup, and is completely free.
+
+## Why Use the Emulator?
+
+Testing infrastructure against real AWS is expensive, slow, and risky:
+
+- **High costs** - Every API call costs money, test resources get forgotten
+- **Slow feedback** - Network latency means seconds per operation
+- **Cleanup headaches** - Failed tests leave orphaned resources
+- **Security concerns** - CI/CD pipelines need AWS credentials
+- **Rate limits** - AWS throttles API calls during heavy testing
+
+The Virtual Cloud emulator solves all of these problems.
+
+## Key Benefits
+
+<div className="grid md:grid-cols-2 gap-6 my-8">
+  <div className="border rounded-lg p-6">
+    <h3 className="text-xl font-bold mb-2">Fast</h3>
+    <p>Tests run in milliseconds. No network latency, no API rate limits, instant feedback.</p>
+  </div>
+
+{" "}
+
+<div className="border rounded-lg p-6">
+  <h3 className="text-xl font-bold mb-2">Free</h3>
+  <p>The emulator is built into InfraSpec. No AWS costs, no subscriptions, no limits.</p>
+</div>
+
+{" "}
+
+<div className="border rounded-lg p-6">
+  <h3 className="text-xl font-bold mb-2">Zero Setup</h3>
+  <p>No Docker, no configuration, no credentials. Just run your tests.</p>
+</div>
+
+  <div className="border rounded-lg p-6">
+    <h3 className="text-xl font-bold mb-2">No Cleanup</h3>
+    <p>Everything is ephemeral. Resources disappear when tests finish.</p>
+  </div>
+</div>
+
+## How It Works
+
+The emulator starts automatically when you run InfraSpec. It intercepts Terraform's AWS API calls and responds with
+realistic AWS behavior.
+
+<Steps>
+### Install InfraSpec
+
+```bash
+brew install infraspec
+# or
+go install github.com/robmorgan/infraspec@latest
+```
+
+### Run Your Tests
+
+```bash
+infraspec features/
+```
+
+That's it! The emulator handles everything automatically.
+
+</Steps>
+
+<Callout type="info">
+  The emulator is the **default** behavior. To test against real AWS instead, use the `--live` flag: `infraspec --live
+  features/`
+</Callout>
+
+## Supported AWS Services
+
+Virtual Cloud emulates the most commonly used AWS services for infrastructure testing. See the
+[AWS Compatibility](/docs/compatibility) page for detailed coverage information.
+
+## CI/CD Integration
+
+The emulator works seamlessly in CI/CD pipelines with no special configuration:
+
+<Tabs items={['GitHub Actions', 'GitLab CI', 'CircleCI']}>
+  <Tabs.Tab>
+    ```yaml filename=".github/workflows/test.yml"
+    name: Infrastructure Tests
+    on: [push, pull_request]
+
+    jobs:
+      test:
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v4
+
+          - name: Install InfraSpec
+            run: |
+              curl -fsSL https://infraspec.sh/install.sh | bash
+
+          - name: Run Tests
+            run: infraspec features/
+    ```
+
+  </Tabs.Tab>
+
+{" "}
+
+<Tabs.Tab>
+  ```yaml filename=".gitlab-ci.yml" test: image: golang:1.24 script: - curl -fsSL https://infraspec.sh/install.sh | bash
+  - infraspec features/ ```
+</Tabs.Tab>
+
+  <Tabs.Tab>
+    ```yaml filename=".circleci/config.yml"
+    version: 2.1
+    jobs:
+      test:
+        docker:
+          - image: cimg/go:1.21
+        steps:
+          - checkout
+          - run:
+              name: Install InfraSpec
+              command: curl -fsSL https://infraspec.sh/install.sh | bash
+          - run:
+              name: Run Tests
+              command: infraspec features/
+    ```
+  </Tabs.Tab>
+</Tabs>
+
+No AWS credentials needed. No environment variables to configure. Just install and run.
+
+## Comparison with LocalStack
+
+Already using LocalStack? Here's how Virtual Cloud compares:
+
+| Feature                       | Virtual Cloud                               | LocalStack             |
+| ----------------------------- | ------------------------------------------- | ---------------------- |
+| **Setup**                     | Built-in, zero config                       | Docker + configuration |
+| **Testing Framework**         | Included (BDD/Gherkin)                      | Bring your own         |
+| **Infrastructure Assertions** | 100+ built-in                               | Write your own         |
+| **AWS Parity Tracking**       | Weekly via [CloudMirror](/docs/cloudmirror) | Weekly                 |
+| **Focus**                     | Infrastructure testing                      | General AWS emulation  |
+| **Cost**                      | Free                                        | Free tier + paid       |
+
+Virtual Cloud is purpose-built for testing infrastructure code. If you need general AWS development, LocalStack may be a
+better fit. For infrastructure testing with InfraSpec, Virtual Cloud provides a more integrated experience.
+
+## Staying Current with AWS
+
+AWS releases hundreds of API changes every year. Virtual Cloud stays current through [CloudMirror](/docs/cloudmirror),
+which automatically tracks the AWS SDK and identifies new operations weekly.
+
+This means you get up-to-date AWS behavior without waiting for manual updates.
+
+## FAQ
+
+### How accurate is the emulator?
+
+Virtual Cloud provides high-fidelity emulation of AWS APIs for infrastructure testing scenarios. It accurately models
+resource creation, validation errors, and state management. For edge cases or advanced features, use `--live` to
+validate against real AWS.
+
+### Can I test against both the emulator and real AWS?
+
+Yes! Use the emulator for fast iteration during development, then validate with `--live` before deploying:
+
+```bash
+# Fast feedback during development
+infraspec features/
+
+# Validate against real AWS before deploy
+infraspec --live features/
+```
+
+### What if I need an unsupported operation?
+
+Check the [compatibility page](/docs/compatibility) for current coverage. If you need an operation that's not supported,
+you can:
+
+1. Open an issue on [GitHub](https://github.com/robmorgan/infraspec/issues)
+2. Contribute the implementation (see [CloudMirror](/docs/cloudmirror) for guidance)
+3. Use `--live` for tests that require that operation
+
+### Does it support Terraform state?
+
+Yes. The emulator works with Terraform's normal state management. State is stored locally and cleared between test runs.
+
+## Next Steps
+
+- [Getting Started](/docs/getting-started) - Write your first infrastructure test
+- [AWS Compatibility](/docs/compatibility) - See detailed service coverage
+- [Live Testing](/docs/guides/live-testing) - When to test against real AWS
