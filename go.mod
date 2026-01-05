@@ -3,7 +3,7 @@ module github.com/robmorgan/infraspec
 go 1.24.4
 
 require (
-	github.com/amplitude/analytics-go v1.2.0
+	github.com/amplitude/analytics-go v1.3.0
 	github.com/aws/aws-sdk-go-v2 v1.41.0
 	github.com/aws/aws-sdk-go-v2/config v1.32.6
 	github.com/aws/aws-sdk-go-v2/credentials v1.19.6
