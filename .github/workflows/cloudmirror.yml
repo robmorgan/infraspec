@@ -1,0 +1,294 @@
+name: CloudMirror - AWS API Parity Check
+
+on:
+  schedule:
+    # Run weekly on Sunday at midnight UTC
+    - cron: '0 0 * * 0'
+  pull_request:
+    paths:
+      - 'internal/emulator/services/**'
+  workflow_dispatch:
+    inputs:
+      service:
+        description: 'Service to analyze (e.g., rds, s3, or all)'
+        required: false
+        default: 'all'
+      generate_stubs:
+        description: 'Generate stub implementations'
+        required: false
+        default: 'false'
+        type: boolean
+
+jobs:
+  parity-check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout InfraSpec
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Clone AWS SDK Go V2
+        run: |
+          git clone --depth 1 https://github.com/aws/aws-sdk-go-v2.git /tmp/aws-sdk-go-v2
+
+      - name: Build CloudMirror
+        run: |
+          cd tools/cloudmirror
+          go build -o ../../bin/cloudmirror ./cmd/cloudmirror
+
+      - name: Run Parity Analysis
+        id: analysis
+        run: |
+          SERVICE="${{ github.event.inputs.service || 'all' }}"
+
+          # Generate JSON report
+          ./bin/cloudmirror analyze \
+            --sdk-path=/tmp/aws-sdk-go-v2 \
+            --services-path=internal/emulator/services \
+            --service="$SERVICE" \
+            --output=json \
+            --output-file=parity-report.json \
+            --quiet
+
+          # Extract summary
+          if [ "$SERVICE" = "all" ]; then
+            SUMMARY=$(jq -r '
+              "Services: \(length)\n" +
+              "Total operations: \([.[].total_operations] | add)\n" +
+              "Supported: \([.[].supported | length] | add)\n" +
+              "Coverage: \(([.[].coverage_percent] | add / length | . * 100 | round / 100))%"
+            ' parity-report.json)
+          else
+            SUMMARY=$(jq -r '
+              "Service: \(.service_name)\n" +
+              "Coverage: \(.coverage_percent | . * 100 | round / 100)%\n" +
+              "Supported: \(.supported | length)/\(.total_operations - (.deprecated | length))"
+            ' parity-report.json)
+          fi
+
+          echo "summary<<EOF" >> $GITHUB_OUTPUT
+          echo "$SUMMARY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Generate Markdown Report
+        run: |
+          SERVICE="${{ github.event.inputs.service || 'all' }}"
+          ./bin/cloudmirror analyze \
+            --sdk-path=/tmp/aws-sdk-go-v2 \
+            --services-path=internal/emulator/services \
+            --service="$SERVICE" \
+            --output=markdown \
+            --output-file=PARITY_REPORT.md \
+            --quiet
+
+      - name: Check for Baseline Changes
+        id: diff
+        run: |
+          if [ -f .cloudmirror-baseline.json ]; then
+            # Simple diff check - compare operation counts
+            OLD_COUNT=$(jq '[.[].supported | length] | add // 0' .cloudmirror-baseline.json 2>/dev/null || echo "0")
+            NEW_COUNT=$(jq '[.[].supported | length] | add // 0' parity-report.json 2>/dev/null || jq '.supported | length // 0' parity-report.json)
+
+            if [ "$OLD_COUNT" != "$NEW_COUNT" ]; then
+              echo "has_changes=true" >> $GITHUB_OUTPUT
+              echo "Changes detected: $OLD_COUNT -> $NEW_COUNT supported operations"
+            else
+              echo "has_changes=false" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No baseline found, skipping diff"
+          fi
+
+      - name: Generate Stubs (if requested)
+        if: github.event.inputs.generate_stubs == 'true'
+        run: |
+          SERVICE="${{ github.event.inputs.service }}"
+          if [ "$SERVICE" != "all" ] && [ -n "$SERVICE" ]; then
+            ./bin/cloudmirror analyze \
+              --sdk-path=/tmp/aws-sdk-go-v2 \
+              --services-path=internal/emulator/services \
+              --service="$SERVICE" \
+              --generate-stubs \
+              --quiet
+            echo "Generated stubs for $SERVICE"
+          else
+            echo "Stub generation requires a specific service (not 'all')"
+          fi
+
+      - name: Create Issue for API Changes
+        if: steps.diff.outputs.has_changes == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('PARITY_REPORT.md', 'utf8');
+            const summary = `${{ steps.analysis.outputs.summary }}`;
+
+            // Check for existing open issue
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'aws-parity',
+              state: 'open'
+            });
+
+            const body = `## AWS API Parity Update
+
+            ${summary}
+
+            <details>
+            <summary>Full Report</summary>
+
+            ${report}
+
+            </details>
+
+            ---
+            *Generated by CloudMirror on ${new Date().toISOString()}*`;
+
+            if (issues.data.length > 0) {
+              // Update existing issue
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issues.data[0].number,
+                body: body
+              });
+              console.log(`Updated issue #${issues.data[0].number}`);
+            } else {
+              // Create new issue
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: 'AWS API Parity Report',
+                body: body,
+                labels: ['aws-parity', 'enhancement', 'automated']
+              });
+              console.log('Created new parity issue');
+            }
+
+      - name: Update Baseline
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          cp parity-report.json .cloudmirror-baseline.json
+          echo "Updated baseline"
+
+      - name: Commit Baseline Update
+        if: github.event_name == 'workflow_dispatch'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update CloudMirror baseline"
+          file_pattern: ".cloudmirror-baseline.json"
+
+      - name: Upload Report Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloudmirror-reports
+          path: |
+            parity-report.json
+            PARITY_REPORT.md
+          retention-days: 30
+
+      - name: Summary
+        run: |
+          echo "## CloudMirror Analysis Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.analysis.outputs.summary }}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "See artifacts for full report." >> $GITHUB_STEP_SUMMARY
+
+  # Post coverage summary comment on PRs
+  pr-comment:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout InfraSpec
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Clone AWS SDK Go V2
+        run: |
+          git clone --depth 1 https://github.com/aws/aws-sdk-go-v2.git /tmp/aws-sdk-go-v2
+
+      - name: Build CloudMirror
+        run: |
+          cd tools/cloudmirror
+          go build -o ../../bin/cloudmirror ./cmd/cloudmirror
+
+      - name: Run Parity Analysis
+        id: analysis
+        run: |
+          # Generate JSON report for all services
+          ./bin/cloudmirror analyze \
+            --sdk-path=/tmp/aws-sdk-go-v2 \
+            --services-path=internal/emulator/services \
+            --service=all \
+            --output=json \
+            --output-file=parity-report.json \
+            --quiet
+
+          # Generate coverage table
+          TABLE=$(jq -r '
+            "| Service | Implemented | Total | Coverage |\n|---------|-------------|-------|----------|\n" +
+            (sort_by(.service_name) | .[] |
+              "| \(.service_name | ascii_upcase) | \(.supported | length) | \(.total_operations) | \(.coverage_percent | . * 100 | round / 100)% |"
+            ) + "\n"
+          ' parity-report.json)
+
+          # Calculate totals
+          TOTALS=$(jq -r '
+            "**Total:** \([.[].supported | length] | add) operations implemented across \(length) services (\([.[].coverage_percent] | add / length | . * 100 | round / 100)% average coverage)"
+          ' parity-report.json)
+
+          # Save to output
+          echo "table<<EOF" >> $GITHUB_OUTPUT
+          echo "$TABLE" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          echo "totals<<EOF" >> $GITHUB_OUTPUT
+          echo "$TOTALS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Find existing comment
+        uses: peter-evans/find-comment@v3
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: 'AWS API Coverage Summary'
+
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## AWS API Coverage Summary
+
+            ${{ steps.analysis.outputs.table }}
+
+            ${{ steps.analysis.outputs.totals }}
+
+            ---
+            *Generated by CloudMirror - updates automatically when `internal/emulator/services/` files change*
+          edit-mode: replace
