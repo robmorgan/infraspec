@@ -1,0 +1,506 @@
+name: AWS API Auto-Tracking
+
+on:
+  schedule:
+    # Daily at 00:00 UTC
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+    inputs:
+      force_update:
+        description: "Force update even if no new SDK version"
+        type: boolean
+        default: false
+      target_version:
+        description: "Specific SDK version to analyze (leave empty for latest)"
+        type: string
+      skip_generation:
+        description: "Skip AI code generation"
+        type: boolean
+        default: false
+
+env:
+  GO_VERSION: "1.24"
+
+# Required permissions for peter-evans/create-pull-request and claude-code-action
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  id-token: write
+
+jobs:
+  check-sdk-release:
+    name: Check for AWS SDK Updates
+    runs-on: ubuntu-latest
+    outputs:
+      has_update: ${{ steps.check.outputs.has_update }}
+      new_version: ${{ steps.check.outputs.new_version }}
+      current_version: ${{ steps.check.outputs.current_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for new AWS SDK release
+        id: check
+        run: |
+          # Get latest release
+          if [ -n "${{ inputs.target_version }}" ]; then
+            LATEST="${{ inputs.target_version }}"
+          else
+            LATEST=$(gh api repos/aws/aws-sdk-go-v2/releases/latest --jq '.tag_name')
+          fi
+
+          # Get current version
+          CURRENT=$(cat .aws-sdk-version 2>/dev/null || echo "none")
+
+          echo "Latest version: $LATEST"
+          echo "Current version: $CURRENT"
+
+          # Determine if update is needed
+          if [ "$LATEST" != "$CURRENT" ] || [ "${{ inputs.force_update }}" = "true" ]; then
+            echo "has_update=true" >> $GITHUB_OUTPUT
+            echo "new_version=$LATEST" >> $GITHUB_OUTPUT
+            echo "current_version=$CURRENT" >> $GITHUB_OUTPUT
+          else
+            echo "has_update=false" >> $GITHUB_OUTPUT
+            echo "No update needed"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  analyze-changes:
+    name: Analyze API Changes
+    needs: check-sdk-release
+    if: needs.check-sdk-release.outputs.has_update == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      has_changes: ${{ steps.analyze.outputs.has_changes }}
+      change_summary: ${{ steps.analyze.outputs.summary }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Clone new SDK version
+        run: |
+          git clone --depth 1 --branch ${{ needs.check-sdk-release.outputs.new_version }} \
+            https://github.com/aws/aws-sdk-go-v2.git /tmp/sdk-new
+
+      - name: Clone current SDK version (if exists)
+        if: needs.check-sdk-release.outputs.current_version != 'none'
+        run: |
+          git clone --depth 1 --branch ${{ needs.check-sdk-release.outputs.current_version }} \
+            https://github.com/aws/aws-sdk-go-v2.git /tmp/sdk-old
+
+      - name: Build CloudMirror
+        run: |
+          cd tools/cloudmirror
+          go build -o ../../bin/cloudmirror ./cmd/cloudmirror
+
+      - name: Analyze API changes
+        id: analyze
+        run: |
+          # Always generate JSON coverage report
+          ./bin/cloudmirror analyze \
+            --sdk-path=/tmp/sdk-new \
+            --services-path=internal/emulator/services \
+            --service=all \
+            --output=json \
+            --output-file=new-coverage.json \
+            --quiet
+
+          # Generate change report (compare with baseline if available)
+          if [ -f ".cloudmirror-baseline.json" ]; then
+            # Count new operations
+            NEW_OPS=$(jq '[.[].missing | length] | add // 0' new-coverage.json)
+            CURRENT_OPS=$(jq '[.[].supported | length] | add // 0' new-coverage.json)
+
+            echo "New SDK: $CURRENT_OPS supported operations, $NEW_OPS still missing"
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "summary=Found $CURRENT_OPS supported operations across implemented services" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "summary=First SDK version tracking" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate coverage report
+        run: |
+          ./bin/cloudmirror analyze \
+            --sdk-path=/tmp/sdk-new \
+            --services-path=internal/emulator/services \
+            --service=all \
+            --output=markdown \
+            --output-file=PARITY_REPORT.md \
+            --quiet
+
+      - name: Upload analysis artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sdk-analysis
+          path: |
+            new-coverage.json
+            PARITY_REPORT.md
+          retention-days: 30
+
+  generate-implementations:
+    name: Generate AI Implementations
+    needs: [check-sdk-release, analyze-changes]
+    if: needs.analyze-changes.outputs.has_changes == 'true' && inputs.skip_generation != true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download analysis artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: sdk-analysis
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Clone new SDK
+        run: |
+          git clone --depth 1 --branch ${{ needs.check-sdk-release.outputs.new_version }} \
+            https://github.com/aws/aws-sdk-go-v2.git /tmp/aws-sdk-go-v2
+
+      - name: Build CloudMirror
+        run: |
+          cd tools/cloudmirror
+          go build -o ../../bin/cloudmirror ./cmd/cloudmirror
+
+      - name: Prepare change report
+        run: |
+          # Create change report from coverage analysis
+          jq '{
+            old_version: "${{ needs.check-sdk-release.outputs.current_version }}",
+            new_version: "${{ needs.check-sdk-release.outputs.new_version }}",
+            services: [.[] | {
+              name: .service_name,
+              protocol: .protocol,
+              new_operations: [.missing[] | select(.priority == "high") | {
+                name: .name,
+                documentation: .documentation,
+                priority: .priority
+              }]
+            } | select(.new_operations | length > 0)]
+          }' new-coverage.json > change-report.json
+
+      - name: Prepare prompts for Claude Code
+        run: |
+          # Generate prompt files for Claude Code Action
+          ./bin/cloudmirror generate \
+            --change-report=change-report.json \
+            --sdk-path=/tmp/aws-sdk-go-v2 \
+            --output-dir=prompts \
+            --prepare-prompts \
+            --max-operations=5 \
+            --verbose
+
+      - name: Generate implementations with Claude Code
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          show_full_output: true
+          prompt: |
+            You are implementing AWS service handlers for the InfraSpec emulator.
+
+            Read the manifest file at prompts/manifest.json to see the list of operations to implement.
+
+            For each operation in the manifest:
+            1. Read the corresponding prompt file from the prompts/ directory
+            2. Follow the instructions in the prompt to implement the handler
+            3. Write the handler code to the path specified in handler_path
+            4. Write the test code to the path specified in test_path
+
+            Important:
+            - Follow existing patterns in internal/emulator/services/
+            - Use successResponse() and errorResponse() helpers
+            - Create Result types with XMLName for Query protocol services
+            - Write comprehensive tests covering success and error cases
+
+            Start by reading prompts/manifest.json to see what needs to be implemented.
+          claude_args: |
+            --allowedTools Glob,Grep,Read,Write,Edit
+            --max-turns 50
+
+      - name: Upload generated code
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-implementations
+          path: |
+            internal/emulator/services/
+            prompts/
+          if-no-files-found: ignore
+
+  validate-implementations:
+    name: Validate Generated Code
+    needs: [generate-implementations]
+    if: always() && needs.generate-implementations.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download generated code
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-implementations
+          path: generated/
+        continue-on-error: true
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Apply generated code
+        run: |
+          if [ -d "generated/internal/emulator/services" ]; then
+            cp -r generated/internal/emulator/services/* internal/emulator/services/ 2>/dev/null || true
+          fi
+
+      - name: Auto-fix generated code
+        run: |
+          # Install goimports
+          go install golang.org/x/tools/cmd/goimports@latest
+
+          # Fix imports and formatting
+          find internal/emulator/services -name "*.go" -exec $(go env GOPATH)/bin/goimports -w {} \;
+
+          # Try to fix unused variable errors
+          if ! go build ./internal/emulator/services/... 2>build_errors.txt; then
+            echo "Build errors found, attempting auto-fix..."
+            # Fix unused variables by prefixing with _
+            while IFS= read -r line; do
+              if echo "$line" | grep -q "declared and not used"; then
+                file=$(echo "$line" | cut -d: -f1)
+                varname=$(echo "$line" | sed -n 's/.*declared and not used: \([a-zA-Z_][a-zA-Z0-9_]*\).*/\1/p')
+                if [ -n "$file" ] && [ -n "$varname" ] && [ -f "$file" ]; then
+                  echo "Fixing unused variable '$varname' in $file"
+                  sed -i "s/\b${varname}\b :=/_${varname} :=/g" "$file"
+                  sed -i "s/\bvar ${varname}\b/var _${varname}/g" "$file"
+                fi
+              fi
+            done < build_errors.txt
+          fi
+
+      - name: Build and collect errors
+        id: build
+        run: |
+          if go build ./internal/emulator/services/... 2>build_errors.txt; then
+            echo "build_success=true" >> $GITHUB_OUTPUT
+          else
+            echo "build_success=false" >> $GITHUB_OUTPUT
+            echo "Build errors:"
+            cat build_errors.txt
+          fi
+
+      - name: Retry with Claude Code on build failure
+        if: steps.build.outputs.build_success == 'false'
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          show_full_output: true
+          prompt: |
+            The generated code has compilation errors. Please fix them.
+
+            Build errors:
+            ```
+            $(cat build_errors.txt)
+            ```
+
+            Instructions:
+            1. Read each error carefully
+            2. Navigate to the file mentioned in the error
+            3. Fix the issue (unused variables, missing imports, type errors)
+            4. Ensure the code still follows the patterns in internal/emulator/services/iam/
+            5. After fixing all errors, verify with: go build ./internal/emulator/services/...
+          claude_args: |
+            --allowedTools Glob,Grep,Read,Write,Edit,Bash
+            --max-turns 20
+
+      - name: Run unit tests
+        run: go test -v ./internal/emulator/services/...
+
+      - name: Build infraspec CLI
+        run: go build -o bin/infraspec ./cmd/infraspec
+
+      - name: Run basic validation
+        run: |
+          # Basic CLI check
+          ./bin/infraspec --help
+          echo "InfraSpec CLI built successfully"
+
+  create-pull-request:
+    name: Create Pull Request
+    needs: [check-sdk-release, analyze-changes, validate-implementations]
+    if: always() && needs.check-sdk-release.outputs.has_update == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: sdk-analysis
+        continue-on-error: true
+
+      - name: Download generated code
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-implementations
+          path: generated/
+        continue-on-error: true
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Apply changes
+        run: |
+          # Apply generated code if present
+          if [ -d "generated/internal/emulator/services" ]; then
+            cp -r generated/internal/emulator/services/* internal/emulator/services/ 2>/dev/null || true
+          fi
+
+          # Update SDK version file
+          echo "${{ needs.check-sdk-release.outputs.new_version }}" > .aws-sdk-version
+
+          # Update baseline
+          if [ -f "new-coverage.json" ]; then
+            cp new-coverage.json .cloudmirror-baseline.json
+          fi
+
+      - name: Auto-fix generated code
+        run: |
+          # Install goimports
+          go install golang.org/x/tools/cmd/goimports@latest
+
+          # Fix imports and formatting
+          find internal/emulator/services -name "*.go" -exec $(go env GOPATH)/bin/goimports -w {} \;
+
+          # Try to fix unused variable errors
+          if ! go build ./internal/emulator/services/... 2>build_errors.txt; then
+            echo "Build errors found, attempting auto-fix..."
+            # Fix unused variables by prefixing with _
+            while IFS= read -r line; do
+              if echo "$line" | grep -q "declared and not used"; then
+                file=$(echo "$line" | cut -d: -f1)
+                varname=$(echo "$line" | sed -n 's/.*declared and not used: \([a-zA-Z_][a-zA-Z0-9_]*\).*/\1/p')
+                if [ -n "$file" ] && [ -n "$varname" ] && [ -f "$file" ]; then
+                  echo "Fixing unused variable '$varname' in $file"
+                  sed -i "s/\b${varname}\b :=/_${varname} :=/g" "$file"
+                  sed -i "s/\bvar ${varname}\b/var _${varname}/g" "$file"
+                fi
+              fi
+            done < build_errors.txt
+          fi
+
+      - name: Cleanup generated directory
+        run: |
+          # Remove the generated directory to avoid committing intermediate artifacts
+          rm -rf generated/
+          rm -f build_errors.txt
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: |
+            feat: update AWS SDK tracking to ${{ needs.check-sdk-release.outputs.new_version }}
+
+            - Updated from ${{ needs.check-sdk-release.outputs.current_version }} to ${{ needs.check-sdk-release.outputs.new_version }}
+            - Updated CloudMirror baseline
+
+            🤖 Generated with [Claude Code](https://claude.com/claude-code)
+          branch: auto/aws-sdk-update-${{ needs.check-sdk-release.outputs.new_version }}
+          delete-branch: true
+          title: "[Auto] AWS SDK Update: ${{ needs.check-sdk-release.outputs.new_version }}"
+          body: |
+            ## AWS SDK Auto-Update
+
+            This PR was automatically generated by the AWS API Auto-Tracking system.
+
+            ### Version Change
+            - **From:** ${{ needs.check-sdk-release.outputs.current_version }}
+            - **To:** ${{ needs.check-sdk-release.outputs.new_version }}
+
+            ### Analysis Summary
+            ${{ needs.analyze-changes.outputs.change_summary }}
+
+            ### Validation Results
+            - Unit tests: ${{ needs.validate-implementations.result }}
+
+            ### Review Checklist
+            - [ ] Review any AI-generated implementations
+            - [ ] Verify response formats match AWS
+            - [ ] Check state management patterns
+            - [ ] Confirm test coverage is adequate
+
+            ---
+            🤖 Generated with [Claude Code](https://claude.com/claude-code)
+          labels: |
+            aws-parity
+            auto-generated
+            enhancement
+            ${{ needs.validate-implementations.result == 'success' && 'validation-passed' || 'needs-review' }}
+
+  notify-on-failure:
+    name: Notify on Failure
+    needs: [check-sdk-release, analyze-changes, validate-implementations]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create failure issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = `AWS SDK Auto-Tracking Failed: ${{ needs.check-sdk-release.outputs.new_version || 'unknown' }}`;
+            const body = `
+            ## Auto-Tracking Pipeline Failed
+
+            **Workflow Run:** [View Run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+
+            ### Job Results
+            - check-sdk-release: \`${{ needs.check-sdk-release.result }}\`
+            - analyze-changes: \`${{ needs.analyze-changes.result }}\`
+            - validate-implementations: \`${{ needs.validate-implementations.result }}\`
+
+            Please investigate and address the issues.
+            `;
+
+            // Check for existing issue
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'auto-tracking-failure',
+              state: 'open'
+            });
+
+            if (issues.data.length > 0) {
+              // Update existing issue
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issues.data[0].number,
+                body: body
+              });
+            } else {
+              // Create new issue
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['auto-tracking-failure', 'bug']
+              });
+            }
