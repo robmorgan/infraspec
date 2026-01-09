@@ -3,7 +3,7 @@ package dynamodb
 import (
 	"context"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 // describeEndpoints returns the regional endpoint information.

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 func (s *DynamoDBService) describeContributorInsights(ctx context.Context, input *DescribeContributorInsightsInput) (*emulator.AWSResponse, error) {
