@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 func (s *DynamoDBService) deleteResourcePolicy(ctx context.Context, input *DeleteResourcePolicyInput) (*emulator.AWSResponse, error) {
