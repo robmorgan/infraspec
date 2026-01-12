@@ -138,7 +138,7 @@ jobs:
             --quiet
 
       - name: Upload analysis artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: sdk-analysis
           path: |
@@ -231,7 +231,7 @@ jobs:
             --max-turns 50
 
       - name: Upload generated code
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: generated-implementations
           path: |
