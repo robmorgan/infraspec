@@ -3,7 +3,7 @@ package dynamodb
 import (
 	"context"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 // describeLimits returns the current provisioned-capacity quotas for the AWS account in a Region.
