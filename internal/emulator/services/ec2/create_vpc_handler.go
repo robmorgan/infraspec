@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 	"github.com/robmorgan/infraspec/internal/emulator/graph"
 	"github.com/robmorgan/infraspec/internal/emulator/helpers"
 )
