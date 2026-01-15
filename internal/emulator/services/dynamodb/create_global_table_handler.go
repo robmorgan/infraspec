@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 func (s *DynamoDBService) createGlobalTable(ctx context.Context, input *CreateGlobalTableInput) (*emulator.AWSResponse, error) {
