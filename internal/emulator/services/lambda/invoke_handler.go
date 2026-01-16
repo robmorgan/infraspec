@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 // Mock response configuration via function tags:
