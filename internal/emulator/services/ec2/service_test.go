@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 	"github.com/robmorgan/infraspec/internal/emulator/graph"
 	testhelpers "github.com/robmorgan/infraspec/internal/emulator/testing"
 )

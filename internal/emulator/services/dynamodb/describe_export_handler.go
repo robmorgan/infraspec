@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 // describeExport describes an existing table export.
