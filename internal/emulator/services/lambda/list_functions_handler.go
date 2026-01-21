@@ -6,7 +6,7 @@ import (
 	"sort"
 	"strconv"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 // handleListFunctions handles the ListFunctions API
