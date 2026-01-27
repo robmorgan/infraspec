@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 func (s *IAMService) createRole(ctx context.Context, params map[string]interface{}) (*emulator.AWSResponse, error) {
@@ -421,10 +421,10 @@ func (s *IAMService) createServiceLinkedRole(ctx context.Context, params map[str
 
 	// Register role in the relationship graph
 	s.registerResource("role", roleName, map[string]string{
-		"arn":              role.Arn,
-		"path":             role.Path,
-		"serviceLinked":    "true",
-		"awsServiceName":   awsServiceName,
+		"arn":            role.Arn,
+		"path":           role.Path,
+		"serviceLinked":  "true",
+		"awsServiceName": awsServiceName,
 	})
 
 	result := CreateServiceLinkedRoleResult{Role: role}
