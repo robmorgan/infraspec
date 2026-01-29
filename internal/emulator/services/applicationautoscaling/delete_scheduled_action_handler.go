@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 func (s *ApplicationAutoScalingService) deleteScheduledAction(ctx context.Context, input *DeleteScheduledActionRequest) (*emulator.AWSResponse, error) {
