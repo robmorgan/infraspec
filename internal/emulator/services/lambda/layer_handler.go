@@ -8,7 +8,7 @@ import (
 	"sort"
 	"strconv"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 // handlePublishLayerVersion handles PublishLayerVersion API

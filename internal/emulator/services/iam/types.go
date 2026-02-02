@@ -182,15 +182,15 @@ type DeleteServiceLinkedRoleResult struct {
 
 // GetServiceLinkedRoleDeletionStatusResult wraps the deletion status
 type GetServiceLinkedRoleDeletionStatusResult struct {
-	XMLName xml.Name                    `xml:"GetServiceLinkedRoleDeletionStatusResult"`
-	Status  string                      `xml:"Status"`
-	Reason  *RoleDeletionFailureReason  `xml:"Reason,omitempty"`
+	XMLName xml.Name                   `xml:"GetServiceLinkedRoleDeletionStatusResult"`
+	Status  string                     `xml:"Status"`
+	Reason  *RoleDeletionFailureReason `xml:"Reason,omitempty"`
 }
 
 // RoleDeletionFailureReason contains details about why deletion failed
 type RoleDeletionFailureReason struct {
-	Reason            string                    `xml:"Reason,omitempty"`
-	RoleUsageList     []RoleUsageInfo           `xml:"RoleUsageList>member,omitempty"`
+	Reason        string          `xml:"Reason,omitempty"`
+	RoleUsageList []RoleUsageInfo `xml:"RoleUsageList>member,omitempty"`
 }
 
 // RoleUsageInfo contains info about resources using the role
@@ -481,10 +481,10 @@ type CreateAccessKeyResult struct {
 
 // ListAccessKeysResult wraps the access keys list for ListAccessKeys response
 type ListAccessKeysResult struct {
-	XMLName             xml.Name               `xml:"ListAccessKeysResult"`
-	AccessKeyMetadata   []XMLAccessKeyMetadata `xml:"AccessKeyMetadata>member"`
-	IsTruncated         bool                   `xml:"IsTruncated"`
-	Marker              string                 `xml:"Marker,omitempty"`
+	XMLName           xml.Name               `xml:"ListAccessKeysResult"`
+	AccessKeyMetadata []XMLAccessKeyMetadata `xml:"AccessKeyMetadata>member"`
+	IsTruncated       bool                   `xml:"IsTruncated"`
+	Marker            string                 `xml:"Marker,omitempty"`
 }
 
 // GetAccessKeyLastUsedResult wraps the last used info for GetAccessKeyLastUsed response
@@ -525,7 +525,7 @@ type UserInlinePolicies struct {
 
 // UserLoginProfile stores login profile data for a user
 type UserLoginProfile struct {
-	PasswordHash          string    // In real AWS, this would be the hashed password
+	PasswordHash          string // In real AWS, this would be the hashed password
 	CreateDate            time.Time
 	PasswordResetRequired bool
 }
@@ -577,12 +577,12 @@ type ServiceLinkedRoleDeletionTask struct {
 
 // XMLSAMLProvider represents an IAM SAML provider
 type XMLSAMLProvider struct {
-	XMLName            xml.Name  `xml:"SAMLProviderArn"`
-	Arn                string    `xml:"Arn"`
-	ValidUntil         time.Time `xml:"ValidUntil,omitempty"`
-	CreateDate         time.Time `xml:"CreateDate"`
-	Tags               []XMLTag  `xml:"Tags>member,omitempty"`
-	SAMLMetadataDocument string  `xml:"SAMLMetadataDocument,omitempty"`
+	XMLName              xml.Name  `xml:"SAMLProviderArn"`
+	Arn                  string    `xml:"Arn"`
+	ValidUntil           time.Time `xml:"ValidUntil,omitempty"`
+	CreateDate           time.Time `xml:"CreateDate"`
+	Tags                 []XMLTag  `xml:"Tags>member,omitempty"`
+	SAMLMetadataDocument string    `xml:"SAMLMetadataDocument,omitempty"`
 }
 
 // Note: SAMLProviderListEntry is defined in smithy_types.go
@@ -615,8 +615,8 @@ type UpdateSAMLProviderResult struct {
 
 // ListSAMLProvidersResult wraps the SAML providers list
 type ListSAMLProvidersResult struct {
-	XMLName           xml.Name                `xml:"ListSAMLProvidersResult"`
-	SAMLProviderList  []SAMLProviderListEntry `xml:"SAMLProviderList>member"`
+	XMLName          xml.Name                `xml:"ListSAMLProvidersResult"`
+	SAMLProviderList []SAMLProviderListEntry `xml:"SAMLProviderList>member"`
 }
 
 // ============================================================================
@@ -642,9 +642,9 @@ type XMLOpenIDConnectProvider struct {
 
 // CreateOpenIDConnectProviderResult wraps the ARN for CreateOpenIDConnectProvider response
 type CreateOpenIDConnectProviderResult struct {
-	XMLName                   xml.Name `xml:"CreateOpenIDConnectProviderResult"`
-	OpenIDConnectProviderArn  string   `xml:"OpenIDConnectProviderArn"`
-	Tags                      []XMLTag `xml:"Tags>member,omitempty"`
+	XMLName                  xml.Name `xml:"CreateOpenIDConnectProviderResult"`
+	OpenIDConnectProviderArn string   `xml:"OpenIDConnectProviderArn"`
+	Tags                     []XMLTag `xml:"Tags>member,omitempty"`
 }
 
 // GetOpenIDConnectProviderResult wraps the OIDC provider details
@@ -659,8 +659,8 @@ type GetOpenIDConnectProviderResult struct {
 
 // ListOpenIDConnectProvidersResult wraps the OIDC providers list
 type ListOpenIDConnectProvidersResult struct {
-	XMLName                     xml.Name                         `xml:"ListOpenIDConnectProvidersResult"`
-	OpenIDConnectProviderList   []OpenIDConnectProviderListEntry `xml:"OpenIDConnectProviderList>member"`
+	XMLName                   xml.Name                         `xml:"ListOpenIDConnectProvidersResult"`
+	OpenIDConnectProviderList []OpenIDConnectProviderListEntry `xml:"OpenIDConnectProviderList>member"`
 }
 
 // ============================================================================
@@ -693,13 +693,13 @@ type OIDCProviderData struct {
 
 // XMLVirtualMFADevice represents a virtual MFA device
 type XMLVirtualMFADevice struct {
-	XMLName                 xml.Name  `xml:"VirtualMFADevice"`
-	SerialNumber            string    `xml:"SerialNumber"`
-	Base32StringSeed        string    `xml:"Base32StringSeed,omitempty"` // Only shown on create
-	QRCodePNG               string    `xml:"QRCodePNG,omitempty"`        // Base64 encoded PNG, only shown on create
-	User                    *XMLUser  `xml:"User,omitempty"`             // Associated user, if any
-	EnableDate              time.Time `xml:"EnableDate,omitempty"`
-	Tags                    []XMLTag  `xml:"Tags>member,omitempty"`
+	XMLName          xml.Name  `xml:"VirtualMFADevice"`
+	SerialNumber     string    `xml:"SerialNumber"`
+	Base32StringSeed string    `xml:"Base32StringSeed,omitempty"` // Only shown on create
+	QRCodePNG        string    `xml:"QRCodePNG,omitempty"`        // Base64 encoded PNG, only shown on create
+	User             *XMLUser  `xml:"User,omitempty"`             // Associated user, if any
+	EnableDate       time.Time `xml:"EnableDate,omitempty"`
+	Tags             []XMLTag  `xml:"Tags>member,omitempty"`
 }
 
 // XMLMFADevice represents an MFA device (hardware or virtual)
@@ -772,32 +772,32 @@ type VirtualMFADeviceData struct {
 
 // XMLServerCertificate represents an IAM server certificate
 type XMLServerCertificate struct {
-	XMLName                   xml.Name                      `xml:"ServerCertificate"`
-	ServerCertificateMetadata XMLServerCertificateMetadata  `xml:"ServerCertificateMetadata"`
-	CertificateBody           string                        `xml:"CertificateBody"`
-	CertificateChain          string                        `xml:"CertificateChain,omitempty"`
-	Tags                      []XMLTag                      `xml:"Tags>member,omitempty"`
+	XMLName                   xml.Name                     `xml:"ServerCertificate"`
+	ServerCertificateMetadata XMLServerCertificateMetadata `xml:"ServerCertificateMetadata"`
+	CertificateBody           string                       `xml:"CertificateBody"`
+	CertificateChain          string                       `xml:"CertificateChain,omitempty"`
+	Tags                      []XMLTag                     `xml:"Tags>member,omitempty"`
 }
 
 // XMLServerCertificateMetadata represents server certificate metadata
 type XMLServerCertificateMetadata struct {
-	XMLName                 xml.Name  `xml:"ServerCertificateMetadata"`
-	ServerCertificateName   string    `xml:"ServerCertificateName"`
-	ServerCertificateId     string    `xml:"ServerCertificateId"`
-	Arn                     string    `xml:"Arn"`
-	Path                    string    `xml:"Path"`
-	UploadDate              time.Time `xml:"UploadDate"`
-	Expiration              time.Time `xml:"Expiration,omitempty"`
+	XMLName               xml.Name  `xml:"ServerCertificateMetadata"`
+	ServerCertificateName string    `xml:"ServerCertificateName"`
+	ServerCertificateId   string    `xml:"ServerCertificateId"`
+	Arn                   string    `xml:"Arn"`
+	Path                  string    `xml:"Path"`
+	UploadDate            time.Time `xml:"UploadDate"`
+	Expiration            time.Time `xml:"Expiration,omitempty"`
 }
 
 // ServerCertificateMetadataListItem represents a certificate in a list (no XMLName)
 type ServerCertificateMetadataListItem struct {
-	ServerCertificateName   string    `xml:"ServerCertificateName"`
-	ServerCertificateId     string    `xml:"ServerCertificateId"`
-	Arn                     string    `xml:"Arn"`
-	Path                    string    `xml:"Path"`
-	UploadDate              time.Time `xml:"UploadDate"`
-	Expiration              time.Time `xml:"Expiration,omitempty"`
+	ServerCertificateName string    `xml:"ServerCertificateName"`
+	ServerCertificateId   string    `xml:"ServerCertificateId"`
+	Arn                   string    `xml:"Arn"`
+	Path                  string    `xml:"Path"`
+	UploadDate            time.Time `xml:"UploadDate"`
+	Expiration            time.Time `xml:"Expiration,omitempty"`
 }
 
 // ============================================================================
@@ -819,10 +819,10 @@ type GetServerCertificateResult struct {
 
 // ListServerCertificatesResult wraps the certificates list
 type ListServerCertificatesResult struct {
-	XMLName                        xml.Name                            `xml:"ListServerCertificatesResult"`
-	ServerCertificateMetadataList  []ServerCertificateMetadataListItem `xml:"ServerCertificateMetadataList>member"`
-	IsTruncated                    bool                                `xml:"IsTruncated"`
-	Marker                         string                              `xml:"Marker,omitempty"`
+	XMLName                       xml.Name                            `xml:"ListServerCertificatesResult"`
+	ServerCertificateMetadataList []ServerCertificateMetadataListItem `xml:"ServerCertificateMetadataList>member"`
+	IsTruncated                   bool                                `xml:"IsTruncated"`
+	Marker                        string                              `xml:"Marker,omitempty"`
 }
 
 // ============================================================================
@@ -849,13 +849,13 @@ type ServerCertificateData struct {
 
 // XMLSSHPublicKey represents an IAM SSH public key
 type XMLSSHPublicKey struct {
-	XMLName        xml.Name  `xml:"SSHPublicKey"`
-	UserName       string    `xml:"UserName"`
-	SSHPublicKeyId string    `xml:"SSHPublicKeyId"`
-	Fingerprint    string    `xml:"Fingerprint"`
-	SSHPublicKeyBody string  `xml:"SSHPublicKeyBody"`
-	Status         string    `xml:"Status"`
-	UploadDate     time.Time `xml:"UploadDate"`
+	XMLName          xml.Name  `xml:"SSHPublicKey"`
+	UserName         string    `xml:"UserName"`
+	SSHPublicKeyId   string    `xml:"SSHPublicKeyId"`
+	Fingerprint      string    `xml:"Fingerprint"`
+	SSHPublicKeyBody string    `xml:"SSHPublicKeyBody"`
+	Status           string    `xml:"Status"`
+	UploadDate       time.Time `xml:"UploadDate"`
 }
 
 // SSHPublicKeyMetadataListItem represents SSH key metadata in a list
@@ -922,17 +922,17 @@ type ListAccountAliasesResult struct {
 
 // XMLPasswordPolicy represents an IAM password policy
 type XMLPasswordPolicy struct {
-	XMLName                      xml.Name `xml:"PasswordPolicy"`
-	MinimumPasswordLength        int      `xml:"MinimumPasswordLength,omitempty"`
-	RequireSymbols               bool     `xml:"RequireSymbols"`
-	RequireNumbers               bool     `xml:"RequireNumbers"`
-	RequireUppercaseCharacters   bool     `xml:"RequireUppercaseCharacters"`
-	RequireLowercaseCharacters   bool     `xml:"RequireLowercaseCharacters"`
-	AllowUsersToChangePassword   bool     `xml:"AllowUsersToChangePassword"`
-	ExpirePasswords              bool     `xml:"ExpirePasswords"`
-	MaxPasswordAge               int      `xml:"MaxPasswordAge,omitempty"`
-	PasswordReusePrevention      int      `xml:"PasswordReusePrevention,omitempty"`
-	HardExpiry                   bool     `xml:"HardExpiry"`
+	XMLName                    xml.Name `xml:"PasswordPolicy"`
+	MinimumPasswordLength      int      `xml:"MinimumPasswordLength,omitempty"`
+	RequireSymbols             bool     `xml:"RequireSymbols"`
+	RequireNumbers             bool     `xml:"RequireNumbers"`
+	RequireUppercaseCharacters bool     `xml:"RequireUppercaseCharacters"`
+	RequireLowercaseCharacters bool     `xml:"RequireLowercaseCharacters"`
+	AllowUsersToChangePassword bool     `xml:"AllowUsersToChangePassword"`
+	ExpirePasswords            bool     `xml:"ExpirePasswords"`
+	MaxPasswordAge             int      `xml:"MaxPasswordAge,omitempty"`
+	PasswordReusePrevention    int      `xml:"PasswordReusePrevention,omitempty"`
+	HardExpiry                 bool     `xml:"HardExpiry"`
 }
 
 // GetAccountPasswordPolicyResult wraps the password policy
@@ -947,14 +947,14 @@ type GetAccountPasswordPolicyResult struct {
 
 // PasswordPolicyData stores the password policy settings
 type PasswordPolicyData struct {
-	MinimumPasswordLength        int
-	RequireSymbols               bool
-	RequireNumbers               bool
-	RequireUppercaseCharacters   bool
-	RequireLowercaseCharacters   bool
-	AllowUsersToChangePassword   bool
-	ExpirePasswords              bool
-	MaxPasswordAge               int
-	PasswordReusePrevention      int
-	HardExpiry                   bool
+	MinimumPasswordLength      int
+	RequireSymbols             bool
+	RequireNumbers             bool
+	RequireUppercaseCharacters bool
+	RequireLowercaseCharacters bool
+	AllowUsersToChangePassword bool
+	ExpirePasswords            bool
+	MaxPasswordAge             int
+	PasswordReusePrevention    int
+	HardExpiry                 bool
 }
