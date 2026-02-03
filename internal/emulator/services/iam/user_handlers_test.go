@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
