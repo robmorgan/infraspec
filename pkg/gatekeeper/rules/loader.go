@@ -2,23 +2,12 @@ package rules
 
 import (
 	"fmt"
-	"os"
 
 	"gopkg.in/yaml.v3"
 )
 
-// LoadFromFile loads rules from a YAML file
-func LoadFromFile(path string) ([]Rule, error) {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read file: %w", err)
-	}
-
-	return LoadFromBytes(data)
-}
-
-// LoadFromBytes loads rules from YAML bytes
-func LoadFromBytes(data []byte) ([]Rule, error) {
+// LoadFromYAMLBytes loads rules from YAML bytes
+func LoadFromYAMLBytes(data []byte) ([]Rule, error) {
 	var ruleSet RuleSet
 	if err := yaml.Unmarshal(data, &ruleSet); err != nil {
 		return nil, fmt.Errorf("failed to parse YAML: %w", err)
@@ -47,6 +36,12 @@ func LoadFromBytes(data []byte) ([]Rule, error) {
 	}
 
 	return rules, nil
+}
+
+// LoadFromBytes loads rules from YAML bytes (for backwards compatibility)
+// Deprecated: Use LoadFromYAMLBytes or LoadFromHCLBytes instead
+func LoadFromBytes(data []byte) ([]Rule, error) {
+	return LoadFromYAMLBytes(data)
 }
 
 // validateRule validates a single rule

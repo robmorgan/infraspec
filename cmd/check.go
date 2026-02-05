@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/robmorgan/infraspec/pkg/gatekeeper"
+	"github.com/robmorgan/infraspec/pkg/gatekeeper/config"
 )
 
 var (
@@ -35,12 +36,19 @@ var checkCmd = &cobra.Command{
 InfraSpec Gatekeeper performs static analysis on Terraform HCL files to detect
 security misconfigurations, policy violations, and best practice deviations.
 
+Rule Discovery:
+  InfraSpec automatically discovers rules from multiple sources:
+  - Built-in rules (can be disabled with --no-builtin)
+  - .infraspec.hcl in the repository root (auto-discovered)
+  - *.spec.hcl files alongside Terraform configurations
+  - Custom rules file specified with --rules
+
 Examples:
   # Check all Terraform files in a directory
   infraspec check ./terraform
 
   # Check with custom rules
-  infraspec check ./terraform --rules my-rules.yaml
+  infraspec check ./terraform --rules my-rules.hcl
 
   # Check with JSON output for CI
   infraspec check ./terraform --format json
@@ -69,7 +77,7 @@ Exit codes:
 }
 
 func init() {
-	checkCmd.Flags().StringVarP(&checkRulesFile, "rules", "r", "", "path to custom rules YAML file")
+	checkCmd.Flags().StringVarP(&checkRulesFile, "rules", "r", "", "path to custom rules HCL file")
 	checkCmd.Flags().StringVarP(&checkFormat, "format", "f", "text", "output format (text, json)")
 	checkCmd.Flags().StringVarP(&checkSeverity, "severity", "s", "error", "minimum severity to report (error, warning, info)")
 	checkCmd.Flags().StringVar(&checkVarFile, "var-file", "", "path to tfvars file for variable resolution")
@@ -84,7 +92,27 @@ func init() {
 }
 
 func runCheck(cmd *cobra.Command, args []string) error {
-	// Build checker configuration
+	// Try to find and load .infraspec.hcl config
+	var infraspecConfig *config.LoadedConfig
+	if len(args) > 0 {
+		configPath, err := config.FindConfigFile(args[0])
+		if err != nil && checkVerbose {
+			fmt.Fprintf(os.Stderr, "Warning: error finding config file: %v\n", err)
+		}
+		if configPath != "" {
+			infraspecConfig, err = config.LoadConfigFile(configPath)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Error loading config file %s: %v\n", configPath, err)
+				return ExitError{Code: 2}
+			}
+			if checkVerbose {
+				fmt.Fprintf(os.Stderr, "Loaded config from %s\n", configPath)
+			}
+		}
+	}
+
+	// Build checker configuration, merging config file settings with CLI flags
+	// CLI flags take precedence over config file settings
 	cfg := gatekeeper.Config{
 		RulesFile:      checkRulesFile,
 		VarFile:        checkVarFile,
@@ -95,6 +123,28 @@ func runCheck(cmd *cobra.Command, args []string) error {
 		Verbose:        checkVerbose,
 		NoBuiltin:      checkNoBuiltin,
 		StrictUnknowns: checkStrict,
+	}
+
+	// Apply config file settings if not overridden by CLI
+	if infraspecConfig != nil {
+		// Only apply config file format if CLI didn't specify
+		if !cmd.Flags().Changed("format") && infraspecConfig.Format != "" {
+			cfg.Format = infraspecConfig.Format
+		}
+		// Only apply config file severity if CLI didn't specify
+		if !cmd.Flags().Changed("severity") && infraspecConfig.MinSeverity != "" {
+			cfg.MinSeverity = parseSeverity(infraspecConfig.MinSeverity)
+		}
+		// Only apply config file strict if CLI didn't specify
+		if !cmd.Flags().Changed("strict") {
+			cfg.StrictUnknowns = infraspecConfig.Strict
+		}
+		// Only apply config file no-builtin if CLI didn't specify
+		if !cmd.Flags().Changed("no-builtin") {
+			cfg.NoBuiltin = infraspecConfig.NoBuiltin
+		}
+		// Add rules from config file
+		cfg.ConfigRules = infraspecConfig.Rules
 	}
 
 	// Create checker instance
@@ -119,6 +169,23 @@ func runCheck(cmd *cobra.Command, args []string) error {
 	if len(tfFiles) == 0 {
 		fmt.Fprintf(os.Stderr, "Error: no Terraform files found in specified paths\n")
 		return ExitError{Code: 2}
+	}
+
+	// Discover spec files alongside Terraform files
+	specFiles, err := discoverSpecFiles(args)
+	if err != nil && checkVerbose {
+		fmt.Fprintf(os.Stderr, "Warning: error discovering spec files: %v\n", err)
+	}
+
+	// Load rules from spec files
+	if len(specFiles) > 0 {
+		if checkVerbose {
+			fmt.Fprintf(os.Stderr, "Found %d spec file(s)\n", len(specFiles))
+		}
+		if err := checker.LoadSpecFiles(specFiles); err != nil {
+			fmt.Fprintf(os.Stderr, "Error loading spec files: %v\n", err)
+			return ExitError{Code: 2}
+		}
 	}
 
 	// Run the checks
@@ -204,6 +271,78 @@ func discoverTerraformFiles(paths []string) ([]string, error) {
 	}
 
 	return tfFiles, nil
+}
+
+// discoverSpecFiles finds all *.spec.hcl files in the same directories as Terraform files
+func discoverSpecFiles(paths []string) ([]string, error) {
+	var specFiles []string
+	seen := make(map[string]bool)
+	dirsChecked := make(map[string]bool)
+
+	for _, path := range paths {
+		info, err := os.Stat(path)
+		if err != nil {
+			return nil, fmt.Errorf("cannot access path %s: %w", path, err)
+		}
+
+		if info.IsDir() {
+			// Walk directory recursively
+			err := filepath.WalkDir(path, func(filePath string, d os.DirEntry, err error) error {
+				if err != nil {
+					return err
+				}
+
+				// Skip hidden directories
+				if d.IsDir() && strings.HasPrefix(d.Name(), ".") {
+					return filepath.SkipDir
+				}
+
+				// Collect *.spec.hcl files
+				if !d.IsDir() && strings.HasSuffix(d.Name(), ".spec.hcl") {
+					absPath, err := filepath.Abs(filePath)
+					if err != nil {
+						return err
+					}
+					if !seen[absPath] {
+						seen[absPath] = true
+						specFiles = append(specFiles, absPath)
+					}
+				}
+
+				return nil
+			})
+			if err != nil {
+				return nil, fmt.Errorf("error walking directory %s: %w", path, err)
+			}
+		} else if strings.HasSuffix(path, ".tf") {
+			// Check the directory containing this .tf file for spec files
+			dir := filepath.Dir(path)
+			absDir, err := filepath.Abs(dir)
+			if err != nil {
+				continue
+			}
+			if dirsChecked[absDir] {
+				continue
+			}
+			dirsChecked[absDir] = true
+
+			entries, err := os.ReadDir(absDir)
+			if err != nil {
+				continue
+			}
+			for _, entry := range entries {
+				if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".spec.hcl") {
+					specPath := filepath.Join(absDir, entry.Name())
+					if !seen[specPath] {
+						seen[specPath] = true
+						specFiles = append(specFiles, specPath)
+					}
+				}
+			}
+		}
+	}
+
+	return specFiles, nil
 }
 
 func listRules(checker *gatekeeper.Checker) error {

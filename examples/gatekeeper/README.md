@@ -56,7 +56,7 @@ The `custom-rules/` directory contains example custom rules:
 
 ```bash
 # Check with custom rules
-infraspec check ./terraform-bad --rules ./custom-rules/my-org-rules.yaml
+infraspec check ./terraform-bad --rules ./custom-rules/my-org-rules.hcl
 ```
 
 ### JSON Output for CI
@@ -101,38 +101,123 @@ infraspec check ./terraform --severity warning
 ```
 examples/gatekeeper/
 ├── README.md                 # This file
+├── .infraspec.hcl            # Repository-wide config and rules
 ├── terraform-good/           # Compliant Terraform
-│   └── main.tf
+│   ├── main.tf
+│   └── main.spec.hcl         # Module-specific rules
 ├── terraform-bad/            # Non-compliant Terraform
 │   └── main.tf
 ├── custom-rules/             # Example custom rules
-│   └── my-org-rules.yaml
+│   └── my-org-rules.hcl
 └── .github/
     └── workflows/
         └── infraspec-check.yml  # GitHub Actions example
 ```
 
+## Rule Discovery
+
+InfraSpec automatically discovers rules from multiple sources:
+
+1. **Built-in rules** - Security best practices (can be disabled with `--no-builtin`)
+2. **`.infraspec.hcl`** - Repository-wide config in the repo root (auto-discovered)
+3. **`*.spec.hcl` files** - Rules alongside Terraform configurations
+4. **`--rules` flag** - Custom rules file specified on command line
+
+Rules from later sources can override earlier rules with the same ID.
+
 ## Writing Custom Rules
 
-See `custom-rules/my-org-rules.yaml` for examples. Rules are defined in YAML:
+Rules are defined in HCL format. See `custom-rules/my-org-rules.hcl` for examples.
 
-```yaml
-version: "1"
-metadata:
-  name: "My Rules"
+### Basic Rule Structure
 
-rules:
-  - id: MY_001
-    name: "Rule name"
-    description: "Longer description"
-    severity: error  # error, warning, or info
-    resource_type: aws_s3_bucket
-    condition:
-      attribute: encryption
-      operator: exists
-    message: "Bucket '{{.resource_name}}' needs encryption"
-    remediation: "Add encryption block..."
-    tags: [security]
+```hcl
+rule "MY_001" {
+  name          = "Rule name"
+  description   = "Longer description"
+  severity      = "error"  # error, warning, or info
+  resource_type = "aws_s3_bucket"
+
+  condition {
+    check {
+      attribute = "encryption"
+      operator  = "exists"
+    }
+  }
+
+  message     = "Bucket '{{.resource_name}}' needs encryption"
+  remediation = "Add encryption block..."
+  tags        = ["security"]
+}
+```
+
+### Logical Combinators
+
+```hcl
+# All conditions must pass (AND)
+condition {
+  all {
+    check {
+      attribute = "block_public_acls"
+      operator  = "equals"
+      value     = true
+    }
+    check {
+      attribute = "block_public_policy"
+      operator  = "equals"
+      value     = true
+    }
+  }
+}
+
+# Any condition can pass (OR)
+condition {
+  any {
+    check {
+      attribute = "encryption"
+      operator  = "exists"
+    }
+    check {
+      attribute = "kms_key_id"
+      operator  = "exists"
+    }
+  }
+}
+
+# Negation
+condition {
+  not {
+    check {
+      attribute = "public"
+      operator  = "equals"
+      value     = true
+    }
+  }
+}
+```
+
+### Nested Logic
+
+```hcl
+condition {
+  any {
+    check {
+      attribute = "encryption"
+      operator  = "exists"
+    }
+    all {
+      check {
+        attribute = "kms_key_id"
+        operator  = "exists"
+      }
+      check {
+        attribute = "sse_algorithm"
+        operator  = "equals"
+        value     = "aws:kms"
+      }
+    }
+  }
+}
 ```
 
 ### Available Operators
@@ -143,7 +228,6 @@ rules:
 - `matches` - Regex match
 - `greater_than` / `less_than` - Numeric comparison
 - `one_of` - Value is in list
-- `all` / `any` / `not` - Logical combinators
 
 ### Attribute Paths
 
@@ -151,6 +235,33 @@ rules:
 - `nested.path` - Nested object
 - `array[0].field` - Array index
 - `array[*].field` - All array elements
+
+### Template Variables
+
+In `message` and `remediation` strings, use Go template syntax:
+- `{{.resource_name}}` - Resource name
+- `{{.resource_type}}` - Resource type
+- `{{.file}}` - Source file path
+- `{{.line}}` - Source line number
+
+## Repository Configuration
+
+Create `.infraspec.hcl` in your repository root for global settings:
+
+```hcl
+config {
+  min_severity = "warning"  # Minimum severity to report
+  format       = "text"     # Output format (text, json)
+  strict       = false      # Treat unknowns as violations
+  no_builtin   = false      # Disable built-in rules
+}
+
+# Global rules can also be defined here
+rule "REPO_001" {
+  name          = "All resources must have tags"
+  # ...
+}
+```
 
 ## CI/CD Integration
 

@@ -26,15 +26,16 @@ const (
 
 // Config holds the configuration for the gatekeeper checker
 type Config struct {
-	RulesFile      string   // Path to custom rules YAML file
-	VarFile        string   // Path to tfvars file for variable resolution
-	Format         string   // Output format (text, json)
-	MinSeverity    Severity // Minimum severity to report
-	ExcludeRules   []string // Rule IDs to exclude
-	IncludeRules   []string // Rule IDs to include (excludes all others)
-	Verbose        bool     // Enable verbose output
-	NoBuiltin      bool     // Disable built-in rules
-	StrictUnknowns bool     // Treat unknown values as violations
+	RulesFile      string       // Path to custom rules HCL file
+	VarFile        string       // Path to tfvars file for variable resolution
+	Format         string       // Output format (text, json)
+	MinSeverity    Severity     // Minimum severity to report
+	ExcludeRules   []string     // Rule IDs to exclude
+	IncludeRules   []string     // Rule IDs to include (excludes all others)
+	Verbose        bool         // Enable verbose output
+	NoBuiltin      bool         // Disable built-in rules
+	StrictUnknowns bool         // Treat unknown values as violations
+	ConfigRules    []rules.Rule // Rules from .infraspec.hcl config file
 }
 
 // Checker performs static analysis on Terraform configurations
@@ -102,6 +103,7 @@ func New(cfg Config) (*Checker, error) {
 // loadRules loads both built-in and custom rules
 func (c *Checker) loadRules() error {
 	var allRules []rules.Rule
+	seenIDs := make(map[string]bool)
 
 	// Load built-in rules unless disabled
 	if !c.config.NoBuiltin {
@@ -109,7 +111,26 @@ func (c *Checker) loadRules() error {
 		if err != nil {
 			return fmt.Errorf("failed to load built-in rules: %w", err)
 		}
+		for _, r := range builtinRules {
+			seenIDs[r.ID] = true
+		}
 		allRules = append(allRules, builtinRules...)
+	}
+
+	// Load rules from .infraspec.hcl config file
+	for _, r := range c.config.ConfigRules {
+		if seenIDs[r.ID] {
+			// Config rules override built-in rules with same ID
+			for i, existing := range allRules {
+				if existing.ID == r.ID {
+					allRules[i] = r
+					break
+				}
+			}
+		} else {
+			seenIDs[r.ID] = true
+			allRules = append(allRules, r)
+		}
 	}
 
 	// Load custom rules if specified
@@ -118,7 +139,20 @@ func (c *Checker) loadRules() error {
 		if err != nil {
 			return fmt.Errorf("failed to load custom rules from %s: %w", c.config.RulesFile, err)
 		}
-		allRules = append(allRules, customRules...)
+		for _, r := range customRules {
+			if seenIDs[r.ID] {
+				// Custom rules override previous rules with same ID
+				for i, existing := range allRules {
+					if existing.ID == r.ID {
+						allRules[i] = r
+						break
+					}
+				}
+			} else {
+				seenIDs[r.ID] = true
+				allRules = append(allRules, r)
+			}
+		}
 	}
 
 	// Store all rules (for listing)
@@ -126,6 +160,41 @@ func (c *Checker) loadRules() error {
 
 	// Apply include/exclude filters (for checking)
 	c.rules = c.filterRules(allRules)
+
+	return nil
+}
+
+// LoadSpecFiles loads additional rules from spec files
+func (c *Checker) LoadSpecFiles(specFiles []string) error {
+	seenIDs := make(map[string]bool)
+	for _, r := range c.allRules {
+		seenIDs[r.ID] = true
+	}
+
+	for _, path := range specFiles {
+		specRules, err := rules.LoadFromHCLFile(path)
+		if err != nil {
+			return fmt.Errorf("failed to load spec file %s: %w", path, err)
+		}
+
+		for _, r := range specRules {
+			if seenIDs[r.ID] {
+				// Spec rules override previous rules with same ID
+				for i, existing := range c.allRules {
+					if existing.ID == r.ID {
+						c.allRules[i] = r
+						break
+					}
+				}
+			} else {
+				seenIDs[r.ID] = true
+				c.allRules = append(c.allRules, r)
+			}
+		}
+	}
+
+	// Re-apply filters
+	c.rules = c.filterRules(c.allRules)
 
 	return nil
 }
