@@ -61,8 +61,8 @@ type ClaudeUsage struct {
 
 // ClaudeError represents an error from the Claude API.
 type ClaudeError struct {
-	Type    string `json:"type"`
-	Error   struct {
+	Type  string `json:"type"`
+	Error struct {
 		Type    string `json:"type"`
 		Message string `json:"message"`
 	} `json:"error"`

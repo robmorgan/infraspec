@@ -10,7 +10,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 type EmulatorHandler struct {
@@ -181,7 +181,7 @@ func (h *EmulatorHandler) isJSONProtocolService(r *http.Request) bool {
 // writeJSONErrorResponse writes a JSON error response for JSON protocol services
 func (h *EmulatorHandler) writeJSONErrorResponse(w http.ResponseWriter, statusCode int, code, message string) {
 	errorData := map[string]interface{}{
-		"__type": code,
+		"__type":  code,
 		"message": message,
 	}
 

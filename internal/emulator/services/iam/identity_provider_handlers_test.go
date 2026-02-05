@@ -5,9 +5,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
-	testhelpers "github.com/robmorgan/infraspec/internal/emulator/testing"
 	"github.com/stretchr/testify/require"
+
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
+	testhelpers "github.com/robmorgan/infraspec/internal/emulator/testing"
 )
 
 // ============================================================================
@@ -663,9 +664,9 @@ func TestIsValidSAMLProviderName(t *testing.T) {
 	require.True(t, isValidSAMLProviderName("a"))
 
 	// Invalid names
-	require.False(t, isValidSAMLProviderName("")) // too short
+	require.False(t, isValidSAMLProviderName(""))                       // too short
 	require.False(t, isValidSAMLProviderName(strings.Repeat("a", 129))) // too long
-	require.False(t, isValidSAMLProviderName("My Provider")) // contains space
+	require.False(t, isValidSAMLProviderName("My Provider"))            // contains space
 }
 
 func TestIsValidThumbprint(t *testing.T) {
@@ -677,6 +678,6 @@ func TestIsValidThumbprint(t *testing.T) {
 	// Invalid thumbprints
 	require.False(t, isValidThumbprint("short"))
 	require.False(t, isValidThumbprint("12345678901234567890123456789012345678901")) // 41 chars
-	require.False(t, isValidThumbprint("123456789012345678901234567890123456789")) // 39 chars
-	require.False(t, isValidThumbprint("gggggggggggggggggggggggggggggggggggggggg")) // non-hex
+	require.False(t, isValidThumbprint("123456789012345678901234567890123456789"))   // 39 chars
+	require.False(t, isValidThumbprint("gggggggggggggggggggggggggggggggggggggggg"))  // non-hex
 }

@@ -12,7 +12,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 	"github.com/robmorgan/infraspec/internal/emulator/graph"
 )
 

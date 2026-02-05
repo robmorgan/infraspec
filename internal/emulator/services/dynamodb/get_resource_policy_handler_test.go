@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 func TestGetResourcePolicy_Success(t *testing.T) {

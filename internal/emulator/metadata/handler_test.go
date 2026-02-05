@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 func setupTest(t *testing.T) (*Handler, emulator.StateManager) {

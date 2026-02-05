@@ -9,8 +9,9 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/robmorgan/infraspec/internal/emulator/core"
 	"golang.org/x/crypto/ssh"
+
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 func (s *EC2Service) createKeyPair(ctx context.Context, params map[string]interface{}) (*emulator.AWSResponse, error) {

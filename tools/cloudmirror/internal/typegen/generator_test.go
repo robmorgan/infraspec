@@ -129,7 +129,7 @@ const generatorTestModel = `{
 func createTestModelFile(t *testing.T) string {
 	tmpDir := t.TempDir()
 	modelPath := filepath.Join(tmpDir, "test-model.json")
-	err := os.WriteFile(modelPath, []byte(generatorTestModel), 0644)
+	err := os.WriteFile(modelPath, []byte(generatorTestModel), 0o644)
 	require.NoError(t, err)
 	return modelPath
 }
@@ -536,7 +536,7 @@ const generatorTestModelWithEnums = `{
 func createTestModelFileWithEnums(t *testing.T) string {
 	tmpDir := t.TempDir()
 	modelPath := filepath.Join(tmpDir, "test-model-enums.json")
-	err := os.WriteFile(modelPath, []byte(generatorTestModelWithEnums), 0644)
+	err := os.WriteFile(modelPath, []byte(generatorTestModelWithEnums), 0o644)
 	require.NoError(t, err)
 	return modelPath
 }
@@ -854,7 +854,7 @@ const generatorTestModelWithValidation = `{
 func createTestModelFileWithValidation(t *testing.T) string {
 	tmpDir := t.TempDir()
 	modelPath := filepath.Join(tmpDir, "test-model-validation.json")
-	err := os.WriteFile(modelPath, []byte(generatorTestModelWithValidation), 0644)
+	err := os.WriteFile(modelPath, []byte(generatorTestModelWithValidation), 0o644)
 	require.NoError(t, err)
 	return modelPath
 }
@@ -1118,7 +1118,7 @@ const generatorTestModelRESTJSON = `{
 func createTestModelFileWithHTTP(t *testing.T) string {
 	tmpDir := t.TempDir()
 	modelPath := filepath.Join(tmpDir, "test-model-http.json")
-	err := os.WriteFile(modelPath, []byte(generatorTestModelRESTJSON), 0644)
+	err := os.WriteFile(modelPath, []byte(generatorTestModelRESTJSON), 0o644)
 	require.NoError(t, err)
 	return modelPath
 }

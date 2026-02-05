@@ -162,8 +162,7 @@ type DeleteCapacityProviderResponse struct {
 }
 
 // DeleteCodeSigningConfigResponse represents the DeleteCodeSigningConfigResponse structure.
-type DeleteCodeSigningConfigResponse struct {
-}
+type DeleteCodeSigningConfigResponse struct{}
 
 // DeleteFunctionResponse represents the DeleteFunctionResponse structure.
 type DeleteFunctionResponse struct {
@@ -548,16 +547,13 @@ type PutRuntimeManagementConfigResponse struct {
 }
 
 // SendDurableExecutionCallbackFailureResponse represents the SendDurableExecutionCallbackFailureResponse structure.
-type SendDurableExecutionCallbackFailureResponse struct {
-}
+type SendDurableExecutionCallbackFailureResponse struct{}
 
 // SendDurableExecutionCallbackHeartbeatResponse represents the SendDurableExecutionCallbackHeartbeatResponse structure.
-type SendDurableExecutionCallbackHeartbeatResponse struct {
-}
+type SendDurableExecutionCallbackHeartbeatResponse struct{}
 
 // SendDurableExecutionCallbackSuccessResponse represents the SendDurableExecutionCallbackSuccessResponse structure.
-type SendDurableExecutionCallbackSuccessResponse struct {
-}
+type SendDurableExecutionCallbackSuccessResponse struct{}
 
 // StopDurableExecutionResponse represents the StopDurableExecutionResponse structure.
 type StopDurableExecutionResponse struct {
@@ -749,8 +745,7 @@ type ContextFailedDetails struct {
 }
 
 // ContextStartedDetails Details about a context that has started.
-type ContextStartedDetails struct {
-}
+type ContextStartedDetails struct{}
 
 // ContextSucceededDetails Details about a context that succeeded.
 type ContextSucceededDetails struct {
@@ -1179,8 +1174,7 @@ type StepFailedDetails struct {
 }
 
 // StepStartedDetails Details about a step that has started.
-type StepStartedDetails struct {
-}
+type StepStartedDetails struct{}
 
 // StepSucceededDetails Details about a step that succeeded.
 type StepSucceededDetails struct {

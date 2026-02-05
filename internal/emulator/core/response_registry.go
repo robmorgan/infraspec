@@ -5,9 +5,6 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/service/rds"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	// Add more services as needed:
-	// "github.com/aws/aws-sdk-go-v2/service/dynamodb"
-	// "github.com/aws/aws-sdk-go-v2/service/sqs"
 )
 
 // ResponseRegistry holds the mapping of actions to their output types for each service
@@ -170,4 +167,3 @@ func RegisterAllResponseTypes(registry *ResponseRegistry) {
 	// RegisterDynamoDBResponses(registry)
 	// RegisterSQSResponses(registry)
 }
-

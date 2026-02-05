@@ -5,13 +5,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/sdkcache"
 	"github.com/spf13/cobra"
+
+	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/sdkcache"
 )
 
-var (
-	sdkListLimit int
-)
+var sdkListLimit int
 
 var sdkCmd = &cobra.Command{
 	Use:   "sdk",

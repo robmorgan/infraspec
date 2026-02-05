@@ -6,17 +6,18 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/aigen"
 	"github.com/spf13/cobra"
+
+	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/aigen"
 )
 
 var (
-	generateChangeReport  string
-	generateOutputDir     string
-	generateClaudeAPIKey  string
-	generateClaudeModel   string
-	generateDryRun        bool
-	generateMaxOperations int
+	generateChangeReport   string
+	generateOutputDir      string
+	generateClaudeAPIKey   string
+	generateClaudeModel    string
+	generateDryRun         bool
+	generateMaxOperations  int
 	generatePreparePrompts bool
 )
 

@@ -73,7 +73,7 @@ func (c *ModelsCache) GetModelsPath() (string, error) {
 // clone performs a shallow clone of the AWS API Models repository
 func (c *ModelsCache) clone() error {
 	// Ensure cache directory exists
-	if err := os.MkdirAll(c.CacheDir, 0755); err != nil {
+	if err := os.MkdirAll(c.CacheDir, 0o755); err != nil {
 		return fmt.Errorf("failed to create cache directory: %w", err)
 	}
 

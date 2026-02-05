@@ -8,9 +8,10 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/models"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
+
+	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/models"
 )
 
 //go:embed templates/*.tmpl

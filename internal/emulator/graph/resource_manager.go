@@ -3,7 +3,7 @@ package graph
 import (
 	"fmt"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 // ResourceManager wraps StateManager and RelationshipGraph to provide

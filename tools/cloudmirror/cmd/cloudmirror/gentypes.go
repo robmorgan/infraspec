@@ -6,9 +6,10 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/modelscache"
 	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/typegen"
-	"github.com/spf13/cobra"
 )
 
 var (

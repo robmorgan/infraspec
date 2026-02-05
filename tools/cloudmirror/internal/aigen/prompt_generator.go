@@ -73,7 +73,7 @@ func (g *PromptGenerator) PreparePrompts(ctx context.Context, report *SDKChangeR
 	}
 
 	// Create output directory
-	if err := os.MkdirAll(g.config.OutputDir, 0755); err != nil {
+	if err := os.MkdirAll(g.config.OutputDir, 0o755); err != nil {
 		return nil, fmt.Errorf("failed to create output directory: %w", err)
 	}
 
@@ -124,7 +124,7 @@ func (g *PromptGenerator) PreparePrompts(ctx context.Context, report *SDKChangeR
 			// Write prompt file
 			promptFileName := fmt.Sprintf("%s_%s.md", svc.Name, op.Name)
 			promptPath := filepath.Join(g.config.OutputDir, promptFileName)
-			if err := os.WriteFile(promptPath, []byte(promptContent), 0644); err != nil {
+			if err := os.WriteFile(promptPath, []byte(promptContent), 0o644); err != nil {
 				return nil, fmt.Errorf("failed to write prompt file: %w", err)
 			}
 
@@ -166,7 +166,7 @@ func (g *PromptGenerator) PreparePrompts(ctx context.Context, report *SDKChangeR
 	}
 
 	manifestPath := filepath.Join(g.config.OutputDir, "manifest.json")
-	if err := os.WriteFile(manifestPath, manifestData, 0644); err != nil {
+	if err := os.WriteFile(manifestPath, manifestData, 0o644); err != nil {
 		return nil, fmt.Errorf("failed to write manifest: %w", err)
 	}
 	result.ManifestPath = manifestPath

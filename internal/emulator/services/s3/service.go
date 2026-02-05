@@ -9,7 +9,8 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 type S3Service struct {

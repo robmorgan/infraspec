@@ -29,13 +29,13 @@ func TestCodeScanner_ScanService_EmptyService(t *testing.T) {
 	// Create a temporary directory with an empty service directory
 	tmpDir := t.TempDir()
 	serviceDir := filepath.Join(tmpDir, "testservice")
-	if err := os.MkdirAll(serviceDir, 0755); err != nil {
+	if err := os.MkdirAll(serviceDir, 0o755); err != nil {
 		t.Fatalf("Failed to create service directory: %v", err)
 	}
 
 	// Create an empty Go file
 	goFile := filepath.Join(serviceDir, "service.go")
-	if err := os.WriteFile(goFile, []byte("package testservice\n"), 0644); err != nil {
+	if err := os.WriteFile(goFile, []byte("package testservice\n"), 0o644); err != nil {
 		t.Fatalf("Failed to create Go file: %v", err)
 	}
 
@@ -56,7 +56,7 @@ func TestCodeScanner_ScanService_WithHandleRequest(t *testing.T) {
 	// Create a temporary directory with a service that has HandleRequest
 	tmpDir := t.TempDir()
 	serviceDir := filepath.Join(tmpDir, "testservice")
-	if err := os.MkdirAll(serviceDir, 0755); err != nil {
+	if err := os.MkdirAll(serviceDir, 0o755); err != nil {
 		t.Fatalf("Failed to create service directory: %v", err)
 	}
 
@@ -92,7 +92,7 @@ func (s *TestService) handleList(ctx context.Context, req *Request) (*Response, 
 }
 `
 	goFile := filepath.Join(serviceDir, "service.go")
-	if err := os.WriteFile(goFile, []byte(goContent), 0644); err != nil {
+	if err := os.WriteFile(goFile, []byte(goContent), 0o644); err != nil {
 		t.Fatalf("Failed to create Go file: %v", err)
 	}
 
@@ -124,18 +124,18 @@ func TestCodeScanner_GetImplementedServiceNames(t *testing.T) {
 	services := []string{"rds", "s3", "dynamodb"}
 	for _, svc := range services {
 		svcDir := filepath.Join(tmpDir, svc)
-		if err := os.MkdirAll(svcDir, 0755); err != nil {
+		if err := os.MkdirAll(svcDir, 0o755); err != nil {
 			t.Fatalf("Failed to create directory: %v", err)
 		}
 		goFile := filepath.Join(svcDir, "service.go")
-		if err := os.WriteFile(goFile, []byte("package "+svc+"\n"), 0644); err != nil {
+		if err := os.WriteFile(goFile, []byte("package "+svc+"\n"), 0o644); err != nil {
 			t.Fatalf("Failed to create Go file: %v", err)
 		}
 	}
 
 	// Create a directory without Go files (should not be included)
 	emptyDir := filepath.Join(tmpDir, "empty")
-	if err := os.MkdirAll(emptyDir, 0755); err != nil {
+	if err := os.MkdirAll(emptyDir, 0o755); err != nil {
 		t.Fatalf("Failed to create directory: %v", err)
 	}
 

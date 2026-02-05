@@ -7,7 +7,8 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 // PolicyDocument represents an IAM policy document

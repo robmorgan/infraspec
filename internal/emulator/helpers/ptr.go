@@ -16,4 +16,3 @@ func Int64Ptr(v int64) *int64 { return &v }
 
 // TimePtr returns a pointer to the given time.Time value.
 func TimePtr(t time.Time) *time.Time { return &t }
-

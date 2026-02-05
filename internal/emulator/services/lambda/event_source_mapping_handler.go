@@ -9,7 +9,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 // Event source mapping states
@@ -90,33 +91,33 @@ func (s *LambdaService) handleCreateEventSourceMapping(ctx context.Context, req 
 
 	// Create the mapping
 	mapping := &StoredEventSourceMapping{
-		UUID:                           mappingUUID,
-		EventSourceArn:                 input.EventSourceArn,
-		FunctionArn:                    function.FunctionArn,
-		FunctionName:                   functionName,
-		State:                          state,
-		StateTransitionReason:          "User action",
-		LastModified:                   now(),
-		BatchSize:                      &batchSize,
-		MaximumBatchingWindowInSeconds: input.MaximumBatchingWindowInSeconds,
-		ParallelizationFactor:          input.ParallelizationFactor,
-		StartingPosition:               input.StartingPosition,
-		StartingPositionTimestamp:      input.StartingPositionTimestamp,
-		MaximumRecordAgeInSeconds:      input.MaximumRecordAgeInSeconds,
-		BisectBatchOnFunctionError:     input.BisectBatchOnFunctionError,
-		MaximumRetryAttempts:           input.MaximumRetryAttempts,
-		TumblingWindowInSeconds:        input.TumblingWindowInSeconds,
-		Enabled:                        &enabled,
-		FilterCriteria:                 input.FilterCriteria,
-		DestinationConfig:              input.DestinationConfig,
-		Queues:                         input.Queues,
-		SourceAccessConfigurations:     convertSourceAccessConfigs(input.SourceAccessConfigurations),
-		SelfManagedEventSource:         input.SelfManagedEventSource,
-		FunctionResponseTypes:          input.FunctionResponseTypes,
+		UUID:                                mappingUUID,
+		EventSourceArn:                      input.EventSourceArn,
+		FunctionArn:                         function.FunctionArn,
+		FunctionName:                        functionName,
+		State:                               state,
+		StateTransitionReason:               "User action",
+		LastModified:                        now(),
+		BatchSize:                           &batchSize,
+		MaximumBatchingWindowInSeconds:      input.MaximumBatchingWindowInSeconds,
+		ParallelizationFactor:               input.ParallelizationFactor,
+		StartingPosition:                    input.StartingPosition,
+		StartingPositionTimestamp:           input.StartingPositionTimestamp,
+		MaximumRecordAgeInSeconds:           input.MaximumRecordAgeInSeconds,
+		BisectBatchOnFunctionError:          input.BisectBatchOnFunctionError,
+		MaximumRetryAttempts:                input.MaximumRetryAttempts,
+		TumblingWindowInSeconds:             input.TumblingWindowInSeconds,
+		Enabled:                             &enabled,
+		FilterCriteria:                      input.FilterCriteria,
+		DestinationConfig:                   input.DestinationConfig,
+		Queues:                              input.Queues,
+		SourceAccessConfigurations:          convertSourceAccessConfigs(input.SourceAccessConfigurations),
+		SelfManagedEventSource:              input.SelfManagedEventSource,
+		FunctionResponseTypes:               input.FunctionResponseTypes,
 		AmazonManagedKafkaEventSourceConfig: input.AmazonManagedKafkaEventSourceConfig,
 		SelfManagedKafkaEventSourceConfig:   input.SelfManagedKafkaEventSourceConfig,
-		ScalingConfig:                  input.ScalingConfig,
-		DocumentDBEventSourceConfig:    input.DocumentDBEventSourceConfig,
+		ScalingConfig:                       input.ScalingConfig,
+		DocumentDBEventSourceConfig:         input.DocumentDBEventSourceConfig,
 	}
 
 	// Save the mapping
@@ -362,10 +363,10 @@ func (s *LambdaService) buildEventSourceMappingResponse(mapping *StoredEventSour
 
 	response := map[string]interface{}{
 		"UUID":                  mapping.UUID,
-		"FunctionArn":          mapping.FunctionArn,
-		"State":                mapping.State,
+		"FunctionArn":           mapping.FunctionArn,
+		"State":                 mapping.State,
 		"StateTransitionReason": mapping.StateTransitionReason,
-		"LastModified":         lastModified,
+		"LastModified":          lastModified,
 	}
 
 	if mapping.EventSourceArn != "" {

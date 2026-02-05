@@ -14,12 +14,12 @@ type SDKChangeReport struct {
 
 // ServiceChange represents changes to a specific AWS service.
 type ServiceChange struct {
-	Name           string          `json:"name"`
-	Protocol       string          `json:"protocol"`
-	NewOperations  []OperationInfo `json:"new_operations"`
-	ModifiedOps    []OperationDiff `json:"modified_operations"`
-	DeprecatedOps  []string        `json:"deprecated_operations"`
-	RemovedOps     []string        `json:"removed_operations"`
+	Name          string          `json:"name"`
+	Protocol      string          `json:"protocol"`
+	NewOperations []OperationInfo `json:"new_operations"`
+	ModifiedOps   []OperationDiff `json:"modified_operations"`
+	DeprecatedOps []string        `json:"deprecated_operations"`
+	RemovedOps    []string        `json:"removed_operations"`
 }
 
 // OperationInfo contains information about a new operation.
@@ -68,11 +68,11 @@ type GenerationResult struct {
 
 // GeneratedFile represents a file that was generated.
 type GeneratedFile struct {
-	Path       string `json:"path"`
-	Type       string `json:"type"` // handler, types, test
-	Service    string `json:"service"`
-	Operation  string `json:"operation,omitempty"`
-	LinesOfCode int   `json:"lines_of_code"`
+	Path        string `json:"path"`
+	Type        string `json:"type"` // handler, types, test
+	Service     string `json:"service"`
+	Operation   string `json:"operation,omitempty"`
+	LinesOfCode int    `json:"lines_of_code"`
 }
 
 // GenerationError represents an error during generation.

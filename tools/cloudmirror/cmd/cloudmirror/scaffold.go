@@ -6,11 +6,12 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/analyzer"
 	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/generator"
 	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/models"
 	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/typegen"
-	"github.com/spf13/cobra"
 )
 
 var (
@@ -109,14 +110,14 @@ func runScaffold(cmd *cobra.Command, args []string) {
 	}
 
 	// Create output directory
-	if err := os.MkdirAll(outputDir, 0755); err != nil {
+	if err := os.MkdirAll(outputDir, 0o755); err != nil {
 		fmt.Fprintf(os.Stderr, "Error creating output directory: %v\n", err)
 		os.Exit(1)
 	}
 
 	// Write service.go
 	servicePath := filepath.Join(outputDir, "service.go")
-	if err := os.WriteFile(servicePath, []byte(scaffold.ServiceCode), 0644); err != nil {
+	if err := os.WriteFile(servicePath, []byte(scaffold.ServiceCode), 0o644); err != nil {
 		fmt.Fprintf(os.Stderr, "Error writing service.go: %v\n", err)
 		os.Exit(1)
 	}
@@ -125,7 +126,7 @@ func runScaffold(cmd *cobra.Command, args []string) {
 	var smithyTypesPath string
 	if smithyTypesErr == nil && smithyTypesCode != "" {
 		smithyTypesPath = filepath.Join(outputDir, "smithy_types.go")
-		if err := os.WriteFile(smithyTypesPath, []byte(smithyTypesCode), 0644); err != nil {
+		if err := os.WriteFile(smithyTypesPath, []byte(smithyTypesCode), 0o644); err != nil {
 			fmt.Fprintf(os.Stderr, "Warning: Error writing smithy_types.go: %v\n", err)
 			smithyTypesPath = ""
 		}

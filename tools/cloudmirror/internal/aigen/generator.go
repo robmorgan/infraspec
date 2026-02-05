@@ -181,7 +181,7 @@ func (g *ImplementationGenerator) validateGenerated(ctx context.Context, code *G
 
 	// Write handler code to temp file
 	handlerPath := filepath.Join(tmpDir, "handler.go")
-	if err := os.WriteFile(handlerPath, []byte(code.HandlerCode), 0644); err != nil {
+	if err := os.WriteFile(handlerPath, []byte(code.HandlerCode), 0o644); err != nil {
 		return []string{fmt.Sprintf("failed to write temp file: %v", err)}
 	}
 
@@ -220,13 +220,13 @@ func (g *ImplementationGenerator) writeGenerated(code *GeneratedCode) ([]Generat
 
 	// Create output directory
 	serviceDir := filepath.Join(g.config.OutputDir, "services", code.Service)
-	if err := os.MkdirAll(serviceDir, 0755); err != nil {
+	if err := os.MkdirAll(serviceDir, 0o755); err != nil {
 		return nil, fmt.Errorf("failed to create directory: %w", err)
 	}
 
 	// Write handler code
 	handlerPath := filepath.Join(serviceDir, fmt.Sprintf("%s_handler.go", snakeCaseOp))
-	if err := os.WriteFile(handlerPath, []byte(code.HandlerCode), 0644); err != nil {
+	if err := os.WriteFile(handlerPath, []byte(code.HandlerCode), 0o644); err != nil {
 		return nil, fmt.Errorf("failed to write handler: %w", err)
 	}
 	files = append(files, GeneratedFile{
@@ -240,7 +240,7 @@ func (g *ImplementationGenerator) writeGenerated(code *GeneratedCode) ([]Generat
 	// Write test code if present
 	if code.TestCode != "" {
 		testPath := filepath.Join(serviceDir, fmt.Sprintf("%s_handler_test.go", snakeCaseOp))
-		if err := os.WriteFile(testPath, []byte(code.TestCode), 0644); err != nil {
+		if err := os.WriteFile(testPath, []byte(code.TestCode), 0o644); err != nil {
 			return nil, fmt.Errorf("failed to write test: %w", err)
 		}
 		files = append(files, GeneratedFile{

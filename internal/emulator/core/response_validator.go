@@ -47,7 +47,7 @@ func (v *ResponseValidator) validateResponseStructure(resp *AWSResponse, outputT
 	// Determine protocol from service name or Content-Type header
 	protocol := GetProtocolForService(serviceName)
 	contentType := resp.Headers["Content-Type"]
-	
+
 	// Override protocol detection based on Content-Type if available
 	if strings.Contains(contentType, "application/x-amz-json") {
 		protocol = ProtocolJSON
@@ -111,7 +111,7 @@ func (v *ResponseValidator) validateJSONStructure(data interface{}, outputType r
 func (v *ResponseValidator) validateXMLStructure(body []byte, outputType reflect.Type, protocol ProtocolType) error {
 	// For Query protocol, XML is wrapped in {Action}Response/{Action}Result
 	// For REST-XML, it's direct XML
-	
+
 	// Basic validation: check that XML is well-formed
 	var dummy interface{}
 	err := xml.Unmarshal(body, &dummy)
@@ -264,4 +264,3 @@ func (v *ResponseValidator) ValidateResponseStatusCode(statusCode int) error {
 
 	return nil
 }
-

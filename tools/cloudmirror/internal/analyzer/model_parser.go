@@ -22,19 +22,19 @@ func NewAWSModelParser(sdkPath string) *AWSModelParser {
 
 // smithyModel represents the Smithy 2.0 JSON AST format used by AWS SDK Go V2
 type smithyModel struct {
-	Smithy   string                    `json:"smithy"`
-	Metadata map[string]interface{}    `json:"metadata"`
-	Shapes   map[string]smithyShape    `json:"shapes"`
+	Smithy   string                 `json:"smithy"`
+	Metadata map[string]interface{} `json:"metadata"`
+	Shapes   map[string]smithyShape `json:"shapes"`
 }
 
 type smithyShape struct {
-	Type    string                     `json:"type"`
-	Members map[string]smithyMember    `json:"members"`
-	Traits  map[string]interface{}     `json:"traits"`
-	Input   *smithyShapeRef            `json:"input"`
-	Output  *smithyShapeRef            `json:"output"`
-	Errors  []smithyShapeRef           `json:"errors"`
-	Target  string                     `json:"target"` // For list/map/enum
+	Type    string                  `json:"type"`
+	Members map[string]smithyMember `json:"members"`
+	Traits  map[string]interface{}  `json:"traits"`
+	Input   *smithyShapeRef         `json:"input"`
+	Output  *smithyShapeRef         `json:"output"`
+	Errors  []smithyShapeRef        `json:"errors"`
+	Target  string                  `json:"target"` // For list/map/enum
 }
 
 type smithyMember struct {

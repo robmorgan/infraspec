@@ -6,8 +6,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/monitor"
 	"github.com/spf13/cobra"
+
+	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/monitor"
 )
 
 var (

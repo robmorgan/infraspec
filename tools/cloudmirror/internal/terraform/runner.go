@@ -27,14 +27,14 @@ type TestRunner struct {
 
 // TestResults holds the results of running all tests.
 type TestResults struct {
-	TotalTests   int            `json:"total_tests"`
-	Passed       int            `json:"passed"`
-	Failed       int            `json:"failed"`
-	Skipped      int            `json:"skipped"`
-	Duration     time.Duration  `json:"duration"`
-	Tests        []TestResult   `json:"tests"`
-	ByService    map[string]int `json:"by_service"`
-	ByOperation  map[string]int `json:"by_operation"`
+	TotalTests  int            `json:"total_tests"`
+	Passed      int            `json:"passed"`
+	Failed      int            `json:"failed"`
+	Skipped     int            `json:"skipped"`
+	Duration    time.Duration  `json:"duration"`
+	Tests       []TestResult   `json:"tests"`
+	ByService   map[string]int `json:"by_service"`
+	ByOperation map[string]int `json:"by_operation"`
 }
 
 // TestResult holds the result of a single test.
@@ -247,10 +247,10 @@ func (r *TestRunner) GenerateTestReport(results *TestResults) string {
 
 // TerraformTestOutput represents the JSON output from terraform test.
 type TerraformTestOutput struct {
-	Type      string                 `json:"@type"`
-	Timestamp string                 `json:"@timestamp"`
-	Test      *TerraformTestResult   `json:"test,omitempty"`
-	Diagnostic *TerraformDiagnostic  `json:"diagnostic,omitempty"`
+	Type       string               `json:"@type"`
+	Timestamp  string               `json:"@timestamp"`
+	Test       *TerraformTestResult `json:"test,omitempty"`
+	Diagnostic *TerraformDiagnostic `json:"diagnostic,omitempty"`
 }
 
 // TerraformTestResult represents a test result from terraform test -json.

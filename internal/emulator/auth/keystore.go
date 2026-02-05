@@ -5,10 +5,8 @@ import (
 	"sync"
 )
 
-var (
-	// ErrAccessKeyNotFound is returned when an access key is not found in the store
-	ErrAccessKeyNotFound = errors.New("access key not found")
-)
+// ErrAccessKeyNotFound is returned when an access key is not found in the store
+var ErrAccessKeyNotFound = errors.New("access key not found")
 
 // KeyStore defines the interface for managing API keys
 type KeyStore interface {

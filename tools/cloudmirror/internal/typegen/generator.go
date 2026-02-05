@@ -93,12 +93,12 @@ func (g *Generator) GenerateToFile() error {
 
 	// Ensure directory exists
 	dir := filepath.Dir(g.config.OutputPath)
-	if err := os.MkdirAll(dir, 0755); err != nil {
+	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
 	// Write file
-	if err := os.WriteFile(g.config.OutputPath, []byte(code), 0644); err != nil {
+	if err := os.WriteFile(g.config.OutputPath, []byte(code), 0o644); err != nil {
 		return fmt.Errorf("failed to write output file: %w", err)
 	}
 

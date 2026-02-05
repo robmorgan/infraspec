@@ -120,7 +120,7 @@ func (m *SDKReleaseMonitor) GetCurrentVersion(versionFile string) (string, error
 
 // SaveVersion saves the SDK version to a file.
 func (m *SDKReleaseMonitor) SaveVersion(versionFile, version string) error {
-	return os.WriteFile(versionFile, []byte(version+"\n"), 0644)
+	return os.WriteFile(versionFile, []byte(version+"\n"), 0o644)
 }
 
 // HasNewVersion checks if there's a new SDK version available.

@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 func TestResourceID_String(t *testing.T) {
@@ -556,7 +557,7 @@ func TestResourceManager_SetValidationMode(t *testing.T) {
 	// Invalid relationship type should fail in strict mode with schema
 	rm.SetSchema(NewAWSSchema())
 	err := rm.AddRelationship(vpc, subnet, RelAssociatedWith) // vpc doesn't associate with subnet
-	assert.Error(t, err) // Should fail because schema doesn't allow this
+	assert.Error(t, err)                                      // Should fail because schema doesn't allow this
 
 	// Change back to lenient mode
 	rm.SetValidationMode(false)

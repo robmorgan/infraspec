@@ -6,10 +6,10 @@ import (
 
 func TestParseS3Host(t *testing.T) {
 	tests := []struct {
-		name            string
-		host            string
-		wantVirtual     bool
-		wantBucketName  string
+		name           string
+		host           string
+		wantVirtual    bool
+		wantBucketName string
 	}{
 		// Virtual-hosted style patterns
 		{

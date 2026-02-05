@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+
 	"github.com/robmorgan/infraspec/internal/emulator/auth"
 	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 	"github.com/robmorgan/infraspec/internal/emulator/metadata"
