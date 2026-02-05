@@ -1,0 +1,96 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.7.0",
+  "resource_changes": [
+    {
+      "address": "aws_security_group.public_mysql",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "public_mysql",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "public-mysql",
+          "description": "MySQL open to world",
+          "ingress": [
+            {
+              "cidr_blocks": ["0.0.0.0/0"],
+              "ipv6_cidr_blocks": [],
+              "from_port": 3306,
+              "to_port": 3306,
+              "protocol": "tcp",
+              "description": "MySQL from anywhere",
+              "prefix_list_ids": [],
+              "security_groups": [],
+              "self": false
+            }
+          ],
+          "egress": [],
+          "tags": {}
+        }
+      }
+    },
+    {
+      "address": "aws_security_group.public_postgres",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "public_postgres",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "public-postgres",
+          "description": "PostgreSQL open to world",
+          "ingress": [
+            {
+              "cidr_blocks": ["0.0.0.0/0"],
+              "ipv6_cidr_blocks": [],
+              "from_port": 5432,
+              "to_port": 5432,
+              "protocol": "tcp",
+              "description": "PostgreSQL from anywhere",
+              "prefix_list_ids": [],
+              "security_groups": [],
+              "self": false
+            }
+          ],
+          "egress": [],
+          "tags": {}
+        }
+      }
+    },
+    {
+      "address": "aws_security_group.public_rdp",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "public_rdp",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "public-rdp",
+          "description": "RDP open to world",
+          "ingress": [
+            {
+              "cidr_blocks": ["0.0.0.0/0"],
+              "ipv6_cidr_blocks": [],
+              "from_port": 3389,
+              "to_port": 3389,
+              "protocol": "tcp",
+              "description": "RDP from anywhere",
+              "prefix_list_ids": [],
+              "security_groups": [],
+              "self": false
+            }
+          ],
+          "egress": [],
+          "tags": {}
+        }
+      }
+    }
+  ]
+}

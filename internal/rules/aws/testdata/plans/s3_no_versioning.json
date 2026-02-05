@@ -1,0 +1,44 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.7.0",
+  "resource_changes": [
+    {
+      "address": "aws_s3_bucket.no_versioning",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "no_versioning",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "bucket": "my-unversioned-bucket",
+          "acl": "private",
+          "tags": {}
+        }
+      }
+    },
+    {
+      "address": "aws_s3_bucket.versioning_disabled",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "versioning_disabled",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "bucket": "my-versioning-disabled-bucket",
+          "acl": "private",
+          "versioning": [
+            {
+              "enabled": false,
+              "mfa_delete": false
+            }
+          ],
+          "tags": {}
+        }
+      }
+    }
+  ]
+}

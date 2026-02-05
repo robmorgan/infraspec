@@ -1,5 +1,18 @@
 package rules
 
+// RegistrationFunc is a function that registers rules with a registry.
+// This is used by provider packages to register their rules without creating import cycles.
+type RegistrationFunc func(*Registry)
+
+// registrationFuncs holds all registration functions from provider packages.
+var registrationFuncs []RegistrationFunc
+
+// RegisterProvider allows provider packages to register their rules.
+// This should be called from an init() function in provider packages.
+func RegisterProvider(fn RegistrationFunc) {
+	registrationFuncs = append(registrationFuncs, fn)
+}
+
 // Registry holds all registered rules.
 type Registry struct {
 	rules []Rule
@@ -61,7 +74,11 @@ func (r *Registry) RuleByID(id string) (Rule, bool) {
 }
 
 // DefaultRegistry returns a registry pre-populated with built-in rules.
-// Currently returns an empty registry as no built-in rules are implemented yet.
+// Provider packages register their rules via RegisterProvider during init().
 func DefaultRegistry() *Registry {
-	return NewRegistry()
+	registry := NewRegistry()
+	for _, fn := range registrationFuncs {
+		fn(registry)
+	}
+	return registry
 }

@@ -1,0 +1,36 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.7.0",
+  "resource_changes": [
+    {
+      "address": "aws_security_group.good",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "good",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "allow-ssh-private",
+          "description": "Allow SSH from private network only",
+          "ingress": [
+            {
+              "cidr_blocks": ["10.0.0.0/8"],
+              "ipv6_cidr_blocks": [],
+              "from_port": 22,
+              "to_port": 22,
+              "protocol": "tcp",
+              "description": "SSH from private network",
+              "prefix_list_ids": [],
+              "security_groups": [],
+              "self": false
+            }
+          ],
+          "egress": [],
+          "tags": {}
+        }
+      }
+    }
+  ]
+}
