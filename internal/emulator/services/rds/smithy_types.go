@@ -471,8 +471,7 @@ type DeleteTenantDatabaseResult struct {
 }
 
 // DeregisterDBProxyTargetsResponse represents the DeregisterDBProxyTargetsResponse structure.
-type DeregisterDBProxyTargetsResponse struct {
-}
+type DeregisterDBProxyTargetsResponse struct{}
 
 // DescribeBlueGreenDeploymentsResponse represents the DescribeBlueGreenDeploymentsResponse structure.
 type DescribeBlueGreenDeploymentsResponse struct {

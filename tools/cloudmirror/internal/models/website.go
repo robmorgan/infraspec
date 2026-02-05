@@ -28,8 +28,8 @@ const (
 
 // InfraSpecCoverage represents InfraSpec assertion coverage
 type InfraSpecCoverage struct {
-	Status     ServiceStatus         `json:"status"`
-	Operations []InfraSpecOperation  `json:"operations"`
+	Status     ServiceStatus        `json:"status"`
+	Operations []InfraSpecOperation `json:"operations"`
 }
 
 // InfraSpecOperation represents an InfraSpec assertion operation
@@ -41,11 +41,11 @@ type InfraSpecOperation struct {
 
 // VirtualCloudStatus represents Virtual Cloud (InfraSpec API) coverage
 type VirtualCloudStatus struct {
-	Status          ServiceStatus             `json:"status"`
-	CoveragePercent float64                   `json:"coveragePercent"`
-	TotalOperations int                       `json:"totalOperations"`
-	Implemented     int                       `json:"implemented"`
-	Operations      []VirtualCloudOperation   `json:"operations"`
+	Status          ServiceStatus           `json:"status"`
+	CoveragePercent float64                 `json:"coveragePercent"`
+	TotalOperations int                     `json:"totalOperations"`
+	Implemented     int                     `json:"implemented"`
+	Operations      []VirtualCloudOperation `json:"operations"`
 }
 
 // VirtualCloudOperation represents a Virtual Cloud operation

@@ -742,8 +742,7 @@ type DescribeContributorInsightsInput struct {
 }
 
 // DescribeEndpointsRequest represents the DescribeEndpointsRequest structure.
-type DescribeEndpointsRequest struct {
-}
+type DescribeEndpointsRequest struct{}
 
 // DescribeExportInput represents the DescribeExportInput structure.
 type DescribeExportInput struct {
@@ -771,8 +770,7 @@ type DescribeKinesisStreamingDestinationInput struct {
 }
 
 // DescribeLimitsInput Represents the input of a `DescribeLimits` operation. Has no content.
-type DescribeLimitsInput struct {
-}
+type DescribeLimitsInput struct{}
 
 // DescribeTableInput Represents the input of a `DescribeTable` operation.
 type DescribeTableInput struct {

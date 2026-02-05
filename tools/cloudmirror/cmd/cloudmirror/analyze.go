@@ -6,21 +6,22 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/spf13/cobra"
+
 	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/analyzer"
 	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/generator"
 	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/models"
 	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/reporter"
-	"github.com/spf13/cobra"
 )
 
 var (
-	analyzeService      string
-	analyzeOutput       string
-	analyzeOutputFile   string
-	analyzeBaseline     string
-	analyzePriority     string
+	analyzeService       string
+	analyzeOutput        string
+	analyzeOutputFile    string
+	analyzeBaseline      string
+	analyzePriority      string
 	analyzeGenerateStubs bool
-	analyzeStubsFile    string
+	analyzeStubsFile     string
 	analyzeWebsiteReport bool
 	analyzeInfraspecPath string
 )
@@ -159,7 +160,7 @@ func runAnalyze(cmd *cobra.Command, args []string) {
 			stubOutput = filepath.Join(servicesPath, analyzeService, "stubs_generated.go")
 		}
 
-		if err := os.WriteFile(stubOutput, []byte(stubs), 0644); err != nil {
+		if err := os.WriteFile(stubOutput, []byte(stubs), 0o644); err != nil {
 			fmt.Fprintf(os.Stderr, "Error writing stubs: %v\n", err)
 			os.Exit(1)
 		}
@@ -195,12 +196,12 @@ func loadBaseline(path string) (*models.CoverageReport, error) {
 func writeOutput(data []byte, outputFile string) {
 	if outputFile != "" {
 		dir := filepath.Dir(outputFile)
-		if err := os.MkdirAll(dir, 0755); err != nil {
+		if err := os.MkdirAll(dir, 0o755); err != nil {
 			fmt.Fprintf(os.Stderr, "Error creating directory: %v\n", err)
 			os.Exit(1)
 		}
 
-		if err := os.WriteFile(outputFile, data, 0644); err != nil {
+		if err := os.WriteFile(outputFile, data, 0o644); err != nil {
 			fmt.Fprintf(os.Stderr, "Error writing output: %v\n", err)
 			os.Exit(1)
 		}

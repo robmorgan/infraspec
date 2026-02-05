@@ -1,0 +1,69 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.7.0",
+  "resource_changes": [
+    {
+      "address": "aws_security_group_rule.bad_ssh",
+      "mode": "managed",
+      "type": "aws_security_group_rule",
+      "name": "bad_ssh",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "type": "ingress",
+          "from_port": 22,
+          "to_port": 22,
+          "protocol": "tcp",
+          "cidr_blocks": ["0.0.0.0/0"],
+          "ipv6_cidr_blocks": [],
+          "security_group_id": "sg-12345678",
+          "description": "SSH from anywhere"
+        }
+      }
+    },
+    {
+      "address": "aws_security_group_rule.good_ssh",
+      "mode": "managed",
+      "type": "aws_security_group_rule",
+      "name": "good_ssh",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "type": "ingress",
+          "from_port": 22,
+          "to_port": 22,
+          "protocol": "tcp",
+          "cidr_blocks": ["10.0.0.0/8"],
+          "ipv6_cidr_blocks": [],
+          "security_group_id": "sg-12345678",
+          "description": "SSH from private network"
+        }
+      }
+    },
+    {
+      "address": "aws_security_group_rule.egress",
+      "mode": "managed",
+      "type": "aws_security_group_rule",
+      "name": "egress",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "type": "egress",
+          "from_port": 0,
+          "to_port": 0,
+          "protocol": "-1",
+          "cidr_blocks": ["0.0.0.0/0"],
+          "ipv6_cidr_blocks": [],
+          "security_group_id": "sg-12345678",
+          "description": "Allow all outbound"
+        }
+      }
+    }
+  ]
+}

@@ -663,8 +663,7 @@ type PutObjectTaggingOutput struct {
 }
 
 // RenameObjectOutput represents the RenameObjectOutput structure.
-type RenameObjectOutput struct {
-}
+type RenameObjectOutput struct{}
 
 // RestoreObjectOutput represents the RestoreObjectOutput structure.
 type RestoreObjectOutput struct {
@@ -879,8 +878,7 @@ type ErrorDocument struct {
 }
 
 // EventBridgeConfiguration A container for specifying the configuration for Amazon EventBridge.
-type EventBridgeConfiguration struct {
-}
+type EventBridgeConfiguration struct{}
 
 // ExistingObjectReplication Optional configuration to replicate existing source bucket objects. This parameter is no longer s...
 type ExistingObjectReplication struct {
@@ -1344,8 +1342,7 @@ type SSEKMS struct {
 }
 
 // SSES3 Specifies the use of SSE-S3 to encrypt delivered inventory reports.
-type SSES3 struct {
-}
+type SSES3 struct{}
 
 // ServerSideEncryptionByDefault Describes the default server-side encryption to apply to new objects in the bucket. If a PUT Obje...
 type ServerSideEncryptionByDefault struct {
@@ -1374,8 +1371,7 @@ type SessionCredentials struct {
 }
 
 // SimplePrefix To use simple format for S3 keys for log objects, set SimplePrefix to an empty object. `[Destinat...
-type SimplePrefix struct {
-}
+type SimplePrefix struct{}
 
 // SourceSelectionCriteria A container that describes additional filters for identifying the source objects that you want to...
 type SourceSelectionCriteria struct {

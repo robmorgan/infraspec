@@ -7,9 +7,10 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/robmorgan/infraspec/internal/emulator/core"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 // Helper function to create string pointer

@@ -232,9 +232,11 @@ func TestRouter_DuplicateServiceRejected(t *testing.T) {
 }
 
 // Verify mock services implement the expected interfaces
-var _ Service = (*mockActionProviderService)(nil)
-var _ ActionProvider = (*mockActionProviderService)(nil)
-var _ Service = (*mockBasicService)(nil)
+var (
+	_ Service        = (*mockActionProviderService)(nil)
+	_ ActionProvider = (*mockActionProviderService)(nil)
+	_ Service        = (*mockBasicService)(nil)
+)
 
 // Ensure mockBasicService does NOT implement ActionProvider
 func TestMockBasicServiceNotActionProvider(t *testing.T) {

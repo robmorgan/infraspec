@@ -80,7 +80,7 @@ func (v *CodeValidator) ValidateCode(ctx context.Context, code string) (*Validat
 	defer os.RemoveAll(tmpDir)
 
 	tmpFile := filepath.Join(tmpDir, "code.go")
-	if err := os.WriteFile(tmpFile, []byte(code), 0644); err != nil {
+	if err := os.WriteFile(tmpFile, []byte(code), 0o644); err != nil {
 		return nil, fmt.Errorf("failed to write temp file: %w", err)
 	}
 
@@ -255,12 +255,12 @@ require github.com/robmorgan/infraspec v0.0.0
 
 replace github.com/robmorgan/infraspec => ../../..
 `
-	if err := os.WriteFile(filepath.Join(tmpDir, "go.mod"), []byte(goMod), 0644); err != nil {
+	if err := os.WriteFile(filepath.Join(tmpDir, "go.mod"), []byte(goMod), 0o644); err != nil {
 		return fmt.Errorf("failed to write go.mod: %w", err)
 	}
 
 	// Write the code
-	if err := os.WriteFile(filepath.Join(tmpDir, "check.go"), []byte(code), 0644); err != nil {
+	if err := os.WriteFile(filepath.Join(tmpDir, "check.go"), []byte(code), 0o644); err != nil {
 		return fmt.Errorf("failed to write code: %w", err)
 	}
 

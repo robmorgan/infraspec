@@ -7,9 +7,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 func TestDescribeImport_Success(t *testing.T) {

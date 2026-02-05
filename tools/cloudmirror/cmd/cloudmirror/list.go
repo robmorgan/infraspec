@@ -5,9 +5,10 @@ import (
 	"os"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/analyzer"
 	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/models"
-	"github.com/spf13/cobra"
 )
 
 var listCmd = &cobra.Command{

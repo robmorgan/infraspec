@@ -61,11 +61,11 @@ const (
 // Smithy trait keys
 const (
 	// XML serialization traits
-	TraitXMLName       = "smithy.api#xmlName"
-	TraitXMLAttribute  = "smithy.api#xmlAttribute"
-	TraitXMLFlattened  = "smithy.api#xmlFlattened"
-	TraitXMLNamespace  = "smithy.api#xmlNamespace"
-	TraitEC2QueryName  = "aws.protocols#ec2QueryName"
+	TraitXMLName      = "smithy.api#xmlName"
+	TraitXMLAttribute = "smithy.api#xmlAttribute"
+	TraitXMLFlattened = "smithy.api#xmlFlattened"
+	TraitXMLNamespace = "smithy.api#xmlNamespace"
+	TraitEC2QueryName = "aws.protocols#ec2QueryName"
 
 	// Metadata traits
 	TraitRequired      = "smithy.api#required"
@@ -76,12 +76,12 @@ const (
 	TraitEnumValue     = "smithy.api#enumValue"
 
 	// Protocol traits
-	TraitAWSQuery   = "aws.protocols#awsQuery"
-	TraitAWSJSON10  = "aws.protocols#awsJson1_0"
-	TraitAWSJSON11  = "aws.protocols#awsJson1_1"
-	TraitRestJSON   = "aws.protocols#restJson1"
-	TraitRestXML    = "aws.protocols#restXml"
-	TraitEC2Query   = "aws.protocols#ec2Query"
+	TraitAWSQuery  = "aws.protocols#awsQuery"
+	TraitAWSJSON10 = "aws.protocols#awsJson1_0"
+	TraitAWSJSON11 = "aws.protocols#awsJson1_1"
+	TraitRestJSON  = "aws.protocols#restJson1"
+	TraitRestXML   = "aws.protocols#restXml"
+	TraitEC2Query  = "aws.protocols#ec2Query"
 
 	// AWS service traits
 	TraitAWSService = "aws.api#service"

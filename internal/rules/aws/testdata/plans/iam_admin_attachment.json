@@ -1,0 +1,36 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.7.0",
+  "resource_changes": [
+    {
+      "address": "aws_iam_role_policy_attachment.admin",
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "admin",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "role": "my-role",
+          "policy_arn": "arn:aws:iam::aws:policy/AdministratorAccess"
+        }
+      }
+    },
+    {
+      "address": "aws_iam_user_policy_attachment.admin",
+      "mode": "managed",
+      "type": "aws_iam_user_policy_attachment",
+      "name": "admin",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "user": "my-user",
+          "policy_arn": "arn:aws:iam::aws:policy/AdministratorAccess"
+        }
+      }
+    }
+  ]
+}

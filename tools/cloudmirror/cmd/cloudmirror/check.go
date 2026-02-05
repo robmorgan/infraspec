@@ -7,13 +7,12 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/aigen"
 	"github.com/spf13/cobra"
+
+	"github.com/robmorgan/infraspec/tools/cloudmirror/internal/aigen"
 )
 
-var (
-	checkTarget string
-)
+var checkTarget string
 
 var checkCmd = &cobra.Command{
 	Use:   "check",

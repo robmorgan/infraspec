@@ -14,13 +14,13 @@ type SDKChangeReport struct {
 
 // ServiceChange represents changes to a single AWS service between versions
 type ServiceChange struct {
-	Name           string          `json:"name"`
-	FullName       string          `json:"full_name,omitempty"`
-	NewOperations  []OperationInfo `json:"new_operations,omitempty"`
-	ModifiedOps    []OperationDiff `json:"modified_operations,omitempty"`
-	DeprecatedOps  []string        `json:"deprecated_operations,omitempty"`
-	RemovedOps     []string        `json:"removed_operations,omitempty"`
-	HasChanges     bool            `json:"has_changes"`
+	Name          string          `json:"name"`
+	FullName      string          `json:"full_name,omitempty"`
+	NewOperations []OperationInfo `json:"new_operations,omitempty"`
+	ModifiedOps   []OperationDiff `json:"modified_operations,omitempty"`
+	DeprecatedOps []string        `json:"deprecated_operations,omitempty"`
+	RemovedOps    []string        `json:"removed_operations,omitempty"`
+	HasChanges    bool            `json:"has_changes"`
 }
 
 // OperationInfo contains information about a new operation
@@ -80,42 +80,42 @@ const (
 type BreakingType string
 
 const (
-	BreakingTypeOperationRemoved      BreakingType = "operation_removed"
-	BreakingTypeNewRequiredParam      BreakingType = "new_required_parameter"
-	BreakingTypeParamTypeChanged      BreakingType = "parameter_type_changed"
-	BreakingTypeParamNowRequired      BreakingType = "parameter_now_required"
-	BreakingTypeParamRemoved          BreakingType = "parameter_removed"
-	BreakingTypeResponseTypeChanged   BreakingType = "response_type_changed"
-	BreakingTypeEnumValueRemoved      BreakingType = "enum_value_removed"
-	BreakingTypeValidationTightened   BreakingType = "validation_tightened"
-	BreakingTypeEndpointChanged       BreakingType = "endpoint_changed"
-	BreakingTypeBehaviorChanged       BreakingType = "behavior_changed"
+	BreakingTypeOperationRemoved    BreakingType = "operation_removed"
+	BreakingTypeNewRequiredParam    BreakingType = "new_required_parameter"
+	BreakingTypeParamTypeChanged    BreakingType = "parameter_type_changed"
+	BreakingTypeParamNowRequired    BreakingType = "parameter_now_required"
+	BreakingTypeParamRemoved        BreakingType = "parameter_removed"
+	BreakingTypeResponseTypeChanged BreakingType = "response_type_changed"
+	BreakingTypeEnumValueRemoved    BreakingType = "enum_value_removed"
+	BreakingTypeValidationTightened BreakingType = "validation_tightened"
+	BreakingTypeEndpointChanged     BreakingType = "endpoint_changed"
+	BreakingTypeBehaviorChanged     BreakingType = "behavior_changed"
 )
 
 // ChangeSummary provides aggregate statistics about the changes
 type ChangeSummary struct {
-	TotalServicesChanged   int `json:"total_services_changed"`
-	TotalNewOperations     int `json:"total_new_operations"`
-	TotalModifiedOps       int `json:"total_modified_operations"`
-	TotalDeprecatedOps     int `json:"total_deprecated_operations"`
-	TotalRemovedOps        int `json:"total_removed_operations"`
-	TotalBreakingChanges   int `json:"total_breaking_changes"`
-	CriticalBreakingCount  int `json:"critical_breaking_count"`
-	HighBreakingCount      int `json:"high_breaking_count"`
-	MediumBreakingCount    int `json:"medium_breaking_count"`
-	LowBreakingCount       int `json:"low_breaking_count"`
+	TotalServicesChanged  int `json:"total_services_changed"`
+	TotalNewOperations    int `json:"total_new_operations"`
+	TotalModifiedOps      int `json:"total_modified_operations"`
+	TotalDeprecatedOps    int `json:"total_deprecated_operations"`
+	TotalRemovedOps       int `json:"total_removed_operations"`
+	TotalBreakingChanges  int `json:"total_breaking_changes"`
+	CriticalBreakingCount int `json:"critical_breaking_count"`
+	HighBreakingCount     int `json:"high_breaking_count"`
+	MediumBreakingCount   int `json:"medium_breaking_count"`
+	LowBreakingCount      int `json:"low_breaking_count"`
 }
 
 // ImplementationImpact describes how changes affect our emulator implementation
 type ImplementationImpact struct {
-	Service               string   `json:"service"`
-	Operation             string   `json:"operation"`
-	CurrentlyImplemented  bool     `json:"currently_implemented"`
-	RequiresUpdate        bool     `json:"requires_update"`
-	RequiresNewHandler    bool     `json:"requires_new_handler"`
-	AffectedFiles         []string `json:"affected_files,omitempty"`
-	EstimatedComplexity   string   `json:"estimated_complexity,omitempty"` // "low", "medium", "high"
-	SuggestedAction       string   `json:"suggested_action,omitempty"`
+	Service              string   `json:"service"`
+	Operation            string   `json:"operation"`
+	CurrentlyImplemented bool     `json:"currently_implemented"`
+	RequiresUpdate       bool     `json:"requires_update"`
+	RequiresNewHandler   bool     `json:"requires_new_handler"`
+	AffectedFiles        []string `json:"affected_files,omitempty"`
+	EstimatedComplexity  string   `json:"estimated_complexity,omitempty"` // "low", "medium", "high"
+	SuggestedAction      string   `json:"suggested_action,omitempty"`
 }
 
 // SDKCompareConfig holds configuration for SDK comparison

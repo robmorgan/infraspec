@@ -1,0 +1,36 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.7.0",
+  "resource_changes": [
+    {
+      "address": "aws_security_group.bad",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "bad",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "allow-ssh-public",
+          "description": "Allow SSH from anywhere",
+          "ingress": [
+            {
+              "cidr_blocks": ["0.0.0.0/0"],
+              "ipv6_cidr_blocks": [],
+              "from_port": 22,
+              "to_port": 22,
+              "protocol": "tcp",
+              "description": "SSH from anywhere",
+              "prefix_list_ids": [],
+              "security_groups": [],
+              "self": false
+            }
+          ],
+          "egress": [],
+          "tags": {}
+        }
+      }
+    }
+  ]
+}

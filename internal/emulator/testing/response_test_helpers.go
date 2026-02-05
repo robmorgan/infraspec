@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 // AssertResponseStatus validates the HTTP status code
@@ -222,14 +222,14 @@ func LoadGoldenFile(t *testing.T, relativePath string) []byte {
 func WriteGoldenFile(t *testing.T, relativePath string, data []byte) {
 	t.Helper()
 	fullPath := filepath.Join("testdata", relativePath)
-	
+
 	// Create directory if it doesn't exist
 	dir := filepath.Dir(fullPath)
-	if err := os.MkdirAll(dir, 0755); err != nil {
+	if err := os.MkdirAll(dir, 0o755); err != nil {
 		t.Fatalf("failed to create directory: %v", err)
 	}
 
-	if err := os.WriteFile(fullPath, data, 0644); err != nil {
+	if err := os.WriteFile(fullPath, data, 0o644); err != nil {
 		t.Fatalf("failed to write golden file: %v", err)
 	}
 }
@@ -292,4 +292,3 @@ func ExtractRequestID(resp *emulator.AWSResponse) string {
 
 	return ""
 }
-

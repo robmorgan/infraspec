@@ -1,0 +1,33 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.7.0",
+  "resource_changes": [
+    {
+      "address": "aws_db_instance.secure",
+      "mode": "managed",
+      "type": "aws_db_instance",
+      "name": "secure",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "identifier": "my-secure-db",
+          "engine": "mysql",
+          "engine_version": "8.0",
+          "instance_class": "db.t3.micro",
+          "allocated_storage": 20,
+          "storage_encrypted": true,
+          "kms_key_id": "arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012",
+          "publicly_accessible": false,
+          "backup_retention_period": 7,
+          "username": "admin",
+          "password": "changeme",
+          "skip_final_snapshot": false,
+          "final_snapshot_identifier": "my-secure-db-final-snapshot",
+          "tags": {}
+        }
+      }
+    }
+  ]
+}

@@ -325,9 +325,9 @@ func TestExtractXMLTraits(t *testing.T) {
 		{
 			name: "all traits",
 			traits: map[string]interface{}{
-				"smithy.api#xmlName":       "items",
+				"smithy.api#xmlName":         "items",
 				"aws.protocols#ec2QueryName": "ItemSet",
-				"smithy.api#xmlFlattened":  map[string]interface{}{},
+				"smithy.api#xmlFlattened":    map[string]interface{}{},
 			},
 			expected: XMLTraits{
 				XMLName:     "items",
@@ -378,7 +378,7 @@ func TestGetXMLElementName(t *testing.T) {
 			name:       "xmlName takes precedence",
 			memberName: "VpcId",
 			traits: map[string]interface{}{
-				"smithy.api#xmlName":       "vpcIdentifier",
+				"smithy.api#xmlName":         "vpcIdentifier",
 				"aws.protocols#ec2QueryName": "VpcId",
 			},
 			protocol: "ec2",

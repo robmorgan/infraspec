@@ -1,0 +1,61 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.7.0",
+  "resource_changes": [
+    {
+      "address": "aws_s3_bucket.secure",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "secure",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "bucket": "my-secure-bucket",
+          "acl": "private",
+          "versioning": [
+            {
+              "enabled": true,
+              "mfa_delete": false
+            }
+          ],
+          "server_side_encryption_configuration": [
+            {
+              "rule": [
+                {
+                  "apply_server_side_encryption_by_default": [
+                    {
+                      "sse_algorithm": "AES256",
+                      "kms_master_key_id": ""
+                    }
+                  ],
+                  "bucket_key_enabled": false
+                }
+              ]
+            }
+          ],
+          "tags": {}
+        }
+      }
+    },
+    {
+      "address": "aws_s3_bucket_public_access_block.secure",
+      "mode": "managed",
+      "type": "aws_s3_bucket_public_access_block",
+      "name": "secure",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "bucket": "my-secure-bucket",
+          "block_public_acls": true,
+          "block_public_policy": true,
+          "ignore_public_acls": true,
+          "restrict_public_buckets": true
+        }
+      }
+    }
+  ]
+}

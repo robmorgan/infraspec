@@ -3,17 +3,17 @@ package models
 // ServiceNameMappings maps InfraSpec service names to AWS SDK model file names.
 // This is the canonical source of truth for service name translations.
 var ServiceNameMappings = map[string]string{
-	"rds":                       "rds",
-	"s3":                        "s3",
-	"dynamodb":                  "dynamodb",
-	"sts":                       "sts",
+	"rds":                      "rds",
+	"s3":                       "s3",
+	"dynamodb":                 "dynamodb",
+	"sts":                      "sts",
 	"applicationautoscaling":   "application-auto-scaling",
 	"application-auto-scaling": "application-auto-scaling",
-	"ec2":                       "ec2",
-	"lambda":                    "lambda",
-	"sqs":                       "sqs",
-	"sns":                       "sns",
-	"iam":                       "iam",
+	"ec2":                      "ec2",
+	"lambda":                   "lambda",
+	"sqs":                      "sqs",
+	"sns":                      "sns",
+	"iam":                      "iam",
 }
 
 // ReverseServiceNameMappings maps AWS SDK model file names to InfraSpec service names.

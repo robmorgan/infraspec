@@ -55,16 +55,13 @@ type ScalingActivityStatusCode string
 type ServiceNamespace string
 
 // DeleteScalingPolicyResponse represents the DeleteScalingPolicyResponse structure.
-type DeleteScalingPolicyResponse struct {
-}
+type DeleteScalingPolicyResponse struct{}
 
 // DeleteScheduledActionResponse represents the DeleteScheduledActionResponse structure.
-type DeleteScheduledActionResponse struct {
-}
+type DeleteScheduledActionResponse struct{}
 
 // DeregisterScalableTargetResponse represents the DeregisterScalableTargetResponse structure.
-type DeregisterScalableTargetResponse struct {
-}
+type DeregisterScalableTargetResponse struct{}
 
 // DescribeScalableTargetsResponse represents the DescribeScalableTargetsResponse structure.
 type DescribeScalableTargetsResponse struct {
@@ -109,8 +106,7 @@ type PutScalingPolicyResponse struct {
 }
 
 // PutScheduledActionResponse represents the PutScheduledActionResponse structure.
-type PutScheduledActionResponse struct {
-}
+type PutScheduledActionResponse struct{}
 
 // RegisterScalableTargetResponse represents the RegisterScalableTargetResponse structure.
 type RegisterScalableTargetResponse struct {
@@ -118,12 +114,10 @@ type RegisterScalableTargetResponse struct {
 }
 
 // TagResourceResponse represents the TagResourceResponse structure.
-type TagResourceResponse struct {
-}
+type TagResourceResponse struct{}
 
 // UntagResourceResponse represents the UntagResourceResponse structure.
-type UntagResourceResponse struct {
-}
+type UntagResourceResponse struct{}
 
 // Alarm Represents a CloudWatch alarm associated with a scaling policy.
 type Alarm struct {

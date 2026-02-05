@@ -88,7 +88,7 @@ func (c *SDKCache) GetSDKPath(version string) (string, error) {
 // clone performs a shallow clone of the AWS SDK repository
 func (c *SDKCache) clone() error {
 	// Ensure cache directory exists
-	if err := os.MkdirAll(c.CacheDir, 0755); err != nil {
+	if err := os.MkdirAll(c.CacheDir, 0o755); err != nil {
 		return fmt.Errorf("failed to create cache directory: %w", err)
 	}
 

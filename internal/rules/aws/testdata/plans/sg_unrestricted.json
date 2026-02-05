@@ -1,0 +1,36 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.7.0",
+  "resource_changes": [
+    {
+      "address": "aws_security_group.unrestricted",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "unrestricted",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "name": "allow-all",
+          "description": "Allow all traffic",
+          "ingress": [
+            {
+              "cidr_blocks": ["0.0.0.0/0"],
+              "ipv6_cidr_blocks": [],
+              "from_port": 0,
+              "to_port": 0,
+              "protocol": "-1",
+              "description": "All traffic from anywhere",
+              "prefix_list_ids": [],
+              "security_groups": [],
+              "self": false
+            }
+          ],
+          "egress": [],
+          "tags": {}
+        }
+      }
+    }
+  ]
+}

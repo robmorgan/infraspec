@@ -184,14 +184,14 @@ func (m *SigV4Middleware) normalizeServiceName(serviceName string) string {
 	// Map service names to internal service identifiers
 	// This matches the mapping in router.go for consistency
 	serviceMap := map[string]string{
-		"dynamodb":                   "dynamodb_20120810",
-		"application-autoscaling":    "anyscalefrontendservice",
-		"autoscaling":                "anyscalefrontendservice",
-		"sts":                        "sts",
-		"rds":                        "rds",
-		"s3":                         "s3",
-		"ec2":                        "ec2",
-		"ssm":                        "ssm",
+		"dynamodb":                "dynamodb_20120810",
+		"application-autoscaling": "anyscalefrontendservice",
+		"autoscaling":             "anyscalefrontendservice",
+		"sts":                     "sts",
+		"rds":                     "rds",
+		"s3":                      "s3",
+		"ec2":                     "ec2",
+		"ssm":                     "ssm",
 	}
 
 	if internalName, ok := serviceMap[serviceName]; ok {

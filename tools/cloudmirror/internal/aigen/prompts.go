@@ -207,7 +207,7 @@ Generate comprehensive unit tests covering:
 
 ## Test Structure
 
-`+"```go"+`
+` + "```go" + `
 func TestOperationName_Success(t *testing.T) {
     state := emulator.NewMemoryStateManager()
     validator := emulator.NewSchemaValidator()
@@ -232,7 +232,7 @@ func TestOperationName_Success(t *testing.T) {
         t.Errorf("Expected status 200, got %d", resp.StatusCode)
     }
 }
-`+"```\n\n"+`
+` + "```\n\n" + `
 
 Generate test functions for this handler. Output only Go test code.
 `)
@@ -264,12 +264,12 @@ func BuildTypesPrompt(service, protocol string, op *OperationInfo) string {
 ## Requirements
 
 1. Generate a Result type with XMLName for Query protocol:
-`+"```go"+`
+` + "```go" + `
 type OperationNameResult struct {
-    XMLName xml.Name `+"`xml:\"OperationNameResult\"`"+`
+    XMLName xml.Name ` + "`xml:\"OperationNameResult\"`" + `
     // Response fields
 }
-`+"```\n\n"+`
+` + "```\n\n" + `
 
 2. Generate any entity types needed for the response
 
