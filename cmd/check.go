@@ -76,6 +76,11 @@ func runCheck(cmd *cobra.Command, args []string) error {
 	runner := check.NewRunner(opts)
 	ctx := context.Background()
 
+	// Show progress if we need to generate a plan
+	if checkPlanPath == "" {
+		fmt.Fprintf(os.Stderr, "Generating Terraform plan from %s...\n", checkDir)
+	}
+
 	summary, err := runner.Run(ctx)
 	if err != nil {
 		return fmt.Errorf("check failed: %w", err)
