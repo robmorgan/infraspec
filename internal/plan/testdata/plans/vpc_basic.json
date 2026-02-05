@@ -1,0 +1,392 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.7.0",
+  "variables": {
+    "environment": {
+      "value": "production"
+    },
+    "vpc_cidr": {
+      "value": "10.0.0.0/16"
+    }
+  },
+  "planned_values": {
+    "outputs": {
+      "vpc_id": {
+        "sensitive": false,
+        "value": "vpc-12345678"
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_vpc.main",
+          "mode": "managed",
+          "type": "aws_vpc",
+          "name": "main",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "schema_version": 1,
+          "values": {
+            "cidr_block": "10.0.0.0/16",
+            "enable_dns_hostnames": true,
+            "enable_dns_support": true,
+            "tags": {
+              "Name": "main-vpc",
+              "Environment": "production"
+            }
+          },
+          "sensitive_values": {
+            "tags": {}
+          }
+        },
+        {
+          "address": "aws_subnet.public",
+          "mode": "managed",
+          "type": "aws_subnet",
+          "name": "public",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "schema_version": 1,
+          "values": {
+            "availability_zone": "us-east-1a",
+            "cidr_block": "10.0.1.0/24",
+            "map_public_ip_on_launch": true,
+            "tags": {
+              "Name": "public-subnet"
+            }
+          },
+          "sensitive_values": {
+            "tags": {}
+          }
+        },
+        {
+          "address": "aws_subnet.private",
+          "mode": "managed",
+          "type": "aws_subnet",
+          "name": "private",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "schema_version": 1,
+          "values": {
+            "availability_zone": "us-east-1b",
+            "cidr_block": "10.0.2.0/24",
+            "map_public_ip_on_launch": false,
+            "tags": {
+              "Name": "private-subnet"
+            }
+          },
+          "sensitive_values": {
+            "tags": {}
+          }
+        }
+      ]
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "aws_vpc.main",
+      "mode": "managed",
+      "type": "aws_vpc",
+      "name": "main",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "cidr_block": "10.0.0.0/16",
+          "enable_dns_hostnames": true,
+          "enable_dns_support": true,
+          "instance_tenancy": "default",
+          "tags": {
+            "Name": "main-vpc",
+            "Environment": "production"
+          },
+          "tags_all": {
+            "Name": "main-vpc",
+            "Environment": "production"
+          }
+        },
+        "after_unknown": {
+          "arn": true,
+          "default_network_acl_id": true,
+          "default_route_table_id": true,
+          "default_security_group_id": true,
+          "dhcp_options_id": true,
+          "id": true,
+          "ipv6_association_id": true,
+          "ipv6_cidr_block": true,
+          "ipv6_cidr_block_network_border_group": true,
+          "main_route_table_id": true,
+          "owner_id": true,
+          "tags": {},
+          "tags_all": {}
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "tags": {},
+          "tags_all": {}
+        }
+      }
+    },
+    {
+      "address": "aws_subnet.public",
+      "mode": "managed",
+      "type": "aws_subnet",
+      "name": "public",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "availability_zone": "us-east-1a",
+          "cidr_block": "10.0.1.0/24",
+          "map_public_ip_on_launch": true,
+          "tags": {
+            "Name": "public-subnet"
+          },
+          "tags_all": {
+            "Name": "public-subnet"
+          }
+        },
+        "after_unknown": {
+          "arn": true,
+          "assign_ipv6_address_on_creation": true,
+          "availability_zone_id": true,
+          "id": true,
+          "ipv6_cidr_block": true,
+          "ipv6_cidr_block_association_id": true,
+          "outpost_arn": true,
+          "owner_id": true,
+          "tags": {},
+          "tags_all": {},
+          "vpc_id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "tags": {},
+          "tags_all": {}
+        }
+      }
+    },
+    {
+      "address": "aws_subnet.private",
+      "mode": "managed",
+      "type": "aws_subnet",
+      "name": "private",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "availability_zone": "us-east-1b",
+          "cidr_block": "10.0.2.0/24",
+          "map_public_ip_on_launch": false,
+          "tags": {
+            "Name": "private-subnet"
+          },
+          "tags_all": {
+            "Name": "private-subnet"
+          }
+        },
+        "after_unknown": {
+          "arn": true,
+          "assign_ipv6_address_on_creation": true,
+          "availability_zone_id": true,
+          "id": true,
+          "ipv6_cidr_block": true,
+          "ipv6_cidr_block_association_id": true,
+          "outpost_arn": true,
+          "owner_id": true,
+          "tags": {},
+          "tags_all": {},
+          "vpc_id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "tags": {},
+          "tags_all": {}
+        }
+      }
+    },
+    {
+      "address": "aws_security_group.ssh",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "ssh",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "description": "Allow SSH inbound traffic",
+          "name": "allow-ssh",
+          "ingress": [
+            {
+              "cidr_blocks": ["0.0.0.0/0"],
+              "description": "SSH from anywhere",
+              "from_port": 22,
+              "ipv6_cidr_blocks": [],
+              "prefix_list_ids": [],
+              "protocol": "tcp",
+              "security_groups": [],
+              "self": false,
+              "to_port": 22
+            }
+          ],
+          "egress": [
+            {
+              "cidr_blocks": ["0.0.0.0/0"],
+              "description": "",
+              "from_port": 0,
+              "ipv6_cidr_blocks": [],
+              "prefix_list_ids": [],
+              "protocol": "-1",
+              "security_groups": [],
+              "self": false,
+              "to_port": 0
+            }
+          ],
+          "tags": {
+            "Name": "allow-ssh"
+          }
+        },
+        "after_unknown": {
+          "arn": true,
+          "id": true,
+          "ingress": [
+            {
+              "cidr_blocks": [false],
+              "ipv6_cidr_blocks": [],
+              "prefix_list_ids": [],
+              "security_groups": []
+            }
+          ],
+          "egress": [
+            {
+              "cidr_blocks": [false],
+              "ipv6_cidr_blocks": [],
+              "prefix_list_ids": [],
+              "security_groups": []
+            }
+          ],
+          "name_prefix": true,
+          "owner_id": true,
+          "revoke_rules_on_delete": true,
+          "tags": {},
+          "tags_all": true,
+          "vpc_id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "egress": [{}],
+          "ingress": [{}],
+          "tags": {}
+        }
+      }
+    },
+    {
+      "address": "aws_internet_gateway.main",
+      "mode": "managed",
+      "type": "aws_internet_gateway",
+      "name": "main",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "tags": {
+            "Name": "main-igw"
+          },
+          "tags_all": {
+            "Name": "main-igw"
+          }
+        },
+        "after_unknown": {
+          "arn": true,
+          "id": true,
+          "owner_id": true,
+          "tags": {},
+          "tags_all": {},
+          "vpc_id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "tags": {},
+          "tags_all": {}
+        }
+      }
+    },
+    {
+      "address": "data.aws_availability_zones.available",
+      "mode": "data",
+      "type": "aws_availability_zones",
+      "name": "available",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["read"],
+        "before": null,
+        "after": {
+          "all_availability_zones": null,
+          "exclude_names": null,
+          "exclude_zone_ids": null,
+          "filter": null,
+          "state": "available"
+        },
+        "after_unknown": {
+          "group_names": true,
+          "id": true,
+          "names": true,
+          "zone_ids": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "group_names": [],
+          "names": [],
+          "zone_ids": []
+        }
+      }
+    }
+  ],
+  "configuration": {
+    "provider_config": {
+      "aws": {
+        "name": "aws",
+        "full_name": "registry.terraform.io/hashicorp/aws",
+        "expressions": {
+          "region": {
+            "constant_value": "us-east-1"
+          }
+        }
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_vpc.main",
+          "mode": "managed",
+          "type": "aws_vpc",
+          "name": "main",
+          "provider_config_key": "aws",
+          "expressions": {
+            "cidr_block": {
+              "references": ["var.vpc_cidr"]
+            },
+            "enable_dns_hostnames": {
+              "constant_value": true
+            },
+            "enable_dns_support": {
+              "constant_value": true
+            }
+          },
+          "schema_version": 1
+        }
+      ],
+      "variables": {
+        "environment": {
+          "default": "development",
+          "description": "Environment name"
+        },
+        "vpc_cidr": {
+          "description": "VPC CIDR block"
+        }
+      }
+    }
+  }
+}
