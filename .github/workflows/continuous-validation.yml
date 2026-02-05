@@ -119,7 +119,7 @@ jobs:
 
       - name: Create Issue on Failure
         if: failure() && steps.feature_test.outputs.failed > 0
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const title = 'Feature Validation Failures Detected';
@@ -209,7 +209,7 @@ jobs:
 
       - name: Create Issue on Failure
         if: steps.unit_tests.outputs.status == 'failure' || steps.emulator_tests.outputs.status == 'failure'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const title = 'Unit Test Failures Detected';
