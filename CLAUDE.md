@@ -4,17 +4,28 @@ This document provides guidance for AI coding assistants working on the InfraSpe
 
 ## Project Overview
 
-**InfraSpec** is a tool for testing your cloud infrastructure written in Go that allows users to write infrastructure
-tests in plain English using Gherkin syntax. The project tests infrastructure code for Terraform, Docker, and Kubernetes
-without requiring users to write traditional test code using frameworks like Terratest.
+InfraSpec is a CLI tool written in Go that provides fast, local pre-flight testing for Terraform. It sits between
+linting (tflint/checkov) and real applies.
 
 ### Key Technologies
 
+### Architecture Decisions
+
 - **Language**: Go 1.24.4
-- **Testing Framework**: Cucumber/Godog for BDD testing
+- **HCL parsing**: hashicorp/hcl/v2
+- **Plan JSON**: hashicorp/terraform-json
+- **Expression evaluation:** google/cel-go
+- **Output colors:** fatih/color
+- **Testing:** stdlib testing + testify/assert
+- No external database, no daemon — pure CLI tool
+- Errors use fmt.Errorf with %w wrapping
+- All public functions have godoc comments
 - **Cloud Integration**: AWS SDK v2 (DynamoDB, RDS, S3, EC2, SSM)
 - **Website**: Next.js with Nextra documentation theme
 - **CLI**: Cobra for command-line interface
+
+## Conventions
+
 
 ### Project Structure
 
@@ -22,7 +33,6 @@ without requiring users to write traditional test code using frameworks like Ter
 - `pkg/` - Public packages (assertions, helpers, provisioners)
 - `internal/` - Private packages (config, runners, generators)
 - `examples/` - Infrastructure as Code examples for testing
-- `features/` - Gherkin feature files for testing
 - `test/` - Integration tests and test helpers
 - `website/` - Next.js documentation website
 
@@ -71,8 +81,6 @@ without requiring users to write traditional test code using frameworks like Ter
 
 - Use `github.com/stretchr/testify` for assertions
 - Write integration tests that work with the builtin AWS emulator
-- Follow BDD patterns with Gherkin feature files
-- Test both positive and negative scenarios
 - Include retry logic for flaky cloud operations
 
 ### Error Handling
