@@ -10,7 +10,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.53.5
 	github.com/aws/aws-sdk-go-v2/service/ec2 v1.279.0
 	github.com/aws/aws-sdk-go-v2/service/iam v1.53.1
-	github.com/aws/aws-sdk-go-v2/service/lambda v1.87.0
+	github.com/aws/aws-sdk-go-v2/service/lambda v1.87.1
 	github.com/aws/aws-sdk-go-v2/service/rds v1.113.1
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.95.0
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.42.21
