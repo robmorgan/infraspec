@@ -328,3 +328,37 @@ run "no_asserts" {
 	run := tf.Runs[0]
 	assert.Empty(t, run.Asserts)
 }
+
+func TestParseBytes_ConditionRawExtraction(t *testing.T) {
+	content := []byte(`
+run "expr_test" {
+  module = "./modules/test"
+
+  assert {
+    condition     = output.vpc_id != ""
+    error_message = "first"
+  }
+
+  assert {
+    condition     = resource.aws_vpc.main.enable_dns_support == true
+    error_message = "second"
+  }
+
+  assert {
+    condition     = length(changes) == 0
+    error_message = "third"
+  }
+}
+`)
+	tf, err := ParseBytes(content, "test.infraspec.hcl")
+	require.NoError(t, err)
+	require.NotNil(t, tf)
+
+	run := tf.Runs[0]
+	require.Len(t, run.Asserts, 3)
+
+	// Verify that ConditionRaw contains the actual expression text
+	assert.Equal(t, `output.vpc_id != ""`, run.Asserts[0].ConditionRaw)
+	assert.Equal(t, `resource.aws_vpc.main.enable_dns_support == true`, run.Asserts[1].ConditionRaw)
+	assert.Equal(t, `length(changes) == 0`, run.Asserts[2].ConditionRaw)
+}

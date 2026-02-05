@@ -55,7 +55,7 @@ func ParseBytes(data []byte, filename string) (*TestFile, error) {
 	if diags.HasErrors() {
 		return nil, fmt.Errorf("failed to parse HCL: %s", diags.Error())
 	}
-	return decodeTestFile(file, filename)
+	return decodeTestFile(file, filename, data)
 }
 
 // ParseDir discovers and parses all .infraspec.hcl files in a directory.
@@ -90,7 +90,7 @@ func ParseDir(dir string) ([]*TestFile, error) {
 }
 
 // decodeTestFile decodes the parsed HCL file into a TestFile struct.
-func decodeTestFile(file *hcl.File, filename string) (*TestFile, error) {
+func decodeTestFile(file *hcl.File, filename string, src []byte) (*TestFile, error) {
 	tf := &TestFile{
 		SourceFile: filename,
 		Variables:  make(map[string]interface{}),
@@ -108,7 +108,7 @@ func decodeTestFile(file *hcl.File, filename string) (*TestFile, error) {
 				return nil, err
 			}
 		case "run":
-			run, err := decodeRun(block)
+			run, err := decodeRun(block, src)
 			if err != nil {
 				return nil, err
 			}
@@ -138,7 +138,7 @@ func decodeVariables(body hcl.Body, tf *TestFile) error {
 }
 
 // decodeRun decodes a run block into a Run struct.
-func decodeRun(block *hcl.Block) (*Run, error) {
+func decodeRun(block *hcl.Block, src []byte) (*Run, error) {
 	run := &Run{
 		Name:    block.Labels[0],
 		Command: "plan", // default
@@ -179,7 +179,7 @@ func decodeRun(block *hcl.Block) (*Run, error) {
 
 	// Decode assert blocks
 	for _, assertBlock := range content.Blocks {
-		assert, err := decodeAssert(assertBlock)
+		assert, err := decodeAssert(assertBlock, src)
 		if err != nil {
 			return nil, fmt.Errorf("failed to decode assert in run %q: %w", run.Name, err)
 		}
@@ -190,7 +190,7 @@ func decodeRun(block *hcl.Block) (*Run, error) {
 }
 
 // decodeAssert decodes an assert block into an Assert struct.
-func decodeAssert(block *hcl.Block) (*Assert, error) {
+func decodeAssert(block *hcl.Block, src []byte) (*Assert, error) {
 	assert := &Assert{
 		Range: block.DefRange,
 	}
@@ -204,7 +204,7 @@ func decodeAssert(block *hcl.Block) (*Assert, error) {
 	if attr, ok := content.Attributes["condition"]; ok {
 		assert.Condition = attr.Expr
 		// Extract raw source text for display
-		assert.ConditionRaw = extractExprSource(attr.Expr)
+		assert.ConditionRaw = extractExprSource(attr.Expr, src)
 	}
 
 	// Decode error_message
@@ -219,11 +219,16 @@ func decodeAssert(block *hcl.Block) (*Assert, error) {
 	return assert, nil
 }
 
-// extractExprSource extracts the source code range of an expression.
-func extractExprSource(expr hcl.Expression) string {
+// extractExprSource extracts the actual source text of an expression.
+func extractExprSource(expr hcl.Expression, src []byte) string {
 	r := expr.Range()
-	// Return a representation based on the range
-	return fmt.Sprintf("%s:%d,%d-%d,%d", r.Filename, r.Start.Line, r.Start.Column, r.End.Line, r.End.Column)
+	// Calculate byte offsets from the range
+	start := r.Start.Byte
+	end := r.End.Byte
+	if start >= 0 && end <= len(src) && start < end {
+		return string(src[start:end])
+	}
+	return ""
 }
 
 // ctyValueToGo converts a cty.Value to a native Go value.
