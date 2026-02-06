@@ -13,9 +13,9 @@ import (
 
 const (
 	// Default values for Lambda functions
-	DefaultTimeout    = int32(3)
-	DefaultMemorySize = int32(128)
-	DefaultRuntime    = "nodejs20.x"
+	DefaultTimeout     = int32(3)
+	DefaultMemorySize  = int32(128)
+	DefaultRuntime     = "nodejs20.x"
 	DefaultPackageType = "Zip"
 
 	// State values
@@ -34,11 +34,11 @@ const (
 	InvocationTypeDryRun          = "DryRun"
 
 	// Auth types for function URLs
-	AuthTypeNone   = "NONE"
-	AuthTypeIAM    = "AWS_IAM"
+	AuthTypeNone = "NONE"
+	AuthTypeIAM  = "AWS_IAM"
 
 	// Invoke modes
-	InvokeModeBuffered    = "BUFFERED"
+	InvokeModeBuffered       = "BUFFERED"
 	InvokeModeResponseStream = "RESPONSE_STREAM"
 
 	// Default account ID and region for mock
@@ -48,24 +48,24 @@ const (
 
 // Valid runtimes (subset - not exhaustive)
 var validRuntimes = map[string]bool{
-	"nodejs20.x":    true,
-	"nodejs18.x":    true,
-	"nodejs16.x":    true,
-	"python3.12":    true,
-	"python3.11":    true,
-	"python3.10":    true,
-	"python3.9":     true,
-	"python3.8":     true,
-	"java21":        true,
-	"java17":        true,
-	"java11":        true,
-	"dotnet8":       true,
-	"dotnet6":       true,
-	"go1.x":         true,
-	"provided.al2":  true,
+	"nodejs20.x":      true,
+	"nodejs18.x":      true,
+	"nodejs16.x":      true,
+	"python3.12":      true,
+	"python3.11":      true,
+	"python3.10":      true,
+	"python3.9":       true,
+	"python3.8":       true,
+	"java21":          true,
+	"java17":          true,
+	"java11":          true,
+	"dotnet8":         true,
+	"dotnet6":         true,
+	"go1.x":           true,
+	"provided.al2":    true,
 	"provided.al2023": true,
-	"ruby3.3":       true,
-	"ruby3.2":       true,
+	"ruby3.3":         true,
+	"ruby3.2":         true,
 }
 
 // Valid architectures
