@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 func (s *IAMService) putRolePolicy(ctx context.Context, params map[string]interface{}) (*emulator.AWSResponse, error) {
