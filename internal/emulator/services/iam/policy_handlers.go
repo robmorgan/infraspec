@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 func (s *IAMService) createPolicy(ctx context.Context, params map[string]interface{}) (*emulator.AWSResponse, error) {
