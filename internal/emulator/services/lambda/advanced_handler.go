@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 // parseLastModifiedToTimestamp converts an RFC3339 date string to Unix timestamp
@@ -176,7 +176,7 @@ func (s *LambdaService) handleListProvisionedConcurrencyConfigs(ctx context.Cont
 			continue
 		}
 		item := map[string]interface{}{
-			"FunctionArn":                              config.FunctionArn,
+			"FunctionArn": config.FunctionArn,
 			"RequestedProvisionedConcurrentExecutions": config.RequestedProvisionedConcurrentExecutions,
 			"AvailableProvisionedConcurrentExecutions": config.AvailableProvisionedConcurrentExecutions,
 			"AllocatedProvisionedConcurrentExecutions": config.AllocatedProvisionedConcurrentExecutions,
@@ -240,12 +240,12 @@ func (s *LambdaService) handlePutFunctionEventInvokeConfig(ctx context.Context, 
 
 	// Create event invoke config
 	config := StoredEventInvokeConfig{
-		FunctionArn:             function.FunctionArn,
-		Qualifier:               qualifier,
+		FunctionArn:              function.FunctionArn,
+		Qualifier:                qualifier,
 		MaximumEventAgeInSeconds: input.MaximumEventAgeInSeconds,
-		MaximumRetryAttempts:    input.MaximumRetryAttempts,
-		DestinationConfig:       input.DestinationConfig,
-		LastModified:            now(),
+		MaximumRetryAttempts:     input.MaximumRetryAttempts,
+		DestinationConfig:        input.DestinationConfig,
+		LastModified:             now(),
 	}
 
 	// Store the config

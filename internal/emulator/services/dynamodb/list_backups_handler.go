@@ -4,7 +4,7 @@ import (
 	"context"
 	"strings"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 // listBackups returns a list of DynamoDB backups associated with an AWS account
