@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 func (s *DynamoDBService) describeBackup(ctx context.Context, input *DescribeBackupInput) (*emulator.AWSResponse, error) {

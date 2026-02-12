@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 func (s *DynamoDBService) createBackup(ctx context.Context, input *CreateBackupInput) (*emulator.AWSResponse, error) {
