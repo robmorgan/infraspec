@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 // handleCreateFunction handles the CreateFunction API
@@ -186,19 +186,19 @@ func (s *LambdaService) handleCreateFunction(ctx context.Context, req *emulator.
 // buildFunctionConfigurationResponse builds the response for function configuration
 func (s *LambdaService) buildFunctionConfigurationResponse(fn *StoredFunction) map[string]interface{} {
 	response := map[string]interface{}{
-		"FunctionName":     fn.FunctionName,
-		"FunctionArn":      fn.FunctionArn,
-		"Role":             fn.Role,
-		"CodeSize":         fn.CodeSize,
-		"CodeSha256":       fn.CodeSha256,
-		"Timeout":          fn.Timeout,
-		"MemorySize":       fn.MemorySize,
-		"LastModified":     fn.LastModified,
-		"Version":          fn.Version,
-		"State":            fn.State,
-		"PackageType":      fn.PackageType,
-		"RevisionId":       fn.RevisionId,
-		"Architectures":    fn.Architectures,
+		"FunctionName":  fn.FunctionName,
+		"FunctionArn":   fn.FunctionArn,
+		"Role":          fn.Role,
+		"CodeSize":      fn.CodeSize,
+		"CodeSha256":    fn.CodeSha256,
+		"Timeout":       fn.Timeout,
+		"MemorySize":    fn.MemorySize,
+		"LastModified":  fn.LastModified,
+		"Version":       fn.Version,
+		"State":         fn.State,
+		"PackageType":   fn.PackageType,
+		"RevisionId":    fn.RevisionId,
+		"Architectures": fn.Architectures,
 	}
 
 	// Add optional fields if present

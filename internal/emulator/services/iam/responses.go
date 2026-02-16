@@ -3,7 +3,7 @@ package iam
 import (
 	"fmt"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 func (s *IAMService) successResponse(action string, data interface{}) (*emulator.AWSResponse, error) {
