@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 	testhelpers "github.com/robmorgan/infraspec/internal/emulator/testing"
 )
 

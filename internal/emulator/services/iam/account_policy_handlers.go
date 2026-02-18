@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 // ============================================================================
@@ -90,16 +90,16 @@ func (s *IAMService) listAccountAliases(ctx context.Context, params map[string]i
 func (s *IAMService) updateAccountPasswordPolicy(ctx context.Context, params map[string]interface{}) (*emulator.AWSResponse, error) {
 	// Parse all password policy parameters
 	policy := PasswordPolicyData{
-		MinimumPasswordLength:        getIntParam(params, "MinimumPasswordLength", 6),
-		RequireSymbols:               getBoolParam(params, "RequireSymbols", false),
-		RequireNumbers:               getBoolParam(params, "RequireNumbers", false),
-		RequireUppercaseCharacters:   getBoolParam(params, "RequireUppercaseCharacters", false),
-		RequireLowercaseCharacters:   getBoolParam(params, "RequireLowercaseCharacters", false),
-		AllowUsersToChangePassword:   getBoolParam(params, "AllowUsersToChangePassword", false),
-		ExpirePasswords:              getBoolParam(params, "ExpirePasswords", false),
-		MaxPasswordAge:               getIntParam(params, "MaxPasswordAge", 0),
-		PasswordReusePrevention:      getIntParam(params, "PasswordReusePrevention", 0),
-		HardExpiry:                   getBoolParam(params, "HardExpiry", false),
+		MinimumPasswordLength:      getIntParam(params, "MinimumPasswordLength", 6),
+		RequireSymbols:             getBoolParam(params, "RequireSymbols", false),
+		RequireNumbers:             getBoolParam(params, "RequireNumbers", false),
+		RequireUppercaseCharacters: getBoolParam(params, "RequireUppercaseCharacters", false),
+		RequireLowercaseCharacters: getBoolParam(params, "RequireLowercaseCharacters", false),
+		AllowUsersToChangePassword: getBoolParam(params, "AllowUsersToChangePassword", false),
+		ExpirePasswords:            getBoolParam(params, "ExpirePasswords", false),
+		MaxPasswordAge:             getIntParam(params, "MaxPasswordAge", 0),
+		PasswordReusePrevention:    getIntParam(params, "PasswordReusePrevention", 0),
+		HardExpiry:                 getBoolParam(params, "HardExpiry", false),
 	}
 
 	// Validate password length (6-128)
@@ -135,16 +135,16 @@ func (s *IAMService) getAccountPasswordPolicy(ctx context.Context, params map[st
 
 	result := GetAccountPasswordPolicyResult{
 		PasswordPolicy: XMLPasswordPolicy{
-			MinimumPasswordLength:        policy.MinimumPasswordLength,
-			RequireSymbols:               policy.RequireSymbols,
-			RequireNumbers:               policy.RequireNumbers,
-			RequireUppercaseCharacters:   policy.RequireUppercaseCharacters,
-			RequireLowercaseCharacters:   policy.RequireLowercaseCharacters,
-			AllowUsersToChangePassword:   policy.AllowUsersToChangePassword,
-			ExpirePasswords:              policy.ExpirePasswords,
-			MaxPasswordAge:               policy.MaxPasswordAge,
-			PasswordReusePrevention:      policy.PasswordReusePrevention,
-			HardExpiry:                   policy.HardExpiry,
+			MinimumPasswordLength:      policy.MinimumPasswordLength,
+			RequireSymbols:             policy.RequireSymbols,
+			RequireNumbers:             policy.RequireNumbers,
+			RequireUppercaseCharacters: policy.RequireUppercaseCharacters,
+			RequireLowercaseCharacters: policy.RequireLowercaseCharacters,
+			AllowUsersToChangePassword: policy.AllowUsersToChangePassword,
+			ExpirePasswords:            policy.ExpirePasswords,
+			MaxPasswordAge:             policy.MaxPasswordAge,
+			PasswordReusePrevention:    policy.PasswordReusePrevention,
+			HardExpiry:                 policy.HardExpiry,
 		},
 	}
 
