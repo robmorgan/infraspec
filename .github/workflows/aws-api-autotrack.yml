@@ -156,7 +156,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Download analysis artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: sdk-analysis
 
@@ -249,7 +249,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Download generated code
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: generated-implementations
           path: generated/
@@ -348,13 +348,13 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: sdk-analysis
         continue-on-error: true
 
       - name: Download generated code
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: generated-implementations
           path: generated/
