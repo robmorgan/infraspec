@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 type DynamoDBService struct {
@@ -237,6 +237,36 @@ func (s *DynamoDBService) HandleRequest(ctx context.Context, req *emulator.AWSRe
 			return s.errorResponse(400, "SerializationException", err.Error()), nil
 		}
 		return s.listBackups(ctx, input)
+	case "ListContributorInsights":
+		input, err := emulator.ParseJSONRequest[ListContributorInsightsInput](req.Body)
+		if err != nil {
+			return s.errorResponse(400, "SerializationException", err.Error()), nil
+		}
+		return s.listContributorInsights(ctx, input)
+	case "ListExports":
+		input, err := emulator.ParseJSONRequest[ListExportsInput](req.Body)
+		if err != nil {
+			return s.errorResponse(400, "SerializationException", err.Error()), nil
+		}
+		return s.listExports(ctx, input)
+	case "ListGlobalTables":
+		input, err := emulator.ParseJSONRequest[ListGlobalTablesInput](req.Body)
+		if err != nil {
+			return s.errorResponse(400, "SerializationException", err.Error()), nil
+		}
+		return s.listGlobalTables(ctx, input)
+	case "ListImports":
+		input, err := emulator.ParseJSONRequest[ListImportsInput](req.Body)
+		if err != nil {
+			return s.errorResponse(400, "SerializationException", err.Error()), nil
+		}
+		return s.listImports(ctx, input)
+	case "PutResourcePolicy":
+		input, err := emulator.ParseJSONRequest[PutResourcePolicyInput](req.Body)
+		if err != nil {
+			return s.errorResponse(400, "SerializationException", err.Error()), nil
+		}
+		return s.putResourcePolicy(ctx, input)
 	default:
 		return s.errorResponse(400, "InvalidAction", fmt.Sprintf("Unknown action: %s", action)), nil
 	}

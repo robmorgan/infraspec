@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 // describeImport represents the properties of the import.
