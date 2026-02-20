@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 )
 
 // handleGetFunction handles the GetFunction API

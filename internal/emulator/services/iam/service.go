@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 	"github.com/robmorgan/infraspec/internal/emulator/graph"
 )
 
