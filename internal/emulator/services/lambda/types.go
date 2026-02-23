@@ -6,72 +6,72 @@ import (
 
 // StoredFunction represents a Lambda function stored in state
 type StoredFunction struct {
-	FunctionName       string            `json:"FunctionName"`
-	FunctionArn        string            `json:"FunctionArn"`
-	Runtime            string            `json:"Runtime,omitempty"`
-	Role               string            `json:"Role"`
-	Handler            string            `json:"Handler,omitempty"`
-	Description        string            `json:"Description,omitempty"`
-	Timeout            int32             `json:"Timeout"`
-	MemorySize         int32             `json:"MemorySize"`
-	CodeSha256         string            `json:"CodeSha256"`
-	CodeSize           int64             `json:"CodeSize"`
-	Version            string            `json:"Version"`
-	State              string            `json:"State"`
-	StateReason        string            `json:"StateReason,omitempty"`
-	StateReasonCode    string            `json:"StateReasonCode,omitempty"`
-	LastModified       string            `json:"LastModified"`
-	LastUpdateStatus   string            `json:"LastUpdateStatus,omitempty"`
-	PackageType        string            `json:"PackageType"`
-	Architectures      []string          `json:"Architectures,omitempty"`
-	RevisionId         string            `json:"RevisionId"`
-	Tags               map[string]string `json:"Tags,omitempty"`
-	Environment        *StoredEnvironment      `json:"Environment,omitempty"`
-	VpcConfig          *StoredVpcConfig        `json:"VpcConfig,omitempty"`
-	DeadLetterConfig   *StoredDeadLetterConfig `json:"DeadLetterConfig,omitempty"`
-	TracingConfig      *StoredTracingConfig    `json:"TracingConfig,omitempty"`
-	EphemeralStorage   *StoredEphemeralStorage `json:"EphemeralStorage,omitempty"`
-	Layers             []string                `json:"Layers,omitempty"`
-	KMSKeyArn          string                  `json:"KMSKeyArn,omitempty"`
-	FileSystemConfigs  []StoredFileSystemConfig `json:"FileSystemConfigs,omitempty"`
-	ImageUri           string                  `json:"ImageUri,omitempty"`
+	FunctionName        string                     `json:"FunctionName"`
+	FunctionArn         string                     `json:"FunctionArn"`
+	Runtime             string                     `json:"Runtime,omitempty"`
+	Role                string                     `json:"Role"`
+	Handler             string                     `json:"Handler,omitempty"`
+	Description         string                     `json:"Description,omitempty"`
+	Timeout             int32                      `json:"Timeout"`
+	MemorySize          int32                      `json:"MemorySize"`
+	CodeSha256          string                     `json:"CodeSha256"`
+	CodeSize            int64                      `json:"CodeSize"`
+	Version             string                     `json:"Version"`
+	State               string                     `json:"State"`
+	StateReason         string                     `json:"StateReason,omitempty"`
+	StateReasonCode     string                     `json:"StateReasonCode,omitempty"`
+	LastModified        string                     `json:"LastModified"`
+	LastUpdateStatus    string                     `json:"LastUpdateStatus,omitempty"`
+	PackageType         string                     `json:"PackageType"`
+	Architectures       []string                   `json:"Architectures,omitempty"`
+	RevisionId          string                     `json:"RevisionId"`
+	Tags                map[string]string          `json:"Tags,omitempty"`
+	Environment         *StoredEnvironment         `json:"Environment,omitempty"`
+	VpcConfig           *StoredVpcConfig           `json:"VpcConfig,omitempty"`
+	DeadLetterConfig    *StoredDeadLetterConfig    `json:"DeadLetterConfig,omitempty"`
+	TracingConfig       *StoredTracingConfig       `json:"TracingConfig,omitempty"`
+	EphemeralStorage    *StoredEphemeralStorage    `json:"EphemeralStorage,omitempty"`
+	Layers              []string                   `json:"Layers,omitempty"`
+	KMSKeyArn           string                     `json:"KMSKeyArn,omitempty"`
+	FileSystemConfigs   []StoredFileSystemConfig   `json:"FileSystemConfigs,omitempty"`
+	ImageUri            string                     `json:"ImageUri,omitempty"`
 	ImageConfigResponse *StoredImageConfigResponse `json:"ImageConfigResponse,omitempty"`
-	LoggingConfig      *StoredLoggingConfig    `json:"LoggingConfig,omitempty"`
+	LoggingConfig       *StoredLoggingConfig       `json:"LoggingConfig,omitempty"`
 
 	// Code storage (in-memory, base64-encoded for mock)
-	Code               *FunctionCode     `json:"Code,omitempty"`
+	Code *FunctionCode `json:"Code,omitempty"`
 
 	// Published versions
-	PublishedVersions  map[string]*StoredVersion `json:"PublishedVersions,omitempty"`
-	NextVersionNumber  int                       `json:"NextVersionNumber"`
+	PublishedVersions map[string]*StoredVersion `json:"PublishedVersions,omitempty"`
+	NextVersionNumber int                       `json:"NextVersionNumber"`
 
 	// Concurrency settings
 	ReservedConcurrentExecutions *int32 `json:"ReservedConcurrentExecutions,omitempty"`
 
 	// Resource policy
-	Policy             string            `json:"Policy,omitempty"`
+	Policy string `json:"Policy,omitempty"`
 }
 
 // StoredVersion represents a published function version
 type StoredVersion struct {
-	Version         string `json:"Version"`
-	Description     string `json:"Description,omitempty"`
-	CodeSha256      string `json:"CodeSha256"`
-	CodeSize        int64  `json:"CodeSize"`
-	RevisionId      string `json:"RevisionId"`
-	FunctionArn     string `json:"FunctionArn"`
-	LastModified    string `json:"LastModified"`
+	Version      string `json:"Version"`
+	Description  string `json:"Description,omitempty"`
+	CodeSha256   string `json:"CodeSha256"`
+	CodeSize     int64  `json:"CodeSize"`
+	RevisionId   string `json:"RevisionId"`
+	FunctionArn  string `json:"FunctionArn"`
+	LastModified string `json:"LastModified"`
 }
 
 // StoredAlias represents a function alias
 type StoredAlias struct {
-	Name            string                  `json:"Name"`
-	FunctionName    string                  `json:"FunctionName"`
-	FunctionVersion string                  `json:"FunctionVersion"`
-	Description     string                  `json:"Description,omitempty"`
-	AliasArn        string                  `json:"AliasArn"`
-	RevisionId      string                  `json:"RevisionId"`
-	RoutingConfig   *AliasRoutingConfig     `json:"RoutingConfig,omitempty"`
+	Name            string              `json:"Name"`
+	FunctionName    string              `json:"FunctionName"`
+	FunctionVersion string              `json:"FunctionVersion"`
+	Description     string              `json:"Description,omitempty"`
+	AliasArn        string              `json:"AliasArn"`
+	RevisionId      string              `json:"RevisionId"`
+	RoutingConfig   *AliasRoutingConfig `json:"RoutingConfig,omitempty"`
 }
 
 // AliasRoutingConfig represents alias routing configuration
@@ -81,14 +81,14 @@ type AliasRoutingConfig struct {
 
 // StoredFunctionUrl represents a function URL configuration
 type StoredFunctionUrl struct {
-	FunctionName   string    `json:"FunctionName"`
-	FunctionArn    string    `json:"FunctionArn"`
-	FunctionUrl    string    `json:"FunctionUrl"`
-	AuthType       string    `json:"AuthType"`
-	Cors           *CorsConfig `json:"Cors,omitempty"`
-	InvokeMode     string    `json:"InvokeMode,omitempty"`
-	CreationTime   string    `json:"CreationTime"`
-	LastModifiedTime string  `json:"LastModifiedTime"`
+	FunctionName     string      `json:"FunctionName"`
+	FunctionArn      string      `json:"FunctionArn"`
+	FunctionUrl      string      `json:"FunctionUrl"`
+	AuthType         string      `json:"AuthType"`
+	Cors             *CorsConfig `json:"Cors,omitempty"`
+	InvokeMode       string      `json:"InvokeMode,omitempty"`
+	CreationTime     string      `json:"CreationTime"`
+	LastModifiedTime string      `json:"LastModifiedTime"`
 }
 
 // CorsConfig represents CORS configuration for function URL
@@ -303,34 +303,34 @@ type AddPermissionInput struct {
 
 // StoredEventSourceMapping represents an event source mapping
 type StoredEventSourceMapping struct {
-	UUID                           string                 `json:"UUID"`
-	EventSourceArn                 string                 `json:"EventSourceArn,omitempty"`
-	FunctionArn                    string                 `json:"FunctionArn"`
-	FunctionName                   string                 `json:"FunctionName"`
-	State                          string                 `json:"State"`
-	StateTransitionReason          string                 `json:"StateTransitionReason,omitempty"`
-	LastModified                   string                 `json:"LastModified"`
-	LastProcessingResult           string                 `json:"LastProcessingResult,omitempty"`
-	BatchSize                      *int32                 `json:"BatchSize,omitempty"`
-	MaximumBatchingWindowInSeconds *int32                 `json:"MaximumBatchingWindowInSeconds,omitempty"`
-	ParallelizationFactor          *int32                 `json:"ParallelizationFactor,omitempty"`
-	StartingPosition               string                 `json:"StartingPosition,omitempty"`
-	StartingPositionTimestamp      string                 `json:"StartingPositionTimestamp,omitempty"`
-	MaximumRecordAgeInSeconds      *int32                 `json:"MaximumRecordAgeInSeconds,omitempty"`
-	BisectBatchOnFunctionError     *bool                  `json:"BisectBatchOnFunctionError,omitempty"`
-	MaximumRetryAttempts           *int32                 `json:"MaximumRetryAttempts,omitempty"`
-	TumblingWindowInSeconds        *int32                 `json:"TumblingWindowInSeconds,omitempty"`
-	Enabled                        *bool                  `json:"Enabled,omitempty"`
-	FilterCriteria                 *FilterCriteria        `json:"FilterCriteria,omitempty"`
-	DestinationConfig              *DestinationConfig     `json:"DestinationConfig,omitempty"`
-	Queues                         []string               `json:"Queues,omitempty"`
-	SourceAccessConfigurations     []SourceAccessConfiguration `json:"SourceAccessConfigurations,omitempty"`
-	SelfManagedEventSource         *SelfManagedEventSource `json:"SelfManagedEventSource,omitempty"`
-	FunctionResponseTypes          []string               `json:"FunctionResponseTypes,omitempty"`
+	UUID                                string                               `json:"UUID"`
+	EventSourceArn                      string                               `json:"EventSourceArn,omitempty"`
+	FunctionArn                         string                               `json:"FunctionArn"`
+	FunctionName                        string                               `json:"FunctionName"`
+	State                               string                               `json:"State"`
+	StateTransitionReason               string                               `json:"StateTransitionReason,omitempty"`
+	LastModified                        string                               `json:"LastModified"`
+	LastProcessingResult                string                               `json:"LastProcessingResult,omitempty"`
+	BatchSize                           *int32                               `json:"BatchSize,omitempty"`
+	MaximumBatchingWindowInSeconds      *int32                               `json:"MaximumBatchingWindowInSeconds,omitempty"`
+	ParallelizationFactor               *int32                               `json:"ParallelizationFactor,omitempty"`
+	StartingPosition                    string                               `json:"StartingPosition,omitempty"`
+	StartingPositionTimestamp           string                               `json:"StartingPositionTimestamp,omitempty"`
+	MaximumRecordAgeInSeconds           *int32                               `json:"MaximumRecordAgeInSeconds,omitempty"`
+	BisectBatchOnFunctionError          *bool                                `json:"BisectBatchOnFunctionError,omitempty"`
+	MaximumRetryAttempts                *int32                               `json:"MaximumRetryAttempts,omitempty"`
+	TumblingWindowInSeconds             *int32                               `json:"TumblingWindowInSeconds,omitempty"`
+	Enabled                             *bool                                `json:"Enabled,omitempty"`
+	FilterCriteria                      *FilterCriteria                      `json:"FilterCriteria,omitempty"`
+	DestinationConfig                   *DestinationConfig                   `json:"DestinationConfig,omitempty"`
+	Queues                              []string                             `json:"Queues,omitempty"`
+	SourceAccessConfigurations          []SourceAccessConfiguration          `json:"SourceAccessConfigurations,omitempty"`
+	SelfManagedEventSource              *SelfManagedEventSource              `json:"SelfManagedEventSource,omitempty"`
+	FunctionResponseTypes               []string                             `json:"FunctionResponseTypes,omitempty"`
 	AmazonManagedKafkaEventSourceConfig *AmazonManagedKafkaEventSourceConfig `json:"AmazonManagedKafkaEventSourceConfig,omitempty"`
 	SelfManagedKafkaEventSourceConfig   *SelfManagedKafkaEventSourceConfig   `json:"SelfManagedKafkaEventSourceConfig,omitempty"`
-	ScalingConfig                  *ScalingConfig         `json:"ScalingConfig,omitempty"`
-	DocumentDBEventSourceConfig    *DocumentDBEventSourceConfig `json:"DocumentDBEventSourceConfig,omitempty"`
+	ScalingConfig                       *ScalingConfig                       `json:"ScalingConfig,omitempty"`
+	DocumentDBEventSourceConfig         *DocumentDBEventSourceConfig         `json:"DocumentDBEventSourceConfig,omitempty"`
 }
 
 // Note: FilterCriteria, Filter, DestinationConfig, OnSuccess, OnFailure,
@@ -340,72 +340,72 @@ type StoredEventSourceMapping struct {
 
 // CreateEventSourceMappingInput represents input to CreateEventSourceMapping
 type CreateEventSourceMappingInput struct {
-	EventSourceArn                 string                 `json:"EventSourceArn,omitempty"`
-	FunctionName                   string                 `json:"FunctionName"`
-	Enabled                        *bool                  `json:"Enabled,omitempty"`
-	BatchSize                      *int32                 `json:"BatchSize,omitempty"`
-	MaximumBatchingWindowInSeconds *int32                 `json:"MaximumBatchingWindowInSeconds,omitempty"`
-	ParallelizationFactor          *int32                 `json:"ParallelizationFactor,omitempty"`
-	StartingPosition               string                 `json:"StartingPosition,omitempty"`
-	StartingPositionTimestamp      string                 `json:"StartingPositionTimestamp,omitempty"`
-	MaximumRecordAgeInSeconds      *int32                 `json:"MaximumRecordAgeInSeconds,omitempty"`
-	BisectBatchOnFunctionError     *bool                  `json:"BisectBatchOnFunctionError,omitempty"`
-	MaximumRetryAttempts           *int32                 `json:"MaximumRetryAttempts,omitempty"`
-	TumblingWindowInSeconds        *int32                 `json:"TumblingWindowInSeconds,omitempty"`
-	FilterCriteria                 *FilterCriteria        `json:"FilterCriteria,omitempty"`
-	DestinationConfig              *DestinationConfig     `json:"DestinationConfig,omitempty"`
-	Queues                         []string               `json:"Queues,omitempty"`
-	SourceAccessConfigurations     []SourceAccessConfiguration `json:"SourceAccessConfigurations,omitempty"`
-	SelfManagedEventSource         *SelfManagedEventSource `json:"SelfManagedEventSource,omitempty"`
-	FunctionResponseTypes          []string               `json:"FunctionResponseTypes,omitempty"`
+	EventSourceArn                      string                               `json:"EventSourceArn,omitempty"`
+	FunctionName                        string                               `json:"FunctionName"`
+	Enabled                             *bool                                `json:"Enabled,omitempty"`
+	BatchSize                           *int32                               `json:"BatchSize,omitempty"`
+	MaximumBatchingWindowInSeconds      *int32                               `json:"MaximumBatchingWindowInSeconds,omitempty"`
+	ParallelizationFactor               *int32                               `json:"ParallelizationFactor,omitempty"`
+	StartingPosition                    string                               `json:"StartingPosition,omitempty"`
+	StartingPositionTimestamp           string                               `json:"StartingPositionTimestamp,omitempty"`
+	MaximumRecordAgeInSeconds           *int32                               `json:"MaximumRecordAgeInSeconds,omitempty"`
+	BisectBatchOnFunctionError          *bool                                `json:"BisectBatchOnFunctionError,omitempty"`
+	MaximumRetryAttempts                *int32                               `json:"MaximumRetryAttempts,omitempty"`
+	TumblingWindowInSeconds             *int32                               `json:"TumblingWindowInSeconds,omitempty"`
+	FilterCriteria                      *FilterCriteria                      `json:"FilterCriteria,omitempty"`
+	DestinationConfig                   *DestinationConfig                   `json:"DestinationConfig,omitempty"`
+	Queues                              []string                             `json:"Queues,omitempty"`
+	SourceAccessConfigurations          []SourceAccessConfiguration          `json:"SourceAccessConfigurations,omitempty"`
+	SelfManagedEventSource              *SelfManagedEventSource              `json:"SelfManagedEventSource,omitempty"`
+	FunctionResponseTypes               []string                             `json:"FunctionResponseTypes,omitempty"`
 	AmazonManagedKafkaEventSourceConfig *AmazonManagedKafkaEventSourceConfig `json:"AmazonManagedKafkaEventSourceConfig,omitempty"`
 	SelfManagedKafkaEventSourceConfig   *SelfManagedKafkaEventSourceConfig   `json:"SelfManagedKafkaEventSourceConfig,omitempty"`
-	ScalingConfig                  *ScalingConfig         `json:"ScalingConfig,omitempty"`
-	DocumentDBEventSourceConfig    *DocumentDBEventSourceConfig `json:"DocumentDBEventSourceConfig,omitempty"`
+	ScalingConfig                       *ScalingConfig                       `json:"ScalingConfig,omitempty"`
+	DocumentDBEventSourceConfig         *DocumentDBEventSourceConfig         `json:"DocumentDBEventSourceConfig,omitempty"`
 }
 
 // UpdateEventSourceMappingInput represents input to UpdateEventSourceMapping
 type UpdateEventSourceMappingInput struct {
-	Enabled                        *bool                  `json:"Enabled,omitempty"`
-	BatchSize                      *int32                 `json:"BatchSize,omitempty"`
-	MaximumBatchingWindowInSeconds *int32                 `json:"MaximumBatchingWindowInSeconds,omitempty"`
-	ParallelizationFactor          *int32                 `json:"ParallelizationFactor,omitempty"`
-	MaximumRecordAgeInSeconds      *int32                 `json:"MaximumRecordAgeInSeconds,omitempty"`
-	BisectBatchOnFunctionError     *bool                  `json:"BisectBatchOnFunctionError,omitempty"`
-	MaximumRetryAttempts           *int32                 `json:"MaximumRetryAttempts,omitempty"`
-	TumblingWindowInSeconds        *int32                 `json:"TumblingWindowInSeconds,omitempty"`
-	FilterCriteria                 *FilterCriteria        `json:"FilterCriteria,omitempty"`
-	DestinationConfig              *DestinationConfig     `json:"DestinationConfig,omitempty"`
-	SourceAccessConfigurations     []SourceAccessConfiguration `json:"SourceAccessConfigurations,omitempty"`
-	FunctionName                   string                 `json:"FunctionName,omitempty"`
-	FunctionResponseTypes          []string               `json:"FunctionResponseTypes,omitempty"`
-	ScalingConfig                  *ScalingConfig         `json:"ScalingConfig,omitempty"`
+	Enabled                        *bool                        `json:"Enabled,omitempty"`
+	BatchSize                      *int32                       `json:"BatchSize,omitempty"`
+	MaximumBatchingWindowInSeconds *int32                       `json:"MaximumBatchingWindowInSeconds,omitempty"`
+	ParallelizationFactor          *int32                       `json:"ParallelizationFactor,omitempty"`
+	MaximumRecordAgeInSeconds      *int32                       `json:"MaximumRecordAgeInSeconds,omitempty"`
+	BisectBatchOnFunctionError     *bool                        `json:"BisectBatchOnFunctionError,omitempty"`
+	MaximumRetryAttempts           *int32                       `json:"MaximumRetryAttempts,omitempty"`
+	TumblingWindowInSeconds        *int32                       `json:"TumblingWindowInSeconds,omitempty"`
+	FilterCriteria                 *FilterCriteria              `json:"FilterCriteria,omitempty"`
+	DestinationConfig              *DestinationConfig           `json:"DestinationConfig,omitempty"`
+	SourceAccessConfigurations     []SourceAccessConfiguration  `json:"SourceAccessConfigurations,omitempty"`
+	FunctionName                   string                       `json:"FunctionName,omitempty"`
+	FunctionResponseTypes          []string                     `json:"FunctionResponseTypes,omitempty"`
+	ScalingConfig                  *ScalingConfig               `json:"ScalingConfig,omitempty"`
 	DocumentDBEventSourceConfig    *DocumentDBEventSourceConfig `json:"DocumentDBEventSourceConfig,omitempty"`
 }
 
 // StoredLayer represents a Lambda layer
 type StoredLayer struct {
-	LayerName           string                       `json:"LayerName"`
-	LatestVersionNumber int64                        `json:"LatestVersionNumber"`
-	LayerArn            string                       `json:"LayerArn"`
+	LayerName           string                        `json:"LayerName"`
+	LatestVersionNumber int64                         `json:"LatestVersionNumber"`
+	LayerArn            string                        `json:"LayerArn"`
 	Versions            map[int64]*StoredLayerVersion `json:"Versions,omitempty"`
 }
 
 // StoredLayerVersion represents a specific layer version
 type StoredLayerVersion struct {
-	LayerVersionArn      string   `json:"LayerVersionArn"`
-	Version              int64    `json:"Version"`
-	Description          string   `json:"Description,omitempty"`
-	CreatedDate          string   `json:"CreatedDate"`
-	CompatibleRuntimes   []string `json:"CompatibleRuntimes,omitempty"`
+	LayerVersionArn         string   `json:"LayerVersionArn"`
+	Version                 int64    `json:"Version"`
+	Description             string   `json:"Description,omitempty"`
+	CreatedDate             string   `json:"CreatedDate"`
+	CompatibleRuntimes      []string `json:"CompatibleRuntimes,omitempty"`
 	CompatibleArchitectures []string `json:"CompatibleArchitectures,omitempty"`
-	LicenseInfo          string   `json:"LicenseInfo,omitempty"`
-	CodeSha256           string   `json:"CodeSha256"`
-	CodeSize             int64    `json:"CodeSize"`
+	LicenseInfo             string   `json:"LicenseInfo,omitempty"`
+	CodeSha256              string   `json:"CodeSha256"`
+	CodeSize                int64    `json:"CodeSize"`
 	// Code storage (in-memory, base64-encoded for mock)
-	Content              *LayerContent `json:"Content,omitempty"`
+	Content *LayerContent `json:"Content,omitempty"`
 	// Resource policy
-	Policy               string   `json:"Policy,omitempty"`
+	Policy string `json:"Policy,omitempty"`
 }
 
 // LayerContent represents layer code content
@@ -428,17 +428,17 @@ type PublishLayerVersionInput struct {
 
 // AddLayerVersionPermissionInput represents input to AddLayerVersionPermission
 type AddLayerVersionPermissionInput struct {
-	StatementId     string `json:"StatementId"`
-	Action          string `json:"Action"`
-	Principal       string `json:"Principal"`
-	OrganizationId  string `json:"OrganizationId,omitempty"`
-	RevisionId      string `json:"RevisionId,omitempty"`
+	StatementId    string `json:"StatementId"`
+	Action         string `json:"Action"`
+	Principal      string `json:"Principal"`
+	OrganizationId string `json:"OrganizationId,omitempty"`
+	RevisionId     string `json:"RevisionId,omitempty"`
 }
 
 // StoredProvisionedConcurrencyConfig represents a provisioned concurrency configuration
 type StoredProvisionedConcurrencyConfig struct {
-	FunctionArn                            string `json:"FunctionArn"`
-	Qualifier                              string `json:"Qualifier"` // Version or alias name
+	FunctionArn                              string `json:"FunctionArn"`
+	Qualifier                                string `json:"Qualifier"` // Version or alias name
 	RequestedProvisionedConcurrentExecutions int32  `json:"RequestedProvisionedConcurrentExecutions"`
 	AvailableProvisionedConcurrentExecutions int32  `json:"AvailableProvisionedConcurrentExecutions"`
 	AllocatedProvisionedConcurrentExecutions int32  `json:"AllocatedProvisionedConcurrentExecutions"`
@@ -454,12 +454,12 @@ type PutProvisionedConcurrencyConfigInput struct {
 
 // StoredEventInvokeConfig represents a function event invoke configuration
 type StoredEventInvokeConfig struct {
-	FunctionArn                   string             `json:"FunctionArn"`
-	Qualifier                     string             `json:"Qualifier,omitempty"` // $LATEST, version, or alias
-	MaximumEventAgeInSeconds      *int32             `json:"MaximumEventAgeInSeconds,omitempty"`
-	MaximumRetryAttempts          *int32             `json:"MaximumRetryAttempts,omitempty"`
-	DestinationConfig             *DestinationConfig `json:"DestinationConfig,omitempty"`
-	LastModified                  string             `json:"LastModified"`
+	FunctionArn              string             `json:"FunctionArn"`
+	Qualifier                string             `json:"Qualifier,omitempty"` // $LATEST, version, or alias
+	MaximumEventAgeInSeconds *int32             `json:"MaximumEventAgeInSeconds,omitempty"`
+	MaximumRetryAttempts     *int32             `json:"MaximumRetryAttempts,omitempty"`
+	DestinationConfig        *DestinationConfig `json:"DestinationConfig,omitempty"`
+	LastModified             string             `json:"LastModified"`
 }
 
 // PutFunctionEventInvokeConfigInput represents input to PutFunctionEventInvokeConfig

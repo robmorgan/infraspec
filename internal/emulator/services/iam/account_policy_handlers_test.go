@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/robmorgan/infraspec/internal/emulator/core"
+	emulator "github.com/robmorgan/infraspec/internal/emulator/core"
 	testhelpers "github.com/robmorgan/infraspec/internal/emulator/testing"
 	"github.com/stretchr/testify/require"
 )
@@ -378,9 +378,9 @@ func TestIsValidAccountAlias(t *testing.T) {
 	require.True(t, isValidAccountAlias("a12"))
 
 	// Invalid aliases
-	require.False(t, isValidAccountAlias("ab"))                      // Too short
-	require.False(t, isValidAccountAlias("MyCompany"))               // Uppercase
-	require.False(t, isValidAccountAlias("123company"))              // Starts with number
-	require.False(t, isValidAccountAlias("-company"))                // Starts with hyphen
-	require.False(t, isValidAccountAlias("company_name"))            // Underscore not allowed
+	require.False(t, isValidAccountAlias("ab"))           // Too short
+	require.False(t, isValidAccountAlias("MyCompany"))    // Uppercase
+	require.False(t, isValidAccountAlias("123company"))   // Starts with number
+	require.False(t, isValidAccountAlias("-company"))     // Starts with hyphen
+	require.False(t, isValidAccountAlias("company_name")) // Underscore not allowed
 }
