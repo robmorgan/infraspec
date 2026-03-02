@@ -191,7 +191,7 @@ jobs:
           file_pattern: ".cloudmirror-baseline.json"
 
       - name: Upload Report Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: cloudmirror-reports
           path: |
